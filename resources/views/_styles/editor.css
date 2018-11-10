@@ -1,0 +1,40 @@
+@import url('/style/common.css');
+
+body{font-size:14px;line-height:1.5}
+h1{color:#999;font-size:30px;padding:10px 0}
+h2{color:#999;font-size:25px;padding:10px 0}
+h3{color:#999;font-size:20px;padding:10px 0}
+h4{color:#999;font-size:17px;padding:10px 0}
+h5{color:#999;font-size:15px;padding:10px 0}
+h6{color:#ddd;font-size:15px;padding:10px 0}
+/*
+table{border-top:1px solid #999;margin:5px 0}
+table td{border-bottom:1px solid #bbb;padding:5px}
+*/
+ul{margin-left:25px;list-style:disc}
+ol{margin-left:25px;list-style:decimal}
+li{margin:5px 0}
+.hljs{overflow-x:auto}
+p{margin:5px 0}
+blockquote{border:1px solid #ddd;padding:10px 10px 10px 30px;margin:10px 0;background:url('/images/blockquote.png') #eee no-repeat 5px 5px;background-size:20px 20px}
+img{max-width:100%;height:auto}
+
+.accordion-content{padding:5px;background:#eee}
+.accordion-content .accordion-button{padding:5px 5px 10px 5px;color:#999;font-size:16px;cursor:pointer}
+.accordion-content .accordion-button i{float:right;padding:5px 0;display:none}
+.accordion-content .accordion-button i.active{display:block}
+.accordion-content .accordion-item{background:#fff;padding:5px;display:none}
+
+section.footnotes{border-top:1px solid #ddd;margin-top:10px;padding-top:10px}
+.blink{background-color:yellow;transition:background-color,color 0.5s ease-in-out}
+.blinkend{background-color:transparent}
+a[rel=footnote].blink{background-color:#999}
+a[rel=footnote].blinkend{background-color:transparent}
+
+@-moz-document url-prefix(){
+    img{width:100%}
+}
+
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none){
+    img {width:100%}
+}

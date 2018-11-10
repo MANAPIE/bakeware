@@ -1,0 +1,57 @@
+@import url('/font/SpoqaHanSans-kr.css');
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+input, textarea, keygen, select, button{
+	font-family: 'Spoqa Han Sans','Noto Sans KR','맑은 고딕','Malgun Gothic','Nanum Gothic','나눔고딕','NanumGothic','돋움','Dotum','Sans-serif' !important;
+	border-radius:0;
+}
+html{
+	min-height: 100%;
+}
+body {
+	line-height: 1;
+	min-height: 100%;
+	font-size:14px;
+	font-family: 'Spoqa Han Sans','Noto Sans KR','맑은 고딕','Malgun Gothic','Nanum Gothic','나눔고딕','NanumGothic','돋움','Dotum','Sans-serif';
+	background:#fff;
+	color:#000;
+	word-break:keep-all;
+	-webkit-text-size-adjust:none;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}

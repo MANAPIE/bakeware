@@ -1,0 +1,30 @@
+.real_content{font-size:14px;line-height:1.5}
+.real_content h1{color:#999;font-size:30px;padding:10px 0}
+.real_content h2{color:#999;font-size:25px;padding:10px 0}
+.real_content h3{color:#999;font-size:20px;padding:10px 0}
+.real_content h4{color:#999;font-size:17px;padding:10px 0}
+.real_content h5{color:#999;font-size:15px;padding:10px 0}
+.real_content h6{color:#ddd;font-size:15px;padding:10px 0}
+/*
+.real_content table{border-top:1px solid #999;margin:5px 0}
+.real_content table td{border-bottom:1px solid #bbb;padding:5px}
+*/
+.real_content ul{margin-left:25px;list-style:disc}
+.real_content ol{margin-left:25px;list-style:decimal}
+.real_content li{margin:5px 0}
+.real_content .hljs{overflow-x:auto}
+.real_content p{margin:5px 0}
+.real_content blockquote{border:1px solid #ddd;padding:10px 10px 10px 30px;margin:10px 0;background:url('/images/blockquote.png') #eee no-repeat 5px 5px;background-size:20px 20px}
+.real_content img{max-width:100%;height:auto}
+
+.real_content .accordion-content{padding:5px;background:#eee}
+.real_content .accordion-content .accordion-button{padding:5px 5px 10px 5px;color:#999;font-size:16px;cursor:pointer}
+.real_content .accordion-content .accordion-button i{float:right;padding:5px 0;display:none}
+.real_content .accordion-content .accordion-button i.active{display:block}
+.real_content .accordion-content .accordion-item{background:#fff;padding:5px;display:none}
+
+.real_content section.footnotes{border-top:1px solid #ddd;margin-top:10px;padding-top:10px}
+.real_content .blink{background-color:yellow;transition:background-color,color 0.5s ease-in-out}
+.real_content .blinkend{background-color:transparent}
+.real_content a[rel=footnote].blink{background-color:#999}
+.real_content a[rel=footnote].blinkend{background-color:transparent}
