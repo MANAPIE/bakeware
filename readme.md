@@ -4,7 +4,7 @@ Laravel 프레임워크로 만들어져 PHP 7.1.3~ 환경에서 작동합니다.
 
 # Install
 1. 도메인을 ./public에 연결
-2. ./ 디렉터리에 압축 풀기
+2. ./ 디렉터리에 압축 풀기 또는 git clone
 3. .env.example을 .env 파일로 복사해서 데이터베이스 정보 입력
 4. 터미널에서 composer install
 5. 터미널에서 php artisan key:generate
