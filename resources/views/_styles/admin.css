@@ -17,7 +17,7 @@
 .admin_login_right address .manapie{background:url('/image/manapie.png') transparent no-repeat center center;background-size:100% 100%;width:88px;height:11px;display:inline-block}
 
 #header{position:fixed;top:0;left:0;width:230px;height:100%;overflow:auto;-webkit-overflow-scrolling:auto;background:#333;color:#fff}
-#header .logo{padding:15px;text-align:center}
+#header .logo{padding:15px 15px 25px 15px;text-align:center}
 #header .logo img{width:100px;height:auto}
 #header .user{font-size:15px;padding:13px 12px;margin:0 10px;background:#111;border-radius:5px}
 #header .user .thumbnail{width:40px;height:40px;border-radius:40px;border:2px solid #444;background:#222;margin-right:10px;float:left;margin-left:-2px;background-size:cover}
