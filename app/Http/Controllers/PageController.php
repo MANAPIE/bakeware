@@ -237,7 +237,7 @@ class PageController extends Controller {
 	
 	// 외부 페이지 이미지
 	public function getOuterImage($name){
-		$path=base_path().'/resources/views/page/outer/'.$name;
+		$path=base_path().'/resources/views/page/outer/image/'.$name;
 		if(!File::exists($path)) abort(404);
 		$file=File::get($path);
 		$type=File::mimeType($path);
