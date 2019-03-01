@@ -86,6 +86,12 @@ class SaferCrypto extends UnsafeCrypto
 	    	$bin[] = decbin(ord($text[$i]));
 	    return implode('',$bin);
 	}
+	
+	// -MANAPIE-
+    // 암호문인지 확인
+    public static function checkEncrypted($message) {
+	    return substr($message,0,strlen(self::DISTINGUISHER))!==self::DISTINGUISHER;
+    }
 
     /**
      * Encrypts then MACs a message
@@ -130,7 +136,7 @@ class SaferCrypto extends UnsafeCrypto
     {
 	    // -MANAPIE-
 	    // 암호문인지 확인
-	    if(substr($message,0,strlen(self::DISTINGUISHER))!==self::DISTINGUISHER){
+	    if(self::checkEncrypted($message)){
             throw new \Exception('Encryption failure: messege is not endcoded');
         }
         
