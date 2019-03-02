@@ -116,7 +116,7 @@ class OnepageController extends Controller {
 		\App\Onepage::create([
 			'id'=>$id,
 			'url'=>$request->url,
-			'name'=>$request->name,
+			'name'=>\App\Encryption::isEncrypt('onepage')?\App\Encryption::encrypt($request->name):$request->name,
 			'layout'=>$request->layout,
 			'allowed_group'=>$group,
 			'state'=>200,
@@ -183,6 +183,8 @@ class OnepageController extends Controller {
 	        ]);
 	    }
 		
+		$page->name=\App\Encryption::checkEncrypted($page->name)?\App\Encryption::decrypt($page->name):$page->name;
+		
 		Controller::notify(($page->name!=$request->name?'<u>'.$page->name.'</u> → ':'').'<u>'.$request->name.'</u> 원페이지를 수정했습니다.');
 		
 		if(!$request->group) $request->group=[];
@@ -190,7 +192,7 @@ class OnepageController extends Controller {
 		$page->allowed_group=$group;
 		if(!$request->url) $request->url='';
 		$page->url=$request->url;
-		$page->name=$request->name;
+		$page->name=\App\Encryption::isEncrypt('onepage')?\App\Encryption::encrypt($request->name):$request->name;
 		$page->layout=$request->layout;
 		
 		DB::table('page_onepage_pages')->where(['onepage'=>$page->id,'state'=>200])->delete();
@@ -232,6 +234,8 @@ class OnepageController extends Controller {
 		
 		$page->state=400;
 		$page->save();
+		
+		$page->name=\App\Encryption::checkEncrypted($page->name)?\App\Encryption::decrypt($page->name):$page->name;
 		
 		Controller::notify('<u>'.$page->name.'</u> 원페이지를 삭제했습니다.');
 		return redirect('/admin/page/onepage'.($_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''))->with('message','페이지를 삭제했습니다.');
