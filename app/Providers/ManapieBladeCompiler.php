@@ -23,9 +23,10 @@ class ManapieBladeCompiler extends BladeCompiler {
             }else{
             	$whitespace = empty($matches[3]) ? '' : $matches[3].$matches[3];
             	
-				$wrapped=$this->compileEchoDefaults($matches[2]);
+            	$text=\App\Encryption::checkEncrypted($matches[2])?\App\Encryption::decrypt($matches[2]):$matches[2];
+				$wrapped=$this->compileEchoDefaults($text);
 	            	
-	            return "<?php echo((\App\Encryption::checkEncrypted($wrapped)?\App\Encryption::decrypt($wrapped):$wrapped)); ?>{$whitespace}";
+	            return "<?php echo({$wrapped}); ?>{$whitespace}";
             }
         };
 
@@ -71,9 +72,10 @@ class ManapieBladeCompiler extends BladeCompiler {
             }else{
 	            $whitespace = empty($matches[3]) ? '' : $matches[3].$matches[3];
 	            
-				$wrapped=$this->compileEchoDefaults($matches[2]);
+            	$text=\App\Encryption::checkEncrypted($matches[2])?\App\Encryption::decrypt($matches[2]):$matches[2];
+				$wrapped=$this->compileEchoDefaults($text);
 	            	
-	            return "<?php echo(e((\App\Encryption::checkEncrypted($wrapped)?\App\Encryption::decrypt($wrapped):$wrapped))); ?>{$whitespace}";
+	            return "<?php echo(e({$wrapped})); ?>{$whitespace}";
 	        }
         };
 

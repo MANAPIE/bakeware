@@ -37,7 +37,7 @@ class Pages extends Migration
 	        $table->integer('id')->primary();
 	        $table->integer('page');
 	        $table->integer('author')->nullable();
-	        $table->string('title')->nullable();
+	        $table->longText('title')->nullable();
 	        $table->integer('layout')->nullable();
 	        $table->longText('content')->nullable();
 	        $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));

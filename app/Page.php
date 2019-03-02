@@ -26,11 +26,13 @@ class Page extends Model
     }
     
     public function name(){
-	    return DB::table('page_versions')->where('id',$this->version)->first()->title;
+	    $name=DB::table('page_versions')->where('id',$this->version)->first()->title;
+	    return \App\Encryption::checkEncrypted($name)?\App\Encryption::decrypt($name):$name;
     }
     
     public function content(){
-	    return \App\Http\Controllers\Controller::filterHTML(DB::table('page_versions')->where('id',$this->version)->first()->content);
+	    $content=DB::table('page_versions')->where('id',$this->version)->first()->content;
+	    return \App\Http\Controllers\Controller::filterHTML(\App\Encryption::checkEncrypted($content)?\App\Encryption::decrypt($content):$content);
     }
     
     public function layout(){

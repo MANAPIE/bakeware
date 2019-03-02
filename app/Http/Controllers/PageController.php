@@ -126,7 +126,7 @@ class PageController extends Controller {
 		]);
 		
 		$page=\App\Page::find($id);
-		$version=$page->renewal($request->name,$request->layout,$request->type=='outer'?$request->content_outer:$request->content_inner);
+		$version=$page->renewal((\App\Encryption::isEncrypt('page')?\App\Encryption::encrypt($request->name):$request->name),$request->layout,$request->type=='outer'?$request->content_outer:(\App\Encryption::isEncrypt('page')?\App\Encryption::encrypt($request->content_inner):$request->content_inner));
 		$page->version=$version;
 		$page->save();
         
@@ -182,7 +182,8 @@ class PageController extends Controller {
 		Controller::notify(($page->name()!=$request->name?'<u>'.$page->name().'</u> → ':'').'<u>'.$request->name.'</u> 페이지를 수정했습니다.');
 		
 		if($page->name()!=$request->name||$page->layout()!=$request->layout||$page->content()!=$content){
-			$version=$page->renewal($request->name,$request->layout,$content);
+			$request->name=\App\Encryption::isEncrypt('page')?\App\Encryption::encrypt($request->name):$request->name;
+			$version=$page->renewal($request->name,$request->layout,($page->type=='outer'?$request->content_outer:(\App\Encryption::isEncrypt('page')?\App\Encryption::encrypt($request->content_inner):$request->content_inner)));
 			$page->version=$version;
 		}
 		$page->save();

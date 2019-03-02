@@ -95,11 +95,11 @@ class Encryption extends UnsafeCrypto
     }
     
     public static function nrt_checkEncrypted($message) {
-	    return mb_substr($message,0,strlen(self::DISTINGUISHER))===self::DISTINGUISHER;
+	    return mb_substr($message,0,mb_strlen(self::DISTINGUISHER))===self::DISTINGUISHER;
     }
     
     public static function rt_checkEncrypted($message) {
-	    return mb_substr($message,0,strlen(self::RT_DISTINGUISHER))===self::RT_DISTINGUISHER;
+	    return mb_substr($message,0,mb_strlen(self::RT_DISTINGUISHER))===self::RT_DISTINGUISHER;
     }
 	
 	// -MANAPIE-
@@ -128,7 +128,7 @@ class Encryption extends UnsafeCrypto
             throw new \Exception('Encryption failure: message is not encrypted');
         }
         
-        $message=mb_substr($message,strlen(self::RT_DISTINGUISHER));
+        $message=mb_substr($message,mb_strlen(self::RT_DISTINGUISHER));
         
 	    if($key===null)
 	    	$key=env('APP_KEY');
@@ -159,12 +159,13 @@ class Encryption extends UnsafeCrypto
         // Calculate a MAC of the IV and ciphertext
         $mac = hash_hmac(self::HASH_ALGO, $ciphertext, $authKey, true);
 
+	    $text=$mac.$ciphertext;
         if ($encode) {
-            return self::DISTINGUISHER.base64_encode($mac.$ciphertext);
+	    	return self::DISTINGUISHER.base64_encode($text);
         }
         
         // Prepend MAC to the ciphertext and return to caller
-        return self::DISTINGUISHER.$mac.$ciphertext;
+        return self::DISTINGUISHER.$text;
     }
 
     /**
@@ -187,7 +188,7 @@ class Encryption extends UnsafeCrypto
             throw new \Exception('Encryption failure: message is not encrypted');
         }
         
-        $message=mb_substr($message,strlen(self::DISTINGUISHER));
+        $message=mb_substr($message,mb_strlen(self::DISTINGUISHER));
 	    
 	    
 	    // -MANAPIE-
@@ -217,7 +218,7 @@ class Encryption extends UnsafeCrypto
         );
 
         if (!self::hashEquals($mac, $calculated)) {
-            throw new Exception('Encryption failure');
+            throw new \Exception('Encryption failure');
         }
 
         // Pass to UnsafeCrypto::decrypt

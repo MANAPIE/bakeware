@@ -147,6 +147,8 @@ class MenuController extends Controller {
 		$menu->save();
 		\App\MenuItem::where('menu',$request->id)->update(['state'=>400]);
 		
+		$menu->name=\App\Encryption::checkEncrypted($menu->name)?\App\Encryption::decrypt($menu->name):$menu->name;
+		
 		Controller::notify('<u>'.$menu->name.'</u> 메뉴판을 삭제했습니다.');
 		return redirect()->back()->with('message','메뉴판을 삭제했습니다.');
 	}
