@@ -85,7 +85,7 @@ class EncryptionController extends Controller {
 					DB::table('encryption_settings')->insert(['module'=>$module,'encrypt'=>$request->$module,'author'=>Auth::user()->id]);
 			}
 			
-			Controller::notify('암호화 설정을 했습니다.');
+			Controller::notify('암호화 설정을 수정했습니다.');
 			return redirect()->back()->with('message','설정을 저장했습니다.');
 		}else{
 			abort(401);
