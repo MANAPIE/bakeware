@@ -16,7 +16,7 @@ class EncryptionController extends Controller {
 	}
 	
 	static public function admin_menu(){
-		if(!MenuController::checkAuthority(true))
+		if(!EncryptionController::checkAuthority(true))
 			return null;
 		
 		return [

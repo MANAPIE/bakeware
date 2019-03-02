@@ -25,7 +25,7 @@ class PageController extends Controller {
 	}
 	
 	static public function admin_menu(){
-		if(!MenuController::checkAuthority(true))
+		if(!PageController::checkAuthority(true))
 			return null;
 		
 		return [

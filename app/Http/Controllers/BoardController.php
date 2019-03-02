@@ -46,7 +46,7 @@ class BoardController extends Controller {
 	}
 	
 	static public function admin_menu(){
-		if(!MenuController::checkAuthority(true))
+		if(!BoardController::checkAuthority(true))
 			return null;
 		
 		return [

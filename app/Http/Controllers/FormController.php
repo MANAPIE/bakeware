@@ -32,7 +32,7 @@ class FormController extends Controller {
 	}
 	
 	static public function admin_menu(){
-		if(!MenuController::checkAuthority(true))
+		if(!FormController::checkAuthority(true))
 			return null;
 		
 		return [
