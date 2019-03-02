@@ -1,4 +1,4 @@
-@extends($layout?'layout.'.$layout->path.'.layout':'common',['title'=>$board->name?'&gt; '.$board->name:''])
+@extends($layout?'layout.'.$layout->path.'.layout':'common',['title'=>$board->name?'&gt; '.(\App\Encryption::checkEncrypted($board->name)?\App\Encryption::decrypt($board->name):$board->name):''])
 
 @section('head')
 	@parent
@@ -76,6 +76,9 @@
 			
 			@if(count($board->extravars()))
 				@foreach($board->extravars() as $extravar)
+					<?php
+						$extravar->content=\App\Encryption::checkEncrypted($extravar->content)?\App\Encryption::decrypt($extravar->content):$extravar->content;
+					?>
 					@if($extravar->type=='text')
 						<label class="input_wrap">
 							<input type="text" name="extravar{{$extravar->id}}" value="@if(isset($document)&&$document->extravar($extravar->id)){{$document->extravar($extravar->id)}}@elseif($extravar->content){{$extravar->content}}@endif">

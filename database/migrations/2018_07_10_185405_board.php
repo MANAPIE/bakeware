@@ -25,7 +25,7 @@ class Board extends Migration
 	    Schema::create('boards', function (Blueprint $table) {
 	        $table->integer('id')->primary();
 	        $table->string('url')->nullable();
-	        $table->string('name')->nullable();
+	        $table->longText('name')->nullable();
 	        $table->longText('content')->nullable();
 	        $table->string('sort_by')->default('created_at');
 	        $table->string('sort_order')->default('desc');
@@ -47,7 +47,7 @@ class Board extends Migration
 	    Schema::create('board_categories', function (Blueprint $table) {
 	        $table->integer('id')->primary();
 	        $table->integer('board');
-	        $table->string('name')->nullable();
+	        $table->longText('name')->nullable();
 	        $table->integer('order_show');
 	        $table->integer('state')->default('100');
 	        $table->integer('count_document')->default('0');
@@ -57,7 +57,7 @@ class Board extends Migration
 	    Schema::create('board_extravars', function (Blueprint $table) {
 	        $table->integer('id')->primary();
 	        $table->integer('board');
-	        $table->string('name')->nullable();
+	        $table->longText('name')->nullable();
 	        $table->string('type');
 	        $table->integer('order_show');
 	        $table->longText('content')->nullable();
@@ -70,7 +70,7 @@ class Board extends Migration
 	        $table->integer('board');
 	        $table->integer('category')->nullable();
 	        $table->integer('author')->nullable();
-	        $table->string('title')->nullable();
+	        $table->longText('title')->nullable();
 	        $table->longText('content')->nullable();
 	        $table->boolean('notice')->default(0);
 	        $table->boolean('secret')->default(0);

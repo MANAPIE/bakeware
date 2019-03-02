@@ -1,4 +1,4 @@
-@extends('board.'.$board->skin.'.list',['title'=>($board->name?'&gt; '.$board->name:'').($document->title?'&gt; '.$document->title:'')])
+@extends('board.'.$board->skin.'.list',['title'=>($board->name?'&gt; '.(\App\Encryption::checkEncrypted($board->name)?\App\Encryption::decrypt($board->name):$board->name):'').($document->title?'&gt; '.$document->title:'')])
 
 @section('read')
 	<div class="read_wrap">

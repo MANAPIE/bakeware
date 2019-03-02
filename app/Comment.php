@@ -19,7 +19,7 @@ class Comment extends Model
     }
     
     public function content(){
-	    return \App\Http\Controllers\Controller::filterHTML($this->content);
+	    return \App\Http\Controllers\Controller::filterHTML(\App\Encryption::checkEncrypted($this->content)?\App\Encryption::decrypt($this->content):$this->content);
     }
     
     public function author(){

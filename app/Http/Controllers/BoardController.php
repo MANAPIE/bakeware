@@ -215,8 +215,8 @@ class BoardController extends Controller {
 		\App\Board::create([
 			'id'=>$id,
 			'url'=>$request->url,
-			'name'=>$request->name,
-			'content'=>$request->content,
+			'name'=>\App\Encryption::isEncrypt('board')?\App\Encryption::encrypt($request->name):$request->name,
+			'content'=>\App\Encryption::isEncrypt('board')?\App\Encryption::encrypt($request->content):$request->content,
 			'sort_by'=>$request->sort_by,
 			'sort_order'=>$request->sort_order,
 			'allowed_group'=>$group,
@@ -236,7 +236,7 @@ class BoardController extends Controller {
 			DB::table('board_categories')->insert([
 				'id'=>Controller::getSequence(),
 				'board'=>$id,
-				'name'=>$request->category_name[$i],
+				'name'=>\App\Encryption::isEncrypt('board')?\App\Encryption::encrypt($request->category_name[$i]):$request->category_name[$i],
 				'order_show'=>$i,
 				'state'=>200,
 				'created_at'=>DB::raw('CURRENT_TIMESTAMP'),
@@ -248,10 +248,10 @@ class BoardController extends Controller {
 			DB::table('board_extravars')->insert([
 				'id'=>Controller::getSequence(),
 				'board'=>$id,
-				'name'=>$request->extravar_name[$i],
+				'name'=>\App\Encryption::isEncrypt('board')?\App\Encryption::encrypt($request->extravar_name[$i]):$request->extravar_name[$i],
 				'type'=>$request->extravar_type[$i],
 				'order_show'=>$i,
-				'content'=>$request->extravar_content[$i],
+				'content'=>\App\Encryption::isEncrypt('board')?\App\Encryption::encrypt($request->extravar_content[$i]):$request->extravar_content[$i],
 				'state'=>200,
 				'created_at'=>DB::raw('CURRENT_TIMESTAMP'),
 				'updated_at'=>DB::raw('CURRENT_TIMESTAMP'),
@@ -323,11 +323,13 @@ class BoardController extends Controller {
 		$board->allowed_group_mail=$group_mail;
 		if(!$request->url) $request->url='';
 		
+		$board->name=\App\Encryption::checkEncrypted($board->name)?\App\Encryption::decrypt($board->name):$board->name;
+		
 		Controller::notify(($board->name!=$request->name?'<u>'.$board->name.'</u> → ':'').'<u>'.$request->name.'</u> 게시판을 수정했습니다.');
 		
 		$board->url=$request->url;
-		$board->name=$request->name;
-		$board->content=$request->content;
+		$board->name=\App\Encryption::isEncrypt('board')?\App\Encryption::encrypt($request->name):$request->name;
+		$board->content=\App\Encryption::isEncrypt('board')?\App\Encryption::encrypt($request->content):$request->content;
 		$board->sort_by=$request->sort_by;
 		$board->sort_order=$request->sort_order;
 		$board->anonymous=$request->anonymous;
@@ -342,7 +344,7 @@ class BoardController extends Controller {
 				DB::table('board_categories')->insert([
 					'id'=>Controller::getSequence(),
 					'board'=>$board->id,
-					'name'=>$request->category_name[$i],
+					'name'=>\App\Encryption::isEncrypt('board')?\App\Encryption::encrypt($request->category_name[$i]):$request->category_name[$i],
 					'order_show'=>$i,
 					'state'=>200,
 					'created_at'=>DB::raw('CURRENT_TIMESTAMP'),
@@ -351,7 +353,7 @@ class BoardController extends Controller {
 				
 			}else{
 				DB::table('board_categories')->where(['board'=>$board->id,'id'=>$request->category[$i]])->update([
-					'name'=>$request->category_name[$i],
+					'name'=>\App\Encryption::isEncrypt('board')?\App\Encryption::encrypt($request->category_name[$i]):$request->category_name[$i],
 					'order_show'=>$i,
 					'state'=>200,
 					'updated_at'=>DB::raw('CURRENT_TIMESTAMP'),
@@ -366,10 +368,10 @@ class BoardController extends Controller {
 				DB::table('board_extravars')->insert([
 					'id'=>Controller::getSequence(),
 					'board'=>$board->id,
-					'name'=>$request->extravar_name[$i],
+					'name'=>\App\Encryption::isEncrypt('board')?\App\Encryption::encrypt($request->extravar_name[$i]):$request->extravar_name[$i],
 					'type'=>$request->extravar_type[$i],
 					'order_show'=>$i,
-					'content'=>$request->extravar_content[$i],
+					'content'=>\App\Encryption::isEncrypt('board')?\App\Encryption::encrypt($request->extravar_content[$i]):$request->extravar_content[$i],
 					'state'=>200,
 					'created_at'=>DB::raw('CURRENT_TIMESTAMP'),
 					'updated_at'=>DB::raw('CURRENT_TIMESTAMP'),
@@ -377,10 +379,10 @@ class BoardController extends Controller {
 				
 			}else{
 				DB::table('board_extravars')->where(['board'=>$board->id,'id'=>$request->extravar[$i]])->update([
-					'name'=>$request->extravar_name[$i],
+					'name'=>\App\Encryption::isEncrypt('board')?\App\Encryption::encrypt($request->extravar_name[$i]):$request->extravar_name[$i],
 					'type'=>$request->extravar_type[$i],
 					'order_show'=>$i,
-					'content'=>$request->extravar_content[$i],
+					'content'=>\App\Encryption::isEncrypt('board')?\App\Encryption::encrypt($request->extravar_content[$i]):$request->extravar_content[$i],
 					'state'=>200,
 					'updated_at'=>DB::raw('CURRENT_TIMESTAMP'),
 				]);
@@ -411,6 +413,8 @@ class BoardController extends Controller {
 		
 		$board->state=400;
 		$board->save();
+		
+		$board->name=\App\Encryption::checkEncrypted($board->name)?\App\Encryption::decrypt($board->name):$board->name;
 		
 		Controller::notify('<u>'.$board->name.'</u> 게시판을 삭제했습니다.');
 		return redirect('/admin/board'.($_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''))->with('message','게시판을 삭제했습니다.');
@@ -534,7 +538,7 @@ class BoardController extends Controller {
 	}
 	
     // 관리자 게시판 > 게시판 관리 > 댓글 관리
-    // [POST] 게시글 삭제
+    // [POST] 댓글 삭제
 	public function postAdminCommentDelete(Request $request){
 		Controller::logActivity('USR');
 		BoardController::checkAuthority();
@@ -616,8 +620,8 @@ class BoardController extends Controller {
 			'board'=>$board->id,
 			'category'=>$request->category,
 			'author'=>Auth::check()?Auth::user()->id:null,
-			'title'=>$request->title_real,
-			'content'=>$request->content,
+			'title'=>\App\Encryption::isEncrypt('board')?\App\Encryption::encrypt($request->title_real):$request->title_real,
+			'content'=>\App\Encryption::isEncrypt('board')?\App\Encryption::encrypt($request->content):$request->content,
 			'notice'=>$request->notice?true:false,
 			'secret'=>$request->secret?true:false,
 			'allow_comment'=>$request->allow_comment?true:false,
@@ -647,7 +651,7 @@ class BoardController extends Controller {
 					'extravar'=>$extravar->id,
 					'document'=>$id,
 					'board'=>$board->id,
-					'content'=>$content,
+					'content'=>\App\Encryption::isEncrypt('board')?\App\Encryption::encrypt($content):$content,
 				]);
 			}
 		}
@@ -700,6 +704,8 @@ class BoardController extends Controller {
 		$mail_content.='<div class="question">내용</div>';
 		$mail_content.=$document->content();
 		
+		$board->name=\App\Encryption::checkEncrypted($board->name)?\App\Encryption::decrypt($board->name):$board->name;
+		
 		foreach($board->mailing_list() as $email){
 			AdminController::sendmail($email,'['.\App\Setting::find('app_name')->content.'] '.$board->name.'에 새로운 게시글: '.$request->title_real,'<a href="'.url($board->url).'">'.$board->name.'</a> 게시판에 <a href="'.url($board->url.'/'.$id).'">'.$request->title_real.'</a> 게시글이 새로 작성되었습니다. '.($mail_content?'<div class="content">'.$mail_content.'</div>':''));
 		}
@@ -751,8 +757,8 @@ class BoardController extends Controller {
 			if(!$document->isMine()) abort(404);
 		
 		$document->category=$request->category;
-		$document->title=$request->title_real;
-		$document->content=$request->content;
+		$document->title=\App\Encryption::isEncrypt('board')?\App\Encryption::encrypt($request->title_real):$request->title_real;
+		$document->content=\App\Encryption::isEncrypt('board')?\App\Encryption::encrypt($request->content):$request->content;
 		$document->notice=$request->notice?true:false;
 		$document->secret=$request->secret?true:false;
 		$document->allow_comment=$request->allow_comment?true:false;
@@ -782,7 +788,7 @@ class BoardController extends Controller {
 					'extravar'=>$extravar->id,
 					'document'=>$id,
 					'board'=>$board->id,
-					'content'=>$content,
+					'content'=>\App\Encryption::isEncrypt('board')?\App\Encryption::encrypt($content):$content,
 				]);
 			}
 		}
@@ -813,6 +819,9 @@ class BoardController extends Controller {
 				$redirect='/'.$board->url.'/'.$id;
 			else
 				$redirect='/'.$board->url.'/complete';
+				
+		$board->name=\App\Encryption::checkEncrypted($board->name)?\App\Encryption::decrypt($board->name):$board->name;
+		$document->title=\App\Encryption::checkEncrypted($document->title)?\App\Encryption::decrypt($document->title):$document->title;
 		
 		Controller::notify('<u>'.$board->name.'</u> 게시판의 '.($document->title!=$request->title_real?'<u>'.$document->title.'</u> → ':'').'<u>'.$request->title_real.'</u> 게시글을 수정했습니다.');
 		return redirect($redirect.($_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''));
@@ -836,6 +845,9 @@ class BoardController extends Controller {
 		
 		$board->timestamps=false;
 		$board->decrement('count_document');
+		
+		$board->name=\App\Encryption::checkEncrypted($board->name)?\App\Encryption::decrypt($board->name):$board->name;
+		$document->title=\App\Encryption::checkEncrypted($document->title)?\App\Encryption::decrypt($document->title):$document->title;
 		
 		Controller::notify('<u>'.$board->name.'</u> 게시판의 <u>'.$document->title.'</u> 게시글을 삭제했습니다.');
 		return redirect('/'.$board->url.($_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''))->with('message','게시글을 삭제했습니다.');
@@ -863,7 +875,7 @@ class BoardController extends Controller {
 			'board'=>$board->id,
 			'document'=>$document->id,
 			'author'=>Auth::check()?Auth::user()->id:null,
-			'content'=>$request->content,
+			'content'=>\App\Encryption::isEncrypt('board')?\App\Encryption::encrypt($request->content):$request->content,
 			'notice'=>$request->notice?true:false,
 			'secret'=>$request->secret?true:false,
 			'state'=>200,
@@ -876,6 +888,9 @@ class BoardController extends Controller {
 		
 		$document->timestamps=false;
 		$document->increment('count_comment');
+		
+		$board->name=\App\Encryption::checkEncrypted($board->name)?\App\Encryption::decrypt($board->name):$board->name;
+		$document->title=\App\Encryption::checkEncrypted($document->title)?\App\Encryption::decrypt($document->title):$document->title;
 		
 		Controller::notify('<u>'.$board->name.'</u> 게시판의 <u>'.$document->title.'</u> 게시글에 댓글을 작성했습니다.');
 		return redirect('/'.$board->url.'/'.$document->id.($_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:'').'#comment'.$id);
@@ -919,7 +934,7 @@ class BoardController extends Controller {
 		$document=$comment->document();
 		if(!$document) abort(404);
 		
-		$comment->content=$request->content;
+		$comment->content=\App\Encryption::isEncrypt('board')?\App\Encryption::encrypt($request->content):$request->content;
 		$comment->notice=$request->notice?true:false;
 		$comment->secret=$request->secret?true:false;
 		$comment->save();
@@ -943,7 +958,10 @@ class BoardController extends Controller {
 				}
 		}
 		
-		Controller::notify('<u>'.$board->name.'</u> 게시판의 <u>'.$board->name.'</u> 게시판의 <u>'.$document->title.'</u> 게시글의 댓글을 수정했습니다.');
+		$board->name=\App\Encryption::checkEncrypted($board->name)?\App\Encryption::decrypt($board->name):$board->name;
+		$document->title=\App\Encryption::checkEncrypted($document->title)?\App\Encryption::decrypt($document->title):$document->title;
+		
+		Controller::notify('<u>'.$board->name.'</u> 게시판의 <u>'.$document->title.'</u> 게시글의 댓글을 수정했습니다.');
 		return redirect('/'.$board->url.'/'.$document->id.($_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:'').'#comment'.$id);
 	}
     
@@ -968,6 +986,9 @@ class BoardController extends Controller {
 		
 		$document->timestamps=false;
 		$document->decrement('count_comment');
+		
+		$board->name=\App\Encryption::checkEncrypted($board->name)?\App\Encryption::decrypt($board->name):$board->name;
+		$document->title=\App\Encryption::checkEncrypted($document->title)?\App\Encryption::decrypt($document->title):$document->title;
 		
 		Controller::notify('<u>'.$board->name.'</u> 게시판의 <u>'.$document->title.'</u> 게시글의 댓글을 삭제했습니다.');
 		return redirect('/'.$board->url.'/'.$document->id.($_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''));
