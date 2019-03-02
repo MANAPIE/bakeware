@@ -16,7 +16,7 @@ class Encryption extends Migration
         /*
 	        [User]
         	컨트롤러: EncryptionController
-        	모델: SaferCrypto
+        	모델: Encryption
         	뷰: encryption
         */
         
@@ -26,7 +26,7 @@ class Encryption extends Migration
             $table->string('module')->primary();
 	        $table->integer('author')->nullable();
 	        $table->boolean('encrypt')->default(0);
-	        $table->timestamps();
+	        $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
         });
         
         DB::table('modules')->insert([
