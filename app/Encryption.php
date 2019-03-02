@@ -76,7 +76,8 @@ class Encryption extends UnsafeCrypto
     
 	// -MANAPIE-
     // 평문인지 암호문인지 구별하기 위한 문자열
-    const DISTINGUISHER = '=MANAP1E=';
+    const DISTINGUISHER = '=MNP1E!';
+    const RT_DISTINGUISHER = '=mnp1e!';
     
 	// -MANAPIE-
 	// APP_KEY를 바이너리 변환해서 키로 쓸 수 있게끔
@@ -102,6 +103,30 @@ class Encryption extends UnsafeCrypto
 		else
 			return true;
 	}
+	
+	// -MANAPIE-
+	// 암호화할 때마다 같은 값이 나오도록 하는 암호화.. 레인보우테이블을 만들 수 있다는 의미에서 rt 붙임^^
+    public static function rt_encrypt($message, $key=null){
+	    if($key===null)
+	    	$key=env('APP_KEY');
+	    	
+	    return self::RT_DISTINGUISHER.base64_encode(openssl_encrypt($message,'aes-256-ctr',$key,true,substr($key,8,16)));
+    }
+	
+	// -MANAPIE-
+	// rt_encrypt()의 복호화 함수
+    public static function rt_decrypt($message, $key=null){
+	    if(substr($message,0,strlen(self::RT_DISTINGUISHER))!==self::RT_DISTINGUISHER){
+            throw new \Exception('Encryption failure: messege is not endcoded');
+        }
+        
+        $message=substr($message,strlen(self::RT_DISTINGUISHER));
+        
+	    if($key===null)
+	    	$key=env('APP_KEY');
+	    	
+	    return openssl_decrypt(base64_decode($message),'aes-256-ctr',$key,true,substr($key,8,16));
+    }
 
     /**
      * Encrypts then MACs a message
