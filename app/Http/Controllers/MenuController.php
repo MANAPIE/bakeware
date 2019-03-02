@@ -86,7 +86,7 @@ class MenuController extends Controller {
 		$id=Controller::getSequence();
 		\App\Menu::create([
 			'id'=>$id,
-			'name'=>$request->name,
+			'name'=>\App\Encryption::isEncrypt('menu')?\App\Encryption::encrypt($request->name):$request->name,
 			'state'=>200,
 			'order_show'=>\App\Menu::count()?\App\Menu::orderBy('order_show','desc')->first()->order_show+1:0,
 		]);
@@ -104,9 +104,11 @@ class MenuController extends Controller {
 		$menu=\App\Menu::where(['id'=>$request->id,'state'=>200])->first();
 		if(!$menu) abort(404);
 		
+		$menu->name=\App\Encryption::checkEncrypted($menu->name)?\App\Encryption::decrypt($menu->name):$menu->name;
+		
 		Controller::notify(($menu->name!=$request->menu_name?'<u>'.$menu->name.'</u> → ':'').'<u>'.$request->menu_name.'</u> 메뉴를 수정했습니다.');
 		
-		$menu->name=$request->menu_name;
+		$menu->name=\App\Encryption::isEncrypt('menu')?\App\Encryption::encrypt($request->menu_name):$request->menu_name;
 		$menu->save();
 		
 		\App\MenuItem::where('menu',$request->id)->delete();
@@ -120,8 +122,8 @@ class MenuController extends Controller {
 				'menu'=>$request->id,
 				'order_show'=>$i+1,
 				'parent'=>$parent,
-				'name'=>$request->name[$i]??'',
-				'url'=>$request->url[$i]??'',
+				'name'=>$request->name[$i]?(\App\Encryption::isEncrypt('menu')?\App\Encryption::encrypt($request->name[$i]):$request->name[$i]):'',
+				'url'=>$request->url[$i]?(\App\Encryption::isEncrypt('menu')?\App\Encryption::encrypt($request->url[$i]):$request->url[$i]):'',
 				'state'=>200,
 				'external'=>$request->external[$i]??false,
 			]);

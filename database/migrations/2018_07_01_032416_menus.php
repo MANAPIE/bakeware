@@ -24,7 +24,7 @@ class Menus extends Migration
         
         Schema::create('menus', function (Blueprint $table) {
             $table->integer('id')->primary();
-            $table->string('name')->nullable();
+            $table->longText('name')->nullable();
             $table->integer('order_show');
             $table->integer('state')->default('100');
             $table->timestamps();
@@ -34,8 +34,8 @@ class Menus extends Migration
             $table->integer('menu');
             $table->integer('order_show');
             $table->integer('parent')->nullable();
-            $table->string('name')->default('');
-            $table->string('url')->default('');
+            $table->longText('name')->nullable();
+            $table->longText('url')->nullable();
             $table->boolean('external')->default(false);
             $table->integer('state')->default('100');
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));

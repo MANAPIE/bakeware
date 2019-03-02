@@ -91,7 +91,15 @@ class Encryption extends UnsafeCrypto
 	// -MANAPIE-
     // 암호문인지 확인
     public static function checkEncrypted($message) {
-	    return substr($message,0,strlen(self::DISTINGUISHER))!==self::DISTINGUISHER;
+	    return self::nrt_checkEncrypted($message) || self::rt_checkEncrypted($message);
+    }
+    
+    public static function nrt_checkEncrypted($message) {
+	    return mb_substr($message,0,strlen(self::DISTINGUISHER))===self::DISTINGUISHER;
+    }
+    
+    public static function rt_checkEncrypted($message) {
+	    return mb_substr($message,0,strlen(self::RT_DISTINGUISHER))===self::RT_DISTINGUISHER;
     }
 	
 	// -MANAPIE-
@@ -110,22 +118,22 @@ class Encryption extends UnsafeCrypto
 	    if($key===null)
 	    	$key=env('APP_KEY');
 	    	
-	    return self::RT_DISTINGUISHER.base64_encode(openssl_encrypt($message,'aes-256-ctr',$key,true,substr($key,8,16)));
+	    return self::RT_DISTINGUISHER.base64_encode(openssl_encrypt($message,'aes-256-ctr',$key,true,mb_substr($key,8,16)));
     }
 	
 	// -MANAPIE-
 	// rt_encrypt()의 복호화 함수
     public static function rt_decrypt($message, $key=null){
-	    if(substr($message,0,strlen(self::RT_DISTINGUISHER))!==self::RT_DISTINGUISHER){
-            throw new \Exception('Encryption failure: messege is not endcoded');
+	    if(self::rt_checkEncrypted($message)){
+            throw new \Exception('Encryption failure: message is not encrypted');
         }
         
-        $message=substr($message,strlen(self::RT_DISTINGUISHER));
+        $message=mb_substr($message,strlen(self::RT_DISTINGUISHER));
         
 	    if($key===null)
 	    	$key=env('APP_KEY');
 	    	
-	    return openssl_decrypt(base64_decode($message),'aes-256-ctr',$key,true,substr($key,8,16));
+	    return openssl_decrypt(base64_decode($message),'aes-256-ctr',$key,true,mb_substr($key,8,16));
     }
 
     /**
@@ -171,11 +179,15 @@ class Encryption extends UnsafeCrypto
     {
 	    // -MANAPIE-
 	    // 암호문인지 확인
-	    if(self::checkEncrypted($message)){
-            throw new \Exception('Encryption failure: messege is not endcoded');
+	    if(self::rt_checkEncrypted($message)){
+		    return self::rt_decrypt($message,$key);
+	    }
+	    
+	    if(!self::nrt_checkEncrypted($message)){
+            throw new \Exception('Encryption failure: message is not encrypted');
         }
         
-        $message=substr($message,strlen(self::DISTINGUISHER));
+        $message=mb_substr($message,strlen(self::DISTINGUISHER));
 	    
 	    
 	    // -MANAPIE-
