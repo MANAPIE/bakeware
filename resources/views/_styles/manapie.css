@@ -116,6 +116,10 @@ span.description{color:#bbb;font-size:12px;font-weight:normal;position:relative;
 .btnArea span.description{display:inline-block;padding:22px 15px;float:left}
 div.description + .btnArea{margin-top:-10px}
 .input_wrap + .btnArea{margin-top:-10px}
+div.description ul,
+span.description ul{margin-left:20px;list-style:disc}
+div.description ul{margin-top:10px}
+div.description li{margin:5px 0}
 
 .no_item{background:#eee;margin:10px;padding:100px 30px;border-radius:5px;text-align:center;color:#999;font-size:16px;line-height:1.4}
 
