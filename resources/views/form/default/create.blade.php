@@ -1,4 +1,4 @@
-@extends($layout?'layout.'.$layout->path.'.layout':'common',['title'=>$form->name?'&gt; '.$form->name:''])
+@extends($layout?'layout.'.$layout->path.'.layout':'common',['title'=>$form->name?'&gt; '.(\App\Encryption::checkEncrypted($form->name)?\App\Encryption::decrypt($form->name):$form->name):''])
 
 @section('head')
 	@parent

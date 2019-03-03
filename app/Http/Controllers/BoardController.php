@@ -676,7 +676,7 @@ class BoardController extends Controller {
 		// 메일 발송
 		$mail_content='';
 		foreach($board->extravars() as $extravar){
-			$mail_content.='<div class="question">'.$extravar->name.'</div><p>';
+			$mail_content.='<div class="question">'.\App\Encryption::checkEncrypted($extravar->name)?\App\Encryption::decrypt($extravar->name):$extravar->name.'</div><p>';
 			if($extravar->type=='text'){
 				if($document->extravar($extravar->id))
 					 $mail_content.=htmlspecialchars($document->extravar($extravar->id));

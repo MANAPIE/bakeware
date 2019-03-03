@@ -187,7 +187,7 @@ class FormController extends Controller {
 		\App\Form::create([
 			'id'=>$id,
 			'url'=>$request->url,
-			'name'=>$request->name,
+			'name'=>\App\Encryption::isEncrypt('form')?\App\Encryption::encrypt($request->name):$request->name,
 			'allowed_group'=>$group,
 			'allowed_group_mail'=>$group_mail,
 			'layout'=>$request->layout,
@@ -204,10 +204,10 @@ class FormController extends Controller {
 			DB::table('form_questions')->insert([
 				'id'=>Controller::getSequence(),
 				'form'=>$id,
-				'name'=>$request->extravar_name[$i],
+				'name'=>\App\Encryption::isEncrypt('form')?\App\Encryption::encrypt($request->extravar_name[$i]):$request->extravar_name[$i],
 				'type'=>$request->extravar_type[$i],
 				'order_show'=>$i,
-				'content'=>$request->extravar_content[$i],
+				'content'=>\App\Encryption::isEncrypt('form')?\App\Encryption::encrypt($request->extravar_content[$i]):$request->extravar_content[$i],
 				'state'=>200,
 				'created_at'=>DB::raw('CURRENT_TIMESTAMP'),
 				'updated_at'=>DB::raw('CURRENT_TIMESTAMP'),
@@ -270,10 +270,12 @@ class FormController extends Controller {
 		$form->allowed_group_mail=$group_mail;
 		if(!$request->url) $request->url='';
 		
+		$form->name=\App\Encryption::checkEncrypted($form->name)?\App\Encryption::decrypt($form->name):$form->name;
+		
 		Controller::notify(($form->name!=$request->name?'<u>'.$form->name.'</u> → ':'').'<u>'.$request->name.'</u> 폼을 수정했습니다.');
 		
 		$form->url=$request->url;
-		$form->name=$request->name;
+		$form->name=\App\Encryption::isEncrypt('form')?\App\Encryption::encrypt($request->name):$request->name;
 		$form->layout=$request->layout;
 		$form->skin=$request->skin;
 		$form->count_question=count($request->extravar);
@@ -288,10 +290,12 @@ class FormController extends Controller {
 				DB::table('form_questions')->insert([
 					'id'=>Controller::getSequence(),
 					'form'=>$form->id,
-					'name'=>$request->extravar_name[$i],
+					'name'=>\App\Encryption::isEncrypt('form')?\App\Encryption::encrypt($request->extravar_name[$i]):$request->extravar_name[$i],
+
 					'type'=>$request->extravar_type[$i],
 					'order_show'=>$i,
-					'content'=>$request->extravar_content[$i],
+					'content'=>\App\Encryption::isEncrypt('form')?\App\Encryption::encrypt($request->extravar_content[$i]):$request->extravar_content[$i],
+
 					'state'=>200,
 					'created_at'=>DB::raw('CURRENT_TIMESTAMP'),
 					'updated_at'=>DB::raw('CURRENT_TIMESTAMP'),
@@ -328,11 +332,14 @@ class FormController extends Controller {
         ])->delete();
         
         DB::table('form_questions')->where(['form'=>$form->id,'state'=>200])->update(['state'=>410]);
-        DB::table('form_question_answers')->where(['form'=>$form->id,'state'=>200])->update(['state'=>410]);
+        DB::table('form_answers')->where(['form'=>$form->id,'state'=>200])->update(['state'=>410]);
+        DB::table('form_answer_items')->where(['form'=>$form->id,'state'=>200])->update(['state'=>410]);
         // 41x은 상위 오브젝트가 사라지면서 삭제된 경우
 		
 		$form->state=400;
 		$form->save();
+		
+		$form->name=\App\Encryption::checkEncrypted($form->name)?\App\Encryption::decrypt($form->name):$form->name;
 		
 		Controller::notify('<u>'.$form->name.'</u> 폼을 삭제했습니다.');
 		return redirect('/admin/form'.($_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''))->with('message','폼을 삭제했습니다.');
@@ -450,7 +457,7 @@ class FormController extends Controller {
 					'answer'=>$id,
 					'question'=>$extravar->id,
 					'form'=>$form->id,
-					'content'=>$content,
+					'content'=>\App\Encryption::isEncrypt('form')?\App\Encryption::encrypt($content):$content,
 					'state'=>200,
 				]);
 			}
@@ -466,7 +473,7 @@ class FormController extends Controller {
 		$answer=\App\Answer::find($id);
 		$mail_content='';
 		foreach($form->questions() as $question){
-			$mail_content.='<div class="question">'.$question->name.'</div><p>';
+			$mail_content.='<div class="question">'.(\App\Encryption::checkEncrypted($question->name)?\App\Encryption::decrypt($question->name):$question->name).'</div><p>';
 			if($question->type=='text'){
 				if($answer->item($question->id))
 					 $mail_content.=htmlspecialchars($answer->item($question->id));
@@ -492,11 +499,13 @@ class FormController extends Controller {
 			$mail_content.='&nbsp;</p>';
 		}
 		
+		$form->name=\App\Encryption::checkEncrypted($form->name)?\App\Encryption::decrypt($form->name):$form->name;
+		
 		foreach($form->mailing_list() as $email){
 			AdminController::sendmail($email,'['.\App\Setting::find('app_name')->content.'] '.$form->name.'에 새로운 답변','<a href="'.url($form->url).'">'.$form->name.'</a> 폼에 답변이 새로 작성되었습니다. '.($mail_content?'<div class="content">'.$mail_content.'</div>':''));
 		}
 		
-		Controller::notify('<u>'.$request->title_real.'</u> 답변을 작성했습니다.');
+		Controller::notify('<u>'.$form->name.'</u> 폼에 답변을 작성했습니다.');
 		return redirect($redirect.($_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''));
 	}
 	
