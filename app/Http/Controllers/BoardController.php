@@ -57,6 +57,12 @@ class BoardController extends Controller {
 				'current'=>'board',
 				'submenu'=>[
 					[
+						'url'=>'/admin/board',
+						'name'=>'게시판 관리',
+						'external'=>false,
+						'current'=>null,
+					],
+					[
 						'url'=>'/admin/board/create',
 						'name'=>'게시판 추가',
 						'external'=>false,

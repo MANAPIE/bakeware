@@ -32,6 +32,12 @@ class OnepageController extends Controller {
 				'current'=>'onepage',
 				'submenu'=>[
 					[
+						'url'=>'/admin/page/onepage',
+						'name'=>'원페이지 관리',
+						'external'=>false,
+						'current'=>null,
+					],
+					[
 						'url'=>'/admin/page/onepage/create',
 						'name'=>'원페이지 추가',
 						'external'=>false,

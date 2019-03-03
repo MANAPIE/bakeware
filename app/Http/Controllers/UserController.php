@@ -41,6 +41,12 @@ class UserController extends Controller {
 				'current'=>'user',
 				'submenu'=>[
 					[
+						'url'=>'/admin/user',
+						'name'=>'회원 관리',
+						'external'=>false,
+						'current'=>null,
+					],
+					[
 						'url'=>'/admin/user/create',
 						'name'=>'회원 추가',
 						'external'=>false,

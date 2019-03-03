@@ -43,6 +43,12 @@ class FormController extends Controller {
 				'current'=>'form',
 				'submenu'=>[
 					[
+						'url'=>'/admin/form',
+						'name'=>'폼 관리',
+						'external'=>false,
+						'current'=>null,
+					],
+					[
 						'url'=>'/admin/form/create',
 						'name'=>'폼 추가',
 						'external'=>false,

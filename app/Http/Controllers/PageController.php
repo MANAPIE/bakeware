@@ -36,6 +36,12 @@ class PageController extends Controller {
 				'current'=>'page',
 				'submenu'=>[
 					[
+						'url'=>'/admin/page',
+						'name'=>'페이지 관리',
+						'external'=>false,
+						'current'=>null,
+					],
+					[
 						'url'=>'/admin/page/create',
 						'name'=>'페이지 추가',
 						'external'=>false,
