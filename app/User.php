@@ -42,4 +42,21 @@ class User extends Authenticatable
 		
 		return '/user/profile/'.$this->id;
     }
+    
+    public static function extravars(){
+	    return DB::table('user_extravar')->where(['state'=>200])->orderBy('order_show')->get();
+    }
+    
+    public function extravar($id){
+	    $query=DB::table('user_extravars')->where(['extravar'=>$id,'user'=>$this->id])->first();
+	    $extravar=DB::table('user_extravar')->where(['id'=>$id])->first();
+	    if(!$query||!$query->content) return $extravar->type=='checkbox'||$extravar->type=='order'?[]:null;
+	    
+	    $query->content=\App\Encryption::checkEncrypted($query->content)?\App\Encryption::decrypt($query->content):$query->content;
+	    
+	    if($extravar->type=='checkbox'||$extravar->type=='order')
+	    	return explode('|',$query->content);
+	    
+	    return $query->content;
+    }
 }

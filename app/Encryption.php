@@ -147,6 +147,11 @@ class Encryption extends UnsafeCrypto
     public static function encrypt($message, $key=null, $encode = true)
     {
 	    // -MANAPIE-
+	    // if로 쉽게 검사할 수 있게끔 빈 문자열은 암호화하지 않음
+	    if(!$message)
+	    	return '';
+	    
+	    // -MANAPIE-
 	    // key로 Laravel의 APP_KEY를 사용할 수 있게 함
 	    if($key===null)
 	    	$key=self::textBinASCII(env('APP_KEY'));

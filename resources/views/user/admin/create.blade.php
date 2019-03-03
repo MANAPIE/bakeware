@@ -90,6 +90,107 @@
 				<span>이메일</span>
 			</label>
 			
+			@if(count(\App\User::extravars()))
+				@foreach(\App\User::extravars() as $extravar)
+					<?php
+						$extravar->content=\App\Encryption::checkEncrypted($extravar->content)?\App\Encryption::decrypt($extravar->content):$extravar->content;
+					?>
+					@if($extravar->type=='text')
+						<label class="input_wrap">
+							<input type="text" name="extravar{{$extravar->id}}" value="@if(isset($user)&&$user->extravar($extravar->id)){{$user->extravar($extravar->id)}}@elseif($extravar->content){{$extravar->content}}@endif">
+							<span>@if($extravar->type){{$extravar->name}}@endif</span>
+						</label>
+						
+					@elseif($extravar->type=='textarea')
+						<label class="input_wrap">
+							<textarea name="extravar{{$extravar->id}}">@if(isset($user)&&$user->extravar($extravar->id)){{$user->extravar($extravar->id)}}@elseif($extravar->content){{$extravar->content}}@endif</textarea>
+							<span>@if($extravar->type){{$extravar->name}}@endif</span>
+						</label>
+						
+					@elseif($extravar->type=='radio')
+						<div class="selects" id="extravar{{$extravar->id}}">
+							<span>@if($extravar->type){{$extravar->name}}@endif</span>
+							@if($extravar->content)
+								@foreach(explode('|',$extravar->content) as $content)
+									<label class="select_wrap" onclick="$('#extravar{{$extravar->id}} a').removeClass('active');$(this).find('a').addClass('active')">
+										<input type="radio" name="extravar{{$extravar->id}}" value="{{$content}}" class="blind" @if(isset($user)&&$user->extravar($extravar->id)==$content) checked @endif>
+										<a href="#" onclick="$(this).parent().click();return false" @if(isset($user)&&$user->extravar($extravar->id)==$content) class="active" @endif >✔︎</a>
+										<span>{{$content}}</span>
+									</label>
+								@endforeach
+							@endif
+						</div>
+						
+					@elseif($extravar->type=='checkbox')
+						<div class="selects">
+							<span>@if($extravar->type){{$extravar->name}}@endif</span>
+							@if($extravar->content)
+								@foreach(explode('|',$extravar->content) as $content)
+									<label class="select_wrap" onclick="$(this).find('input').each(function(){$(this).prop('checked',!$(this).prop('checked'));});$(this).find('a').toggleClass('active');return false">
+										<input type="checkbox" name="extravar{{$extravar->id}}[]" value="{{$content}}" class="blind" @if(isset($user)&&in_array($content,$user->extravar($extravar->id))) checked @endif >
+										<a href="#" onclick="return false" @if(isset($user)&&in_array($content,$user->extravar($extravar->id))) class="active" @endif >✔︎</a>
+										<span>{{$content}}</span>
+									</label>
+								@endforeach
+							@endif
+						</div>
+						
+					@elseif($extravar->type=='order')
+						<div class="selects">
+							<span>@if($extravar->type){{$extravar->name}}@endif</span>
+							<div class="order_list">
+								<ul>
+									@if(isset($user))
+										@if(count($user->extravar($extravar->id)))
+											@foreach($user->extravar($extravar->id) as $content)
+												<li>
+													<input type="hidden" name="extravar{{$extravar->id}}[]" value="{{$content}}">
+													{{$content}}
+												</li>
+											@endforeach
+										@endif
+									@else
+										@if($extravar->content)
+											@foreach(explode('|',$extravar->content) as $content)
+												<li>
+													<input type="hidden" name="extravar{{$extravar->id}}[]" value="{{$content}}">
+													{{$content}}
+												</li>
+											@endforeach
+										@endif
+									@endif
+								</ul>
+							</div>
+						</div>
+						
+					@elseif($extravar->type=='image')
+						<label class="input_wrap">
+							@if(isset($user)&&$user->extravar($extravar->id))
+								<div class="thumbnail"><img src="{{url($user->extravar($extravar->id))}}" alt=""></div>
+							@endif
+							<input type="file" name="extravar{{$extravar->id}}" accept="image/*">
+							<input type="hidden" name="extravar{{$extravar->id}}_original" value="@if(isset($user)&&$user->extravar($extravar->id)){{$user->extravar($extravar->id)}}@endif">
+							<span>@if($extravar->type){{$extravar->name}}@endif</span>
+						</label>
+						
+					@elseif($extravar->type=='file')
+						<label class="input_wrap">
+							@if(isset($user)&&$user->extravar($extravar->id))
+								<div class="thumbnail"><a href="{{url($user->extravar($extravar->id))}}">{{\App\File::where('name',str_replace('/file/','',$user->extravar($extravar->id)))->first()->original}}</a></div>
+							@endif
+							<input type="file" name="extravar{{$extravar->id}}">
+							<input type="hidden" name="extravar{{$extravar->id}}_original" value="@if(isset($user)&&$user->extravar($extravar->id)){{$user->extravar($extravar->id)}}@endif">
+							<span>@if($extravar->type){{$extravar->name}}@endif</span>
+						</label>
+					
+					@endif
+					
+					@if($extravar->description)
+						<span class="description">{{$extravar->description}}</span>
+					@endif
+				@endforeach
+			@endif
+			
 			<label class="input_wrap">
 				<textarea name="note">@if(isset($user)){{$user->note}}@endif</textarea>
 				<span>비고</span>

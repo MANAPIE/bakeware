@@ -43,6 +43,7 @@ class EncryptionController extends Controller {
 		if(array_key_exists(1,Auth::user()->groups())) // 마스터는 무조건 권한 있음
 			return true;
 		
+		/*
 		$manager=DB::table('modules')->where('module','encryption')->first()->manager;
 		if(!$manager)
 			if(array_key_exists(2,Auth::user()->groups())) // 관리 역할이 지정되지 않은 경우 모든 관리자가 권한 있음
@@ -60,6 +61,7 @@ class EncryptionController extends Controller {
 		    	return true;
 	    }
 		if(!$boolean) abort(401);
+		*/
     	return false;
     }
     

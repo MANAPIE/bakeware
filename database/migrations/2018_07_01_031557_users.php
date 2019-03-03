@@ -24,7 +24,7 @@ class Users extends Migration
 	    
         Schema::create('users', function (Blueprint $table) {
             $table->integer('id')->primary();
-            $table->string('name')->unique();
+            $table->string('name');
             $table->string('nickname');
             $table->string('password');
             $table->string('email')->nullable();
@@ -45,6 +45,24 @@ class Users extends Migration
             $table->integer('user');
             $table->integer('group');
             $table->timestamp('created_at');
+        });
+	    
+	    Schema::create('user_extravar', function (Blueprint $table) {
+	        $table->integer('id')->primary();
+	        $table->longText('name')->nullable();
+	        $table->string('type');
+	        $table->integer('order_show');
+	        $table->longText('content')->nullable();
+	        $table->longText('description')->nullable();
+	        $table->integer('state')->default('100');
+	        $table->timestamps();
+        });
+	    
+	    Schema::create('user_extravars', function (Blueprint $table) {
+	        $table->integer('extravar');
+	        $table->integer('user');
+	        $table->longText('content')->nullable();
+	        $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
         });
         
         Schema::create('password_resets', function (Blueprint $table) {
@@ -132,6 +150,8 @@ class Users extends Migration
         Schema::dropIfExists('users');
         Schema::dropIfExists('users_group');
         Schema::dropIfExists('users_groups');
+        Schema::dropIfExists('user_extravar');
+        Schema::dropIfExists('user_extravars');
         
         Schema::dropIfExists('password_resets');
         

@@ -22,6 +22,9 @@ class UserController extends Controller {
 		\Route::get('/admin/user/group','UserController@getAdminGroup');
 		\Route::post('/admin/user/group','UserController@postAdminGroup');
 		
+		\Route::get('/admin/user/setting','UserController@getAdminSetting');
+		\Route::post('/admin/user/setting','UserController@postAdminSetting');
+		
 		\Route::get('/user/check','UserController@getCheckDuplicate');
 		\Route::get('/user/profile/{id}','UserController@getProfile');
 	}
@@ -48,6 +51,12 @@ class UserController extends Controller {
 						'name'=>'역할 관리',
 						'external'=>false,
 						'current'=>'group',
+					],
+					[
+						'url'=>'/admin/user/setting',
+						'name'=>'회원 설정',
+						'external'=>false,
+						'current'=>'setting',
 					],
 				],
 			],
@@ -146,6 +155,32 @@ class UserController extends Controller {
 			        'user'=>$user,
 			        'group'=>$group,
 		        ]);
+		
+		if(count(\App\User::extravars())){
+			foreach(\App\User::extravars() as $extravar){
+				$input='extravar'.$extravar->id;
+				if($extravar->type=='checkbox'||$extravar->type=='order'){
+					$content=$request->$input?implode('|',$request->$input):null;
+				}else{
+					if($extravar->type=='file'||$extravar->type=='image'){
+						$original='extravar'.$extravar->id.'_original';
+						$file=$request->file($input);
+						if($request->hasFile($input))
+							$request->$input=ResourceController::saveFile($extravar->type,$file,$id);
+						else
+							$request->$input=$request->$original??null;
+					}
+					
+					$content=$request->$input;
+				}
+				
+				DB::table('user_extravars')->insert([
+					'extravar'=>$extravar->id,
+					'user'=>$user,
+					'content'=>\App\Encryption::isEncrypt('user')?\App\Encryption::encrypt($content):$content,
+				]);
+			}
+		}
 
 		Controller::notify('<u>'.$request->nickname.'</u> 회원을 추가했습니다.',$user);
 		return redirect('/admin/user/'.$user)->with(['message'=>'회원를 추가했습니다.']);
@@ -202,6 +237,34 @@ class UserController extends Controller {
 			        'user'=>$request->id,
 			        'group'=>$group,
 		        ]);
+		        
+		DB::table('user_extravars')->where('user',$user->id)->delete();
+		if(count(\App\User::extravars())){
+			foreach(\App\User::extravars() as $extravar){
+				$input='extravar'.$extravar->id;
+		
+				if($extravar->type=='checkbox'||$extravar->type=='order'){
+					$content=$request->$input?implode('|',$request->$input):null;
+				}else{
+					if($extravar->type=='file'||$extravar->type=='image'){
+						$original='extravar'.$extravar->id.'_original';
+						$file=$request->file($input);
+						if($request->hasFile($input))
+							$request->$input=ResourceController::saveFile($extravar->type,$file,$id);
+						else
+							$request->$input=$request->$original??null;
+					}
+					
+					$content=$request->$input;
+				}
+				
+				DB::table('user_extravars')->insert([
+					'extravar'=>$extravar->id,
+					'user'=>$user->id,
+					'content'=>\App\Encryption::isEncrypt('user')?\App\Encryption::encrypt($content):$content,
+				]);
+			}
+		}
 		
 		return redirect('/admin/user/'.$user->id.($_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''))->with(['message'=>'회원 정보를 수정했습니다.']);
 	}
@@ -292,6 +355,54 @@ class UserController extends Controller {
 			
 		Controller::notify('회원 역할을 갱신했습니다.');
 		return redirect()->back()->with(['message'=>'역할을 저장했습니다.']);
+	}
+    
+    // 관리자 페이지 > 회원 관리 > 회원 설정
+	public function getAdminSetting(){
+		Controller::logActivity('USR');
+		UserController::checkAuthority();
+		View::share('current',['user','setting']);
+		
+		return view('user.admin.setting');
+	}
+    
+    // 관리자 페이지 > 회원 관리 > 회원 설정
+    // [POST] 역할 저장
+	public function postAdminSetting(Request $request){
+		Controller::logActivity('USR');
+		UserController::checkAuthority();
+		
+		DB::table('user_extravar')->where(['state'=>200])->update(['state'=>400]);
+		for($i=0;$i<count($request->extravar)-1;$i++){
+			if(!$request->extravar[$i]){
+				DB::table('user_extravar')->insert([
+					'id'=>Controller::getSequence(),
+					'name'=>\App\Encryption::isEncrypt('user')?\App\Encryption::encrypt($request->extravar_name[$i]):$request->extravar_name[$i],
+					'type'=>$request->extravar_type[$i],
+					'order_show'=>$i,
+					'content'=>\App\Encryption::isEncrypt('user')?\App\Encryption::encrypt($request->extravar_content[$i]):$request->extravar_content[$i],
+					'description'=>\App\Encryption::isEncrypt('user')?\App\Encryption::encrypt($request->extravar_description[$i]):$request->extravar_description[$i],
+					'state'=>200,
+					'created_at'=>DB::raw('CURRENT_TIMESTAMP'),
+					'updated_at'=>DB::raw('CURRENT_TIMESTAMP'),
+				]);
+				
+			}else{
+				DB::table('user_extravar')->where(['id'=>$request->extravar[$i]])->update([
+					'name'=>\App\Encryption::isEncrypt('user')?\App\Encryption::encrypt($request->extravar_name[$i]):$request->extravar_name[$i],
+					'type'=>$request->extravar_type[$i],
+					'order_show'=>$i,
+					'content'=>\App\Encryption::isEncrypt('user')?\App\Encryption::encrypt($request->extravar_content[$i]):$request->extravar_content[$i],
+					'description'=>\App\Encryption::isEncrypt('user')?\App\Encryption::encrypt($request->extravar_description[$i]):$request->extravar_description[$i],
+					'state'=>200,
+					'updated_at'=>DB::raw('CURRENT_TIMESTAMP'),
+				]);
+				
+			}
+		}
+			
+		Controller::notify('회원 설정을 갱신했습니다.');
+		return redirect()->back()->with(['message'=>'설정을 저장했습니다.']);
 	}
     
     // 아이디 중복 검사
