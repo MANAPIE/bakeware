@@ -30,6 +30,8 @@ class Answer extends Model
 	    $extravar=DB::table('form_questions')->where(['id'=>$id,'form'=>$this->form])->first();
 	    if(!$query||!$query->content) return $extravar->type=='checkbox'||$extravar->type=='order'?[]:null;
 	    
+	    $query->content=\App\Encryption::checkEncrypted($query->content)?\App\Encryption::decrypt($query->content):$query->content;
+	    
 	    if($extravar->type=='checkbox'||$extravar->type=='order')
 	    	return explode('|',$query->content);
 	    

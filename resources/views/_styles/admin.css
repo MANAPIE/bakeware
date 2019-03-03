@@ -95,7 +95,7 @@
 .card_list h4{font-weight:normal;color:#999;margin:3px 10px 10px 10px;font-size:20px;position:relative}
 .card_list h4::before{content:" ";background:#0096e0;height:25px;width:5px;border-radius:5px;position:absolute;top:2px;left:-13px}
 .card_list ul{list-style:none}
-.card_list ul li{font-size:16px;border-top:1px solid #ddd;padding:5px 0}
+.card_list ul li{font-size:16px;border-top:1px solid #ddd;padding:5px 0;overflow:hidden}
 .card_list ul li a{display:block;padding:5px 0;margin:-5px 0}
 .card_list ul li span{float:right;color:#999}
 .card_list ul li .user{color:#999;font-size:13px;margin-top:2px}

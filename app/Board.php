@@ -76,7 +76,7 @@ class Board extends Model
 					foreach($query as $u){
 						$user=\App\User::where(['id'=>$u->user,'state'=>200])->first();
 						if($user&&$user->email){
-							$users[$user->id]=$user->email;
+							$users[$user->id]=(\App\Encryption::checkEncrypted($user->email)?\App\Encryption::decrypt($user->email):$user->email);
 						}
 					}
 				}

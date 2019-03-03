@@ -15,7 +15,7 @@ class Document extends Model
     }
     
     public function content(){
-	    return \App\Http\Controllers\Controller::filterHTML($this->content);
+	    return \App\Http\Controllers\Controller::filterHTML(\App\Encryption::checkEncrypted($this->content)?\App\Encryption::decrypt($this->content):$this->content);
     }
     
     public function author(){
@@ -49,18 +49,20 @@ class Document extends Model
     }
     
     public function summary($length=100){
-	    $string=trim(str_replace('&nbsp;','',strip_tags($this->content)));
+	    $string=trim(str_replace('&nbsp;','',strip_tags(\App\Encryption::checkEncrypted($this->content)?\App\Encryption::decrypt($this->content):$this->content)));
 	    
-	    if(strlen($string)==0)
-	    	return '<span style="color:#999">(글자가 없는 댓글)</span>';
+	    if(mb_strlen($string)==0)
+	    	return '<span style="color:#999">(글자가 없는 게시글)</span>';
 	    
-	    return mb_substr($string,0,$length).(strlen($string)>$length?'...':'');
+	    return mb_substr($string,0,$length).(mb_strlen($string)>$length?'...':'');
     }
     
     public function extravar($id){
 	    $query=DB::table('board_document_extravars')->where(['extravar'=>$id,'document'=>$this->id])->first();
 	    $extravar=DB::table('board_extravars')->where(['id'=>$id,'board'=>$this->board])->first();
 	    if(!$query||!$query->content) return $extravar->type=='checkbox'||$extravar->type=='order'?[]:null;
+	    
+	    $query->content=\App\Encryption::checkEncrypted($query->content)?\App\Encryption::decrypt($query->content):$query->content;
 	    
 	    if($extravar->type=='checkbox'||$extravar->type=='order')
 	    	return explode('|',$query->content);

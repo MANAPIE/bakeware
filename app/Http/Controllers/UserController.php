@@ -126,11 +126,12 @@ class UserController extends Controller {
         $user=Controller::getSequence();
         \App\User::create([
 	        'id'=>$user,
-	        'name'=>$request->name,
-	        'nickname'=>$request->nickname,
+	        'name'=>\App\Encryption::isEncrypt('user')?\App\Encryption::rt_encrypt($request->name):$request->name,
+	        'nickname'=>\App\Encryption::isEncrypt('user')?\App\Encryption::encrypt($request->nickname):$request->nickname,
 	        'password'=>\Hash::make($request->password),
 			'state'=>200,
-	        'email'=>$request->email,
+	        'email'=>\App\Encryption::isEncrypt('user')?\App\Encryption::encrypt($request->email):$request->email,
+	        'note'=>\App\Encryption::isEncrypt('user')?\App\Encryption::encrypt($request->note):$request->note,
         ]);
 
 		if($request->hasFile('profile')){ // 프로필 사진
@@ -178,12 +179,14 @@ class UserController extends Controller {
 			$user->password=\Hash::make($request->password);
 		}
 		
+		$user->nickname=\App\Encryption::checkEncrypted($user->nickname)?\App\Encryption::decrypt($user->nickname):$user->nickname;
+		
 		Controller::notify(($user->nickname!=$request->nickname?'<u>'.$user->nickname.'</u> → ':'').'<u>'.$request->nickname.'</u> 회원 정보를 수정했습니다.',$user->id);
 		
-		$user->name=$request->name;
-		$user->nickname=$request->nickname;
-		$user->email=$request->email;
-		$user->note=$request->note;
+		$user->name=\App\Encryption::isEncrypt('user')?\App\Encryption::rt_encrypt($request->name):$request->name;
+		$user->nickname=\App\Encryption::isEncrypt('user')?\App\Encryption::encrypt($request->nickname):$request->nickname;
+		$user->email=\App\Encryption::isEncrypt('user')?\App\Encryption::encrypt($request->email):$request->email;
+		$user->note=\App\Encryption::isEncrypt('user')?\App\Encryption::encrypt($request->note):$request->note;
 		$user->save();
 
 		if($request->hasFile('profile')){ // 프로필 사진
@@ -242,6 +245,8 @@ class UserController extends Controller {
 		$user->state=400;
 		$user->save();
 		
+		$user->nickname=\App\Encryption::checkEncrypted($user->nickname)?\App\Encryption::decrypt($user->nickname):$user->nickname;
+		
 		Controller::notify('<u>'.$user->nickname.'</u> 회원을 삭제했습니다.',$user->id);
 		return redirect('/admin/user'.($_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''))->with('message','회원을 삭제했습니다.');
 	}
@@ -264,13 +269,15 @@ class UserController extends Controller {
 		for($i=0;$i<count($request->id)-1;$i++){
 			if($request->id[$i]>2){
 				$query=DB::table('users_group')->where(['id'=>$request->id[$i],'state'=>200])->first();
+				$query->name=\App\Encryption::checkEncrypted($query->name)?\App\Encryption::decrypt($query->name):$query->name;
+		
 				if($query->name!=$request->name[$i])
-					$query->update(['name'=>$request->name[$i],'updated_at'=>DB::raw('CURRENT_TIMESTAMP')]);
+					DB::table('users_group')->where(['id'=>$request->id[$i],'state'=>200])->update(['name'=>\App\Encryption::isEncrypt('user')?\App\Encryption::encrypt($request->name[$i]):$request->name[$i],'updated_at'=>DB::raw('CURRENT_TIMESTAMP')]);
 			}
 			else{
 		        DB::table('users_group')->insert([
 			        'id'=>Controller::getSequence(),
-			        'name'=>$request->name[$i],
+			        'name'=>\App\Encryption::isEncrypt('user')?\App\Encryption::encrypt($request->name[$i]):$request->name[$i],
 					'state'=>200,
 			        'updated_at'=>DB::raw('CURRENT_TIMESTAMP'),
 			        'created_at'=>DB::raw('CURRENT_TIMESTAMP'),
@@ -291,7 +298,7 @@ class UserController extends Controller {
 	public function getCheckDuplicate(){
 		Controller::logActivity('USR');
 		
-		if(\App\User::where('name',$_GET['name'])->first())
+		if(\App\User::where(['name'=>$_GET['name'],'state'=>200])->first() || \App\User::where(['name'=>\App\Encryption::rt_encrypt($_GET['name']),'state'=>200])->first())
 			echo 'Y';
 	}
 	

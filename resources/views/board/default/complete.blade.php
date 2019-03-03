@@ -1,4 +1,4 @@
-@extends($layout?'layout.'.$layout->path.'.layout':'common',['title'=>$board->name?'&gt; '.$board->name:''])
+@extends($layout?'layout.'.$layout->path.'.layout':'common',['title'=>$board->name?'&gt; '.(\App\Encryption::checkEncrypted($board->name)?\App\Encryption::decrypt($board->name):$board->name):''])
 
 @section($board->layout?'body':'container')
 	<h3 class="table_caption">{{$board->name}}</h3>

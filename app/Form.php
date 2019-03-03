@@ -36,6 +36,7 @@ class Form extends Model
 	    $query=DB::table('form_answer_items')->where(['form'=>$this->id,'question'=>$id,'state'=>200])->orderBy('created_at')->get();
 	    $answers=[];
 	    foreach($query as $answer){
+		    $answer->content=\App\Encryption::checkEncrypted($answer->content)?\App\Encryption::decrypt($answer->content):$answer->content;
 		    if($question->type=='checkbox'){
 				if($answer->content){
 					foreach(explode('|',$answer->content) as $val){
@@ -80,7 +81,7 @@ class Form extends Model
 					foreach($query as $u){
 						$user=\App\User::where(['id'=>$u->user,'state'=>200])->first();
 						if($user&&$user->email){
-							$users[$user->id]=$user->email;
+							$users[$user->id]=(\App\Encryption::checkEncrypted($user->email)?\App\Encryption::decrypt($user->email):$user->email);
 						}
 					}
 				}

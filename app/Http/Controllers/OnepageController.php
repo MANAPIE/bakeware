@@ -271,6 +271,7 @@ class OnepageController extends Controller {
 		
 		$content='<div class="card_list"><h4><a href="'.url('/admin/page').'">원페이지 방문 수</a></h4><ul>';
 		foreach($pages as $page){
+			$page->name=\App\Encryption::checkEncrypted($page->name)?\App\Encryption::decrypt($page->name):$page->name;
 			$content.='<li><a href="'.url('/admin/page/onepage/'.$page->id).'">'.$page->name.'&nbsp;<span>'.$page->count_read.'</span></a><div class="clear"></div></li>';
 		}
 		$content.='</ul></div>';
