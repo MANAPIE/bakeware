@@ -248,7 +248,7 @@ class AdminController extends Controller {
 		return $content;
 	}
 	
-	// 카드 - 알림 수
+	// 카드 - 알림
 	static public function cardNotification(){
 	//	$notifications=DB::table('notifications')->where('user',Auth::user()->id)->orderBy('id','desc')->limit(15)->get();
 		$notifications=DB::table('notifications')->orderBy('id','desc')->limit(15)->get();

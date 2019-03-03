@@ -124,7 +124,7 @@ class Encryption extends UnsafeCrypto
 	// -MANAPIE-
 	// rt_encrypt()의 복호화 함수
     public static function rt_decrypt($message, $key=null){
-	    if(self::rt_checkEncrypted($message)){
+	    if(!self::rt_checkEncrypted($message)){
             throw new \Exception('Encryption failure: message is not encrypted');
         }
         

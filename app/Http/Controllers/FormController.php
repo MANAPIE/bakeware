@@ -526,6 +526,7 @@ class FormController extends Controller {
 		
 		$content='<div class="card_list"><h4><a href="'.url('/admin/form').'">폼 방문 수</a></h4><ul>';
 		foreach($forms as $form){
+			$form->name=\App\Encryption::checkEncrypted($form->name)?\App\Encryption::decrypt($form->name):$form->name;
 			$content.='<li><a href="'.url('/admin/form/'.$form->id).'">'.$form->name.'&nbsp;<span>'.$form->count_read.'</span></a><div class="clear"></div></li>';
 		}
 		$content.='</ul></div>';
@@ -540,6 +541,7 @@ class FormController extends Controller {
 		
 		$content='<div class="card_list"><h4><a href="'.url('/admin/form').'">폼 답변 수</a></h4><ul>';
 		foreach($forms as $form){
+			$form->name=\App\Encryption::checkEncrypted($form->name)?\App\Encryption::decrypt($form->name):$form->name;
 			$content.='<li><a href="'.url('/admin/form/answer/'.$form->id).'">'.$form->name.'&nbsp;<span>'.$form->count_answer.'</span></a><div class="clear"></div></li>';
 		}
 		$content.='</ul></div>';

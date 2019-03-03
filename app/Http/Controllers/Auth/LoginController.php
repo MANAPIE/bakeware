@@ -54,6 +54,23 @@ class LoginController extends Controller
         return 'name';
     }
     
+    // Illuminate\Foundation\Auth\AuthenticatesUsers의 attemptLogin()
+    // 암호화된 아이디로 로그인이 가능하도록 함
+    protected function attemptLogin(Request $request)
+    {
+	    $this->guard()->attempt(
+            $this->credentials($request), $request->filled('remember')
+        );
+        if(!\Auth::check()){
+			$request->merge(['name'=>\App\Encryption::rt_encrypt($request->name)]);
+		    $this->guard()->attempt(
+	            $this->credentials($request), $request->filled('remember')
+	        );
+        }
+	    
+        return \Auth::check();
+    }
+    
     protected function validateLogin(Request $request)
     {
 		Controller::logActivity('USR');

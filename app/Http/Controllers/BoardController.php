@@ -676,7 +676,7 @@ class BoardController extends Controller {
 		// 메일 발송
 		$mail_content='';
 		foreach($board->extravars() as $extravar){
-			$mail_content.='<div class="question">'.\App\Encryption::checkEncrypted($extravar->name)?\App\Encryption::decrypt($extravar->name):$extravar->name.'</div><p>';
+			$mail_content.='<div class="question">'.(\App\Encryption::checkEncrypted($extravar->name)?\App\Encryption::decrypt($extravar->name):$extravar->name).'</div><p>';
 			if($extravar->type=='text'){
 				if($document->extravar($extravar->id))
 					 $mail_content.=htmlspecialchars($document->extravar($extravar->id));
@@ -1000,6 +1000,7 @@ class BoardController extends Controller {
 		
 		$content='<div class="card_list"><h4><a href="'.url('/admin/board').'">게시판 방문 수</a></h4><ul>';
 		foreach($boards as $board){
+			$board->name=\App\Encryption::checkEncrypted($board->name)?\App\Encryption::decrypt($board->name):$board->name;
 			$content.='<li><a href="'.url('/admin/board/'.$board->id).'">'.$board->name.'&nbsp;<span>'.$board->count_read.'</span></a><div class="clear"></div></li>';
 		}
 		$content.='</ul></div>';
@@ -1013,6 +1014,7 @@ class BoardController extends Controller {
 		
 		$content='<div class="card_list"><h4><a href="'.url('/admin/board').'">게시판 게시글 수</a></h4><ul>';
 		foreach($boards as $board){
+			$board->name=\App\Encryption::checkEncrypted($board->name)?\App\Encryption::decrypt($board->name):$board->name;
 			$content.='<li><a href="'.url('/admin/board/'.$board->id).'">'.$board->name.'&nbsp;<span>'.$board->count_document.'</span></a><div class="clear"></div></li>';
 		}
 		$content.='</ul></div>';
@@ -1026,6 +1028,7 @@ class BoardController extends Controller {
 		
 		$content='<div class="card_list"><h4><a href="'.url('/admin/board').'">게시글 조회 수</a></h4><ul>';
 		foreach($documents as $document){
+			$document->title=\App\Encryption::checkEncrypted($document->title)?\App\Encryption::decrypt($document->title):$document->title;
 			$content.='<li><a href="'.url('/'.$document->board()->url.'/'.$document->id).'" target="_blank">'.$document->title.'&nbsp;<span>'.$document->count_read.'</span></a><div class="clear"></div></li>';
 		}
 		$content.='</ul></div>';
@@ -1039,6 +1042,7 @@ class BoardController extends Controller {
 		
 		$content='<div class="card_list"><h4><a href="'.url('/admin/board').'">게시글 댓글 수</a></h4><ul>';
 		foreach($documents as $document){
+			$document->title=\App\Encryption::checkEncrypted($document->title)?\App\Encryption::decrypt($document->title):$document->title;
 			$content.='<li><a href="'.url('/'.$document->board()->url.'/'.$document->id).'" target="_blank">'.$document->title.'&nbsp;<span>'.$document->count_comment.'</span></a><div class="clear"></div></li>';
 		}
 		$content.='</ul></div>';
