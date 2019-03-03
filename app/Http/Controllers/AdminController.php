@@ -268,7 +268,6 @@ class AdminController extends Controller {
 		
 		$content.='<div class="card_list"><ul>';
 			$content.='<li><a href="http://cms.manapie.me/guide" target="_blank">공통 가이드</a></li>';
-			$content.='<li><a href="http://cms.manapie.me/guide_plus/56" target="_blank">올림&컴퍼니 가이드</a></li>';
 		$content.='</ul></div>';
 		
 		return $content;
