@@ -121,7 +121,7 @@ class AdminController extends Controller {
 			Controller::logActivity('USR');
 			View::share('current',['setting',null]);
 			
-			$settings=['app_name','app_description','app_preview','mail_address','mail_host','mail_port','mail_username','mail_password','mail_encryption','mail_template'];
+			$settings=['app_name','app_description','app_preview','https','mail_address','mail_host','mail_port','mail_username','mail_password','mail_encryption','mail_template'];
 			
 			foreach($settings as $set){
 				$setting=\App\Setting::find($set);
