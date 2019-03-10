@@ -17,12 +17,12 @@
 			
 			<label class="input_wrap">
 				<input type="text" name="app_name" value="{{\App\Setting::find('app_name')->content}}" required>
-				<span>회사 이름</span>
+				<span>사이트 이름</span>
 			</label>
 			
 			<label class="input_wrap">
-				<input type="text" name="app_description" value="{{\App\Setting::find('app_description')->content}}" required>
-				<span>회사 설명</span>
+				<input type="text" name="app_description" value="{{\App\Setting::find('app_description')->content}}">
+				<span>사이트 설명</span>
 			</label>
 			
 			<label class="input_wrap">
