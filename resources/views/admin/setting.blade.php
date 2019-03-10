@@ -44,8 +44,8 @@
 					<span>미적용</span>
 				</label>
 				<label class="select_wrap" onclick="$('#https a').removeClass('active');$(this).find('a').addClass('active')">
-					<input type="radio" name="https" value="A" class="blind" @if(\App\Setting::find('https')->content=='Y') checked @endif>
-					<a href="#" onclick="$(this).parent().click();return false" @if(\App\Setting::find('https')->content=='Y') class="active" @endif>✔︎</a>
+					<input type="radio" name="https" value="A" class="blind" @if(\App\Setting::find('https')->content=='A') checked @endif>
+					<a href="#" onclick="$(this).parent().click();return false" @if(\App\Setting::find('https')->content=='A') class="active" @endif>✔︎</a>
 					<span>언제나 적용</span>
 				</label>
 			</div>
