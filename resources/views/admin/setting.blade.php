@@ -39,12 +39,12 @@
 			<div class="selects" id="https">
 				<span>HTTPS</span>
 				<label class="select_wrap" onclick="$('#https a').removeClass('active');$(this).find('a').addClass('active')">
-					<input type="radio" name="mail_template" value="N" class="blind" @if(\App\Setting::find('https')->content=='N') checked @endif>
+					<input type="radio" name="https" value="N" class="blind" @if(\App\Setting::find('https')->content=='N') checked @endif>
 					<a href="#" onclick="$(this).parent().click();return false" @if(\App\Setting::find('https')->content=='N') class="active" @endif>✔︎</a>
 					<span>미적용</span>
 				</label>
 				<label class="select_wrap" onclick="$('#https a').removeClass('active');$(this).find('a').addClass('active')">
-					<input type="radio" name="mail_template" value="A" class="blind" @if(\App\Setting::find('https')->content=='Y') checked @endif>
+					<input type="radio" name="https" value="A" class="blind" @if(\App\Setting::find('https')->content=='Y') checked @endif>
 					<a href="#" onclick="$(this).parent().click();return false" @if(\App\Setting::find('https')->content=='Y') class="active" @endif>✔︎</a>
 					<span>언제나 적용</span>
 				</label>
