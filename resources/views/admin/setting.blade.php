@@ -33,6 +33,24 @@
 			</label>
 			
 			<div class="description">
+				SSL 인증서가 적용되어야만 HTTPS 보안 접속을 할 수 있습니다. 언제나 적용 옵션을 선택하기 전에 https가 제대로 설정되었는지 확인하십시오.
+			</div>
+			
+			<div class="selects" id="https">
+				<span>HTTPS</span>
+				<label class="select_wrap" onclick="$('#https a').removeClass('active');$(this).find('a').addClass('active')">
+					<input type="radio" name="mail_template" value="N" class="blind" @if(\App\Setting::find('https')->content=='N') checked @endif>
+					<a href="#" onclick="$(this).parent().click();return false" @if(\App\Setting::find('https')->content=='N') class="active" @endif>✔︎</a>
+					<span>미적용</span>
+				</label>
+				<label class="select_wrap" onclick="$('#https a').removeClass('active');$(this).find('a').addClass('active')">
+					<input type="radio" name="mail_template" value="A" class="blind" @if(\App\Setting::find('https')->content=='Y') checked @endif>
+					<a href="#" onclick="$(this).parent().click();return false" @if(\App\Setting::find('https')->content=='Y') class="active" @endif>✔︎</a>
+					<span>언제나 적용</span>
+				</label>
+			</div>
+			
+			<div class="description">
 				메일 보내는 서버(SMTP) 설정은 메일 제공 업체에서 확인하세요.
 			</div>
 			
