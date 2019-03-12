@@ -8,7 +8,7 @@
 
 @section('container')
 	<div id="header">
-		<h1 class="logo"><a href="{{url('/')}}" target="_blank"><img src="{{url('/image/admin_logo.png')}}" alt="{{config('app.name')}}"></a></h1>
+		<h1 class="logo"><a href="{{url('/')}}" target="_blank"><img src="{{url('/admin/logo')}}" alt="{{config('app.name')}}"></a></h1>
 		<div class="user">
 			<div class="thumbnail" @if(Auth::user()->thumbnail()) style="background-image:url('{{url(Auth::user()->thumbnail())}}')" @endif></div>
 			<div class="nickname">

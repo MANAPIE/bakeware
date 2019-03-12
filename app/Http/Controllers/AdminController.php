@@ -24,6 +24,8 @@ class AdminController extends Controller {
 		\Route::get('/admin/visitor', 'AdminController@getVisitor');
 		\Route::get('/admin/notification', 'AdminController@getNotification');
 		
+		\Route::get('/admin/logo', 'AdminController@getAdminLogo');
+		
 		\Route::get('/admin/check/url', 'AdminController@getCheckDuplicate');
 	}
     
@@ -66,6 +68,17 @@ class AdminController extends Controller {
 				$message->getSwiftMessage();
 			});
 		}
+	}
+    
+    public static function getAdminLogo(){
+		$path=base_path().'/resources/views/_images/admin_logo.png';
+		if(!\File::exists($path))
+			$path=base_path().'/resources/views/_images/_admin_logo.png';
+		$file=\File::get($path);
+		$type=\File::mimeType($path);
+		$response=\Response::make($file,200);
+		$response->withHeaders(['Content-Type'=>$type,'Cache-Control'=>'public,max-age=86400']);
+		return $response;
 	}
     
     // 대시보드
