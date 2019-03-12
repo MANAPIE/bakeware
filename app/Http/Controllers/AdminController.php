@@ -268,6 +268,9 @@ class AdminController extends Controller {
 		
 		$content.='<div class="card_list"><ul>';
 			$content.='<li><a href="http://cms.manapie.me/guide" target="_blank">공통 가이드</a></li>';
+			foreach(DB::table('settings_guide')->orderBy('order_show')->get() as $guide){
+				$content.='<li><a href="'.$guide->url.'" target="_blank">'.$guide->name.'</a></li>';
+			}
 		$content.='</ul></div>';
 		
 		return $content;
