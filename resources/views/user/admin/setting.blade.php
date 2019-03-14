@@ -138,7 +138,7 @@
 					</div>
 				</div>
 			</div>
-			<span class="description" style="display:inline-block">선택 항목은 각 값들은 기본 값에 | (파이프 문자)로 구분하세요. 첨부에는 기본 값이 적용되지 않습니다.</span>
+			<span class="description" style="display:inline-block">선택 항목은 각 값들은 기본 값에 | (파이프 문자)로 구분하세요. 첨부에는 기본 값이 적용되지 않습니다.<br><i>한 줄 텍스트</i>는 <a href="{{url('/admin/user')}}" target="_blank">회원 관리</a> 목록에 보여집니다.</span>
 			
 			<div class="description">
 				회원 가입과 관련된 설정을 할 수 있습니다.<br>

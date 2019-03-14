@@ -15,6 +15,13 @@
 				<tr>
 					<th>이름</th>
 					<th>아이디</th>
+					@if(\App\User::extravars())
+						@foreach(\App\User::extravars() as $extravar)
+							@if($extravar->type=='text')
+								<th>{{$extravar->name}}</th>
+							@endif
+						@endforeach
+					@endif
 				</tr>
 				@foreach($pending as $user)
 				<tr>
@@ -24,6 +31,13 @@
 						{{$user->nickname}}&nbsp;<span class="arrow">&gt;</span>
 					</a></td>
 					<td class="date">{{$user->name}}</td>
+					@if(\App\User::extravars())
+						@foreach(\App\User::extravars() as $extravar)
+							@if($extravar->type=='text')
+								<td>{{$user->extravar($extravar->id)}}</td>
+							@endif
+						@endforeach
+					@endif
 				</tr>
 				@endforeach
 			</table>
@@ -36,14 +50,34 @@
 			<tr>
 				<th>이름</th>
 				<th>아이디</th>
+				@if(\App\User::extravars())
+					@foreach(\App\User::extravars() as $extravar)
+						@if($extravar->type=='text')
+							<th>{{$extravar->name}}</th>
+						@endif
+					@endforeach
+				@endif
 			</tr>
 			@foreach($users as $user)
 			<tr>
 				<td class="link"><a href="{{url('/admin/user/'.$user->id)}}{{$_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''}}">
 					<span class="profile" @if($user->thumbnail()) style="background-image:url('{{url($user->thumbnail())}}')" @endif></span>
+					@if(array_key_exists(1,$user->groups()))
+						<span class="tag blue">{{$user->groups()[1]}}</span>
+					@endif
+					@if(array_key_exists(2,$user->groups()))
+						<span class="tag gray">{{$user->groups()[2]}}</span>
+					@endif
 					{{$user->nickname}}&nbsp;<span class="arrow">&gt;</span>
 				</a></td>
 				<td class="date">{{$user->name}}</td>
+				@if(\App\User::extravars())
+					@foreach(\App\User::extravars() as $extravar)
+						@if($extravar->type=='text')
+							<td>{{$user->extravar($extravar->id)}}</td>
+						@endif
+					@endforeach
+				@endif
 			</tr>
 			@endforeach
 		</table>
