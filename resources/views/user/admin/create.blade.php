@@ -3,6 +3,10 @@
 @section('body')
 	<h3 class="menu_title">회원 @if(isset($user))관리@else추가@endif</h3>
 
+	@if(isset($user)&&$user->state=='100')
+		<div class="message">가입이 승인되지 않은 회원입니다.</div>
+	@endif
+	
 	@if(session('message'))
 		<div class="message success">{!!session('message')!!}</div>
 	@endif
@@ -195,6 +199,28 @@
 				<textarea name="note">@if(isset($user)){{$user->note}}@endif</textarea>
 				<span>비고</span>
 			</label>
+
+			@if(isset($user))
+				@if($user->state=='100')
+					<div class="message" style="margin:10px">가입이 승인되지 않은 회원입니다.</div>
+				@endif
+				
+				<div class="selects" id="allowed" style="margin-bottom:0">
+					<span>가입 승인</span>
+					
+					<label class="select_wrap" onclick="$('#allowed a').removeClass('active');$(this).find('a').addClass('active')">
+						<input type="radio" name="allowed" value="active" class="blind" @if($user->state=='200') checked @endif>
+						<a href="#" onclick="$(this).parent().click();return false" @if($user->state=='200') class="active" @endif >✔︎</a>
+						<span>승인</span>
+					</label>
+					
+					<label class="select_wrap" onclick="$('#allowed a').removeClass('active');$(this).find('a').addClass('active')">
+						<input type="radio" name="allowed" value="pending" class="blind" @if($user->state=='100') checked @endif>
+						<a href="#" onclick="$(this).parent().click();return false" @if($user->state=='100') class="active" @endif >✔︎</a>
+						<span>미승인</span>
+					</label>
+				</div>
+			@endif
 			
 			<div class="btnArea">
 				@if(isset($user))
@@ -205,6 +231,7 @@
 					<button type="submit" class="button blue"><span>회원 추가하기</span></button>
 				@endif
 			</div>
+			
 		</div>
 	</form>
 	

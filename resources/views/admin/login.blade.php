@@ -11,7 +11,7 @@
 	<div class="admin_login_right">
 		<div class="logo">
 			<div class="logo_wrap">
-				<h1 class="logo"><img src="{{url('/image/admin_logo.png')}}" alt="{{config('app.name')}}"></h1>
+				<h1 class="logo"><img src="{{url('/admin/logo')}}" alt="{{config('app.name')}}"></h1>
 				<address>Powered by <a href="http://cms.manapie.me/" target="_blank" class="manapie"><span class="blind">MANAPIE</span></a></address>
 			</div>
 		</div>

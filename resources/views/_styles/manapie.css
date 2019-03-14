@@ -199,6 +199,14 @@ div.description li{margin:5px 0}
 .button.white{background:#fff;color:#999}
 .button.transparent{background:transparent;color:#000}
 
+.tag{position:relative;font-size:0.8em;padding:0.05em 0.3em 0.1em 0.3em;top:-0.1em}
+.tag.red{background:#a40e16;color:#fff}
+.tag.blue{background:#0036c0;color:#fff}
+.tag.black{background:#000;color:#fff}
+.tag.gray{background:#999;color:#fff}
+.tag.white{background:#fff;color:#999}
+.tag.transparent{background:transparent;color:#000}
+
 
 #MANAPIE.onepage{}
 #MANAPIE.onepage #body{padding-top:0}

@@ -55,20 +55,40 @@ class LoginController extends Controller
     }
     
     // Illuminate\Foundation\Auth\AuthenticatesUsers의 attemptLogin()
-    // 암호화된 아이디로 로그인이 가능하도록 함
     protected function attemptLogin(Request $request)
     {
 	    $this->guard()->attempt(
             $this->credentials($request), $request->filled('remember')
         );
+        
+		// 암호화된 아이디로 로그인이 가능하도록 함
         if(!\Auth::check()){
-			$request->merge(['name'=>\App\Encryption::rt_encrypt($request->name)]);
+	        $id=$this->username();
+			$request->merge(['name'=>\App\Encryption::rt_encrypt($request->$id)]);
 		    $this->guard()->attempt(
 	            $this->credentials($request), $request->filled('remember')
 	        );
         }
 	    
         return \Auth::check();
+    }
+    
+    protected function authenticated(Request $request, $user)
+    {
+	    // 상태가 200이 아닌 미승인 회원 처리
+		if ($user->state!=200){ 
+			\Auth::logout($request);
+			
+			$message='로그인 에러';
+			if($user->state==100)
+				$message='아직 승인되지 않은 계정입니다.';
+			
+			return redirect()->back()
+				->withInput($request->only($this->username(),'remember'))
+				->withErrors([
+					$this->username()=>$message,
+				]);
+		}
     }
     
     protected function validateLogin(Request $request)

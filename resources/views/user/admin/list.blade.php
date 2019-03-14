@@ -7,6 +7,30 @@
 		<div class="message success">{!!session('message')!!}</div>
 	@endif
 	
+	@if(count($pending))
+		<div class="message success">가입 승인을 기다리는 회원이 있습니다.</div>
+	
+		<div class="table_wrap">
+			<table>
+				<tr>
+					<th>이름</th>
+					<th>아이디</th>
+				</tr>
+				@foreach($pending as $user)
+				<tr>
+					<td class="link"><a href="{{url('/admin/user/'.$user->id)}}{{$_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''}}">
+						<span class="profile" @if($user->thumbnail()) style="background-image:url('{{url($user->thumbnail())}}')" @endif></span>
+						<span class="tag red">대기</span>
+						{{$user->nickname}}&nbsp;<span class="arrow">&gt;</span>
+					</a></td>
+					<td class="date">{{$user->name}}</td>
+				</tr>
+				@endforeach
+			</table>
+		</div>
+		
+	@endif
+	
 	<div class="table_wrap">
 		<table>
 			<tr>

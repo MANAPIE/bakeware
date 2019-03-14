@@ -12,6 +12,11 @@ use DB;
 class UserController extends Controller {
 	
 	static public function routes(){
+		\Route::get('/user/{skin}/image/{name}','UserController@getImageResource')->where('name','(.*)');
+		\Route::get('/user/{skin}/style/{name}','UserController@getStyleResource')->where('name','(.*)');
+		\Route::get('/user/{skin}/font/{name}','UserController@getFontResource')->where('name','(.*)');
+		\Route::get('/user/{skin}/script/{name}','UserController@getScriptResource')->where('name','(.*)');
+		
 		\Route::get('/admin/user','UserController@getAdminList');
 		\Route::get('/admin/user/create','UserController@getAdminCreate');
 		\Route::post('/admin/user/create','UserController@postAdminCreate');
@@ -26,7 +31,11 @@ class UserController extends Controller {
 		\Route::post('/admin/user/setting','UserController@postAdminSetting');
 		
 		\Route::get('/user/check','UserController@getCheckDuplicate');
-		\Route::get('/user/profile/{id}','UserController@getProfile');
+		\Route::get('/user/profile/{id}','UserController@getProfile')->where('id','[0-9]+');
+		
+		\Route::get('/register','UserController@getRegister');
+		\Route::post('/register','UserController@postRegister');
+		\Route::get('/register/complete','UserController@getRegisterComplete');
 	}
 	
 	static public function admin_menu(){
@@ -103,6 +112,50 @@ class UserController extends Controller {
 		if(!$boolean) abort(401);
     	return false;
     }
+	
+	public function getImageResource($skin,$name){
+		$path=base_path().'/resources/views/user/'.$skin.'/_image/'.$name;
+		if(!File::exists($path)) abort(404);
+		$file=File::get($path);
+		$type=File::mimeType($path);
+		$response=Response::make($file,200);
+		$response->withHeaders(['Content-Type'=>$type,'Cache-Control'=>'public,max-age=86400']);
+		return $response;
+
+	}
+	
+	public function getStyleResource($skin,$name){
+		$path=base_path().'/resources/views/user/'.$skin.'/_style/'.$name;
+		if(!File::exists($path)) abort(404);
+		$file=File::get($path);
+		$type='text/css';
+		$response=Response::make($file,200);
+		$response->withHeaders(['Content-Type'=>$type]);
+		$response->withHeaders(['Content-Type'=>$type,'Cache-Control'=>'public,max-age=86400']);
+		return $response;
+	}
+	
+	public function getFontResource($skin,$name){
+		$path=base_path().'/resources/views/user/'.$skin.'/_style/'.$name;
+		if(!File::exists($path)) abort(404);
+		$file=File::get($path);
+		$type=File::mimeType($path);
+		if($type=='text/plain')
+			$type='text/css';
+		$response=Response::make($file,200);
+		$response->withHeaders(['Content-Type'=>$type,'Cache-Control'=>'public,max-age=31536000']);
+		return $response;
+	}
+	
+	public function getScriptResource($skin,$name){
+		$path=base_path().'/resources/views/user/'.$skin.'/_script/'.$name;
+		if(!File::exists($path)) abort(404);
+		$file=File::get($path);
+		$type='text/javascript';
+		$response=Response::make($file,200);
+		$response->withHeaders(['Content-Type'=>$type,'Cache-Control'=>'public,max-age=86400']);
+		return $response;
+	}
     
     // 관리자 페이지 > 회원 관리
 	public function getAdminList(){
@@ -117,7 +170,9 @@ class UserController extends Controller {
 			});
 		$query=$query->orderBy('id','desc')->paginate(30);
 		
-		return view('user.admin.list',['users'=>$query]);
+		$pending=\App\User::where('state',100)->get();
+		
+		return view('user.admin.list',['users'=>$query,'pending'=>$pending]);
 	}
     
     // 관리자 페이지 > 회원 관리 > 추가
@@ -198,8 +253,8 @@ class UserController extends Controller {
 		UserController::checkAuthority();
 		View::share('current',['user',null]);
 		
-		$user=\App\User::where(['id'=>$id,'state'=>200])->first();
-		if(!$user) abort(404);
+		$user=\App\User::where(['id'=>$id])->first();
+		if(!$user||!in_array($user->state,[100,200])) abort(404);
 		
 		return view('user.admin.create',['user'=>$user,'groups'=>DB::table('users_group')->where('state','200')->orderBy('id')->get()]);
 	}
@@ -210,8 +265,8 @@ class UserController extends Controller {
 		Controller::logActivity('USR');
 		UserController::checkAuthority();
 		
-		$user=\App\User::where(['id'=>$request->id,'state'=>200])->first();
-		if(!$user) abort(404);
+		$user=\App\User::where(['id'=>$request->id])->first();
+		if(!$user||!in_array($user->state,[100,200])) abort(404);
 		
 		if($request->password){
 			if($request->password!=$request->password_confirm)
@@ -228,14 +283,24 @@ class UserController extends Controller {
 		$user->nickname=\App\Encryption::isEncrypt('user')?\App\Encryption::encrypt($request->nickname):$request->nickname;
 		$user->email=\App\Encryption::isEncrypt('user')?\App\Encryption::encrypt($request->email):$request->email;
 		$user->note=\App\Encryption::isEncrypt('user')?\App\Encryption::encrypt($request->note):$request->note;
+		
+		// 가입 승인
+		if($request->allowed=='active'){
+			$user->state=200;
+		}elseif($request->allowed=='pending'){
+			$user->state=100;
+		}
+		
 		$user->save();
-
-		if($request->hasFile('profile')){ // 프로필 사진
+		
+		// 프로필 사진
+		if($request->hasFile('profile')){
 			$file=$request->file('profile');
 		    $this->makeThumbnail($file);
 		    ResourceController::saveFile('image',$file,$user->id);
 		}
 		
+		// 회원 그룹
 		DB::table('users_groups')->where('user',$request->id)->delete();
         if($request->group)
 	        foreach($request->group as $group)
@@ -243,7 +308,8 @@ class UserController extends Controller {
 			        'user'=>$request->id,
 			        'group'=>$group,
 		        ]);
-		        
+		
+		// 추가 항목    
 		DB::table('user_extravars')->where('user',$user->id)->delete();
 		if(count(\App\User::extravars())){
 			foreach(\App\User::extravars() as $extravar){
@@ -369,14 +435,44 @@ class UserController extends Controller {
 		UserController::checkAuthority();
 		View::share('current',['user','setting']);
 		
-		return view('user.admin.setting');
+		$paths=[];
+		foreach(glob(base_path().'/resources/views/user/*',GLOB_ONLYDIR) as $path){
+			$path=str_replace(base_path().'/resources/views/user/','',$path);
+			if($path!='admin')
+				$paths[]=$path;
+		}
+		
+		return view('user.admin.setting',['layouts'=>\App\Layout::where('state',200)->orderBy('id','desc')->get(),'groups'=>DB::table('users_group')->where('state','200')->orderBy('id')->get(),'paths'=>$paths]);
 	}
     
     // 관리자 페이지 > 회원 관리 > 회원 설정
-    // [POST] 역할 저장
+    // [POST] 설정 저장
 	public function postAdminSetting(Request $request){
 		Controller::logActivity('USR');
 		UserController::checkAuthority();
+			
+		$settings=['allow_register','layout','skin','auto_register','first_groups','term_service','term_privacy'];
+		
+		foreach($settings as $set){
+			$setting=\App\UserSetting::find($set);
+			
+			if($set=='first_groups'){
+				$request->$set=implode('|',$request->$set);
+			}
+			if($request->$set!=$setting->content){
+				if(substr($set,0,5)==='term_'){
+					DB::table('user_setting_terms')->insert([
+						'term'=>substr($set,5),
+						'author'=>Auth::user()->id,
+						'content'=>$request->$set,
+					]);
+				}
+				
+				$setting->content=$request->$set;
+				$setting->author=Auth::user()->id;
+				$setting->save();
+			}
+		}
 		
 		DB::table('user_extravar')->where(['state'=>200])->update(['state'=>400]);
 		for($i=0;$i<count($request->extravar)-1;$i++){
@@ -407,7 +503,7 @@ class UserController extends Controller {
 			}
 		}
 			
-		Controller::notify('회원 설정을 갱신했습니다.');
+		Controller::notify('회원 설정을 저장했습니다.');
 		return redirect()->back()->with(['message'=>'설정을 저장했습니다.']);
 	}
     
@@ -423,8 +519,8 @@ class UserController extends Controller {
 	public function getProfile($id){
 		Controller::logActivity('USR');
 		
-		$user=\App\User::where(['id'=>$id,'state'=>200])->first();
-		if(!$user) abort(404);
+		$user=\App\User::where(['id'=>$id])->first();
+		if(!$user||!in_array($user->state,[100,200])) abort(404);
 		
 		$data=DB::table('files')->where(['article'=>$id,'type'=>'image'])->orderBy('id','desc')->first();
 		if($data==null) abort(404);
@@ -432,6 +528,104 @@ class UserController extends Controller {
 		$file=\Storage::get($data->name);
 		DB::table('files')->where('id',$data->id)->increment('count_download');
 		return response($file,200)->withHeaders(['Content-Type'=>$data->mime,'Cache-Control'=>'public,max-age=86400']);
+	}
+	
+	// 회원 가입 폼
+	public function getRegister(){
+		Controller::logActivity('USR');
+		
+		if(Auth::check())
+			return redirect('/register/complete')->with(['message'=>'이미 로그인되어 있습니다.<br>어서오세요!']);
+		
+		if(\App\UserSetting::find('allow_register')->content=='N')
+			return redirect('/register/complete')->with(['message'=>'현재 회원 가입을 받지 않고 있습니다.']);
+		
+		return view('user.'.\App\UserSetting::find('skin')->content.'.register',['layout'=>\App\UserSetting::find('layout')->content]);
+	}
+	
+	// 회원 가입 폼
+	// [POST] 회원 등록
+	public function postRegister(Request $request){
+		Controller::logActivity('USR');
+		
+		if($request->title) abort(418); // 자동 입력 로봇들을 방지함
+		
+		if($request->password!=$request->password_confirm)
+			return redirect()->back()->withInput()->with(['message'=>'비밀번호 확인이 일치하지 않습니다.']);
+        
+        $user=Controller::getSequence();
+        
+        // 회원 추가
+        \App\User::create([
+	        'id'=>$user,
+	        'name'=>\App\Encryption::isEncrypt('user')?\App\Encryption::rt_encrypt($request->name):$request->name,
+	        'nickname'=>\App\Encryption::isEncrypt('user')?\App\Encryption::encrypt($request->nickname):$request->nickname,
+	        'password'=>\Hash::make($request->password),
+			'state'=>(\App\UserSetting::find('auto_register')->content=='N'?100:200), // 자동 가입이 아니면 pending 상태인 100으로
+	        'email'=>\App\Encryption::isEncrypt('user')?\App\Encryption::encrypt($request->email):$request->email,
+	        'note'=>\App\Encryption::isEncrypt('user')?\App\Encryption::encrypt($request->note):$request->note,
+        ]);
+
+		if($request->hasFile('profile')){ // 프로필 사진
+			$file=$request->file('profile');
+		    $this->makeThumbnail($file);
+		    ResourceController::saveFile('image',$file,$user);
+		}
+		
+		// 첫 역할
+        foreach(explode('|',(\App\UserSetting::find('first_groups')->content??[])) as $group)
+	        DB::table('users_groups')->insert([
+		        'user'=>$user,
+		        'group'=>$group,
+	        ]);
+		
+		// 추가 항목
+		if(count(\App\User::extravars())){
+			foreach(\App\User::extravars() as $extravar){
+				$input='extravar'.$extravar->id;
+				if($extravar->type=='checkbox'||$extravar->type=='order'){
+					$content=$request->$input?implode('|',$request->$input):null;
+				}else{
+					if($extravar->type=='file'||$extravar->type=='image'){
+						$original='extravar'.$extravar->id.'_original';
+						$file=$request->file($input);
+						if($request->hasFile($input))
+							$request->$input=ResourceController::saveFile($extravar->type,$file,$id);
+						else
+							$request->$input=$request->$original??null;
+					}
+					
+					$content=$request->$input;
+				}
+				
+				DB::table('user_extravars')->insert([
+					'extravar'=>$extravar->id,
+					'user'=>$user,
+					'content'=>\App\Encryption::isEncrypt('user')?\App\Encryption::encrypt($content):$content,
+				]);
+			}
+		}
+		
+		// 리다이렉트
+		if(\App\UserSetting::find('auto_register')->content=='N'){ // 자동 가입 N
+
+			Controller::notify('<u>'.$request->nickname.'</u> 회원이 가입 신청을 했습니다.',$user);
+			return redirect('/register/complete')->with(['message'=>'회원 가입을 신청했습니다.<br>관리자의 확인 후에 로그인하실 수 있습니다.']);
+			
+		}
+		else{ // 자동 가입 Y
+
+			Controller::notify('<u>'.$request->nickname.'</u> 회원이 가입했습니다.',$user);
+			return redirect('/register/complete')->with(['message'=>'회원 가입이 완료되었습니다.<br>환영합니다!']);
+			
+		}
+	}
+	
+	// 회원 가입 메시지
+	public function getRegisterComplete(){
+		Controller::logActivity('USR');
+		
+		return view('user.'.\App\UserSetting::find('skin')->content.'.complete',['layout'=>\App\UserSetting::find('layout')->content]);
 	}
 	
 }
