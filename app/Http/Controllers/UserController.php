@@ -540,7 +540,7 @@ class UserController extends Controller {
 		if(\App\UserSetting::find('allow_register')->content=='N')
 			return redirect('/register/complete')->with(['message'=>'현재 회원 가입을 받지 않고 있습니다.']);
 		
-		return view('user.'.\App\UserSetting::find('skin')->content.'.register',['layout'=>\App\UserSetting::find('layout')->content]);
+		return view('user.'.\App\UserSetting::find('skin')->content.'.register',['layout'=>\App\UserSetting::find('layout')->content?\App\Layout::find(\App\UserSetting::find('layout')->content):null]);
 	}
 	
 	// 회원 가입 폼
@@ -625,7 +625,7 @@ class UserController extends Controller {
 	public function getRegisterComplete(){
 		Controller::logActivity('USR');
 		
-		return view('user.'.\App\UserSetting::find('skin')->content.'.complete',['layout'=>\App\UserSetting::find('layout')->content]);
+		return view('user.'.\App\UserSetting::find('skin')->content.'.complete',['layout'=>\App\UserSetting::find('layout')->content?\App\Layout::find(\App\UserSetting::find('layout')->content):null]);
 	}
 	
 }
