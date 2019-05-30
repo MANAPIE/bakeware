@@ -267,7 +267,8 @@ class AdminController extends Controller {
 		
 		$content='<div class="card_list"><h4><a href="'.url('/admin/notification').'">알림</a></h4><ul>';
 		foreach($notifications as $noti){
-			$content.='<li>'.$noti->message.($noti->author?' <div class="user">'.\App\User::find($noti->author)->nickname.', '.$noti->created_at.'</div>':'').'</li>';
+			$user=\App\User::find($noti->author);
+			$content.='<li>'.$noti->message.($noti->author?' <div class="user">'.(\App\Encryption::checkEncrypted($user->nickname)?\App\Encryption::decrypt($user->nickname):$user->nickname).', '.$noti->created_at.'</div>':'').'</li>';
 		}
 		$content.='</ul></div>';
 		

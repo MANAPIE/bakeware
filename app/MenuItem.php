@@ -21,6 +21,6 @@ class MenuItem extends Model
 		    	if($t->active())
 		    		return true;
 	    
-	    return (\Request::path()==$this->url);
+	    return (\Request::path()==(\App\Encryption::checkEncrypted($this->url)?\App\Encryption::decrypt($this->url):$this->url));
     }
 }
