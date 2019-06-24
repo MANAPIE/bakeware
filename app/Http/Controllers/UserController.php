@@ -34,7 +34,8 @@ class UserController extends Controller {
 		\Route::get('/user/profile/{id}','UserController@getProfile')->where('id','[0-9]+');
 		
 		\Route::get('/register','UserController@getRegister');
-		\Route::post('/register','UserController@postRegister');
+		\Route::get('/register/join','UserController@getRegisterJoin');
+		\Route::post('/register/join','UserController@postRegisterJoin');
 		\Route::get('/register/complete','UserController@getRegisterComplete');
 	}
 	
@@ -530,7 +531,7 @@ class UserController extends Controller {
 		return response($file,200)->withHeaders(['Content-Type'=>$data->mime,'Cache-Control'=>'public,max-age=86400']);
 	}
 	
-	// 회원 가입 폼
+	// 약관 동의
 	public function getRegister(){
 		Controller::logActivity('USR');
 		
@@ -540,12 +541,25 @@ class UserController extends Controller {
 		if(\App\UserSetting::find('allow_register')->content=='N')
 			return redirect('/register/complete')->with(['message'=>'현재 회원 가입을 받지 않고 있습니다.']);
 		
-		return view('user.'.\App\UserSetting::find('skin')->content.'.register',['layout'=>\App\UserSetting::find('layout')->content]);
+		return view('user.'.\App\UserSetting::find('skin')->content.'.register_agreement',['layout'=>\App\UserSetting::find('layout')->content?\App\Layout::find(\App\UserSetting::find('layout')->content):null]);
+	}
+	
+	// 회원 가입 폼
+	public function getRegisterJoin(){
+		Controller::logActivity('USR');
+		
+		if(Auth::check())
+			return redirect('/register/complete')->with(['message'=>'이미 로그인되어 있습니다.<br>어서오세요!']);
+		
+		if(\App\UserSetting::find('allow_register')->content=='N')
+			return redirect('/register/complete')->with(['message'=>'현재 회원 가입을 받지 않고 있습니다.']);
+		
+		return view('user.'.\App\UserSetting::find('skin')->content.'.register',['layout'=>\App\UserSetting::find('layout')->content?\App\Layout::find(\App\UserSetting::find('layout')->content):null]);
 	}
 	
 	// 회원 가입 폼
 	// [POST] 회원 등록
-	public function postRegister(Request $request){
+	public function postRegisterJoin(Request $request){
 		Controller::logActivity('USR');
 		
 		if($request->title) abort(418); // 자동 입력 로봇들을 방지함
@@ -625,7 +639,7 @@ class UserController extends Controller {
 	public function getRegisterComplete(){
 		Controller::logActivity('USR');
 		
-		return view('user.'.\App\UserSetting::find('skin')->content.'.complete',['layout'=>\App\UserSetting::find('layout')->content]);
+		return view('user.'.\App\UserSetting::find('skin')->content.'.complete',['layout'=>\App\UserSetting::find('layout')->content?\App\Layout::find(\App\UserSetting::find('layout')->content):null]);
 	}
 	
 }

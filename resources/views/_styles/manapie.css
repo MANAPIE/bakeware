@@ -105,6 +105,9 @@ p{line-height:1.7}
 .input_wrap.wide span,
 .selects.wide span{width:auto;border-right:none;height:auto;overflow:visible;padding-left:5px;left:0}
 
+.selects .text,
+.input_wrap .text{padding:9px 10px 11px 10px;background:#fff;font-size:14px;border-top:10px solid #eee}
+
 .form_wrap legend{color:#999;padding:15px 15px 5px 15px;font-size:16px}
 .message{line-height:1.7;background:#999;color:#fff;padding:13px 10px;line-height:1.6;margin:10px;border-radius:5px;text-align:center;font-size:16px}
 .message.error{background:#a40e16}
@@ -140,7 +143,8 @@ div.description li{margin:5px 0}
 .table_wrap table .active td a{color:#fff !important}
 .table_wrap table td.no{width:50px;color:#999;font-size:14px;text-align:center}
 .table_wrap table td.date{width:100px;color:#999;font-size:14px}
-.table_wrap table td.count{width:50px;color:#999;font-size:14px;text-align:right;padding-right:50px}
+.table_wrap table td.count{width:50px;color:#999;font-size:14px;text-align:center}
+.table_wrap table td.amount{color:#999;font-size:14px;text-align:right}
 .table_wrap table td.thumbnail{width:100px;background-size:cover;background-position:center center}
 .table_wrap table td.link{padding:0}
 .table_wrap table td.link a{text-decoration:none;display:block;padding:13px 20px 13px 10px;position:relative;transition:color ease 0.3s;color:inherit}
@@ -150,6 +154,8 @@ div.description li{margin:5px 0}
 .table_wrap table td.link a:hover span.arrow,
 .table_wrap table td.link a:active span.arrow{color:#0096e0;right:10px}
 .table_wrap table .profile{display:inline-block;width:32px;height:32px;border:1px solid #ddd;border-radius:100px;background-size:cover;background-position:center center;margin:-10px 3px -10px -3px}
+.table_wrap table td.link a:hover span.arrow.red,
+.table_wrap table td.link a:active span.arrow.red{color:#a40e16}
 
 .read_wrap{margin-bottom:100px}
 .read_header{margin:10px}

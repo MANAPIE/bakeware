@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\View;
+
 use Auth;
 use DB;
 use Storage;
@@ -23,6 +25,9 @@ class ResourceController extends Controller {
 		\Route::get('/file/{name}','ResourceController@getDownloadFile');
 		\Route::post('/upload/image','ResourceController@postUploadImage');
 		\Route::get('/file/image/{name}','ResourceController@getDownloadImage');
+		
+		\Route::get('/admin/resource','ResourceController@getAdminList');
+		\Route::post('/admin/resource/delete','ResourceController@postAdminDelete');
 	}
 	
 	public function getImageResource($name){
@@ -159,7 +164,7 @@ class ResourceController extends Controller {
 	public function getDownloadFile($name){
 		Controller::logActivity('USR');
 		
-		$data=DB::table('files')->where('name',$name)->where('type','!=','image')->first();
+		$data=DB::table('files')->where(['name'=>$name,'state'=>200])->where('type','!=','image')->first();
 		if($data==null){
 			return abort(404);
 		}
@@ -172,7 +177,7 @@ class ResourceController extends Controller {
 	public function getDownloadImage($name){
 		Controller::logActivity('USR');
 		
-		$data=DB::table('files')->where(['name'=>$name,'type'=>'image'])->first();
+		$data=DB::table('files')->where(['name'=>$name,'state'=>200,'type'=>'image'])->first();
 		if($data==null){
 			return abort(404);
 		}
@@ -183,10 +188,46 @@ class ResourceController extends Controller {
 	}
 	
     public static function staticRemoveImage($name){
-		DB::table('files')->where(['name'=>$name,'type'=>'image'])->update([
-			'state'=>400
-		]);
-		// 일단 파일 삭제는 하지 않음
+	    if(DB::table('files')->where(['name'=>$name,'type'=>'image'])->first()){
+			DB::table('files')->where(['name'=>$name,'type'=>'image'])->update([
+				'state'=>400
+			]);
+			Storage::delete($name);
+		}
     }
+    
+    // 관리자 첨부파일 > 첨부파일 관리
+	public function getAdminList(){
+		Controller::logActivity('USR');
+		BoardController::checkAuthority();
+		View::share('current',['resource',null]);
+		
+		$query=\App\File::orderBy('id','desc');
+		if(isset($_GET['keyword']))
+			$query=$query->where('original','like','%'.$_GET['keyword'].'%');
+		$query=$query->paginate(30);
+		
+		return view('admin.resource',['resources'=>$query]);
+	}
+    
+    // 관리자 첨부파일 > 첨부파일 관리
+    // [POST] 첨부파일 삭제
+	public function postAdminDelete(Request $request){
+		Controller::logActivity('USR');
+		BoardController::checkAuthority();
+		
+		foreach($request->resources as $id){
+			$resource=\App\File::where(['id'=>$id,'state'=>200])->first();
+			$resource->timestamps=false;
+			$resource->state=401;
+			$resource->removed_at=date('Y-m-d H:i:s');
+			$resource->save();
+			Storage::delete($resource->name);
+		}
+        // 401은 관리자에 의해 삭제된 경우
+		
+		Controller::notify('파일을 일괄 삭제했습니다.');
+		return redirect('/admin/resource/'.($_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''))->with('message','파일을 삭제했습니다.');
+	}
 	
 }
