@@ -29,6 +29,7 @@
 					<li><a href="{{url('/admin/setting')}}"@if($current[0]=='setting') class="active"@endif>사이트 기본 설정</a></li>
 					<li><a href="{{url('/admin/manager')}}"@if($current[0]=='manager') class="active"@endif>관리 권한 설정</a></li>
 				@endif
+				
 				@foreach(\App\Http\Controllers\AdminController::menu() as $modules)
 					@if(count($modules))
 						<li class="gap"></li>
@@ -50,6 +51,17 @@
 						@endforeach
 					@endforeach
 				@endforeach
+				
+				@if(array_key_exists(1,Auth::user()->groups()))
+					<li class="gap"></li>
+					<li><a href="{{url('/admin/resource')}}"@if($current[0]=='resource') class="active"@endif>첨부파일 관리</a>
+						<ul>
+							<li>
+								<a href="{{url('/admin/resource')}}"@if($current[0]=='resource') class="active"@endif>첨부파일 관리</a>
+							</li>
+						</ul>
+					</li>
+				@endif
 			</ul>
 		</nav>
 		

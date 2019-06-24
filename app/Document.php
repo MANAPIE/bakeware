@@ -37,7 +37,7 @@ class Document extends Model
     }
     
     public function files(){
-	    $files=\App\File::where(['article'=>$this->id,'type'=>'dropzone'])->get();
+	    $files=\App\File::where(['article'=>$this->id,'type'=>'dropzone','state'=>200])->get();
 	    if(!$files||!count($files)) return null;
 	    return $files;
     }
