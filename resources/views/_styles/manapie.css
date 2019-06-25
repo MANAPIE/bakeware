@@ -148,11 +148,13 @@ div.description li{margin:5px 0}
 .table_wrap table td.thumbnail{width:100px;background-size:cover;background-position:center center}
 .table_wrap table td.link{padding:0}
 .table_wrap table td.link a{text-decoration:none;display:block;padding:13px 20px 13px 10px;position:relative;transition:color ease 0.3s;color:inherit}
-.table_wrap table td.link a span.arrow{float:right;color:transparent;position:absolute;right:20px;transition:color ease 0.3s,right ease 0.3s}
+.table_wrap table td.link a span.arrow{float:right;color:transparent;position:absolute;top:50%;right:20px;transition:color ease 0.3s,right ease 0.3s;margin-top:-8px}
 .table_wrap table td.link a:hover,
 .table_wrap table td.link a:active{color:#0096e0}
 .table_wrap table td.link a:hover span.arrow,
 .table_wrap table td.link a:active span.arrow{color:#0096e0;right:10px}
+.table_wrap table td.thumbnails img{height:100px}
+.table_wrap table td.thumbnails.link a{padding:10px 20px 10px 10px}
 .table_wrap table .profile{display:inline-block;width:32px;height:32px;border:1px solid #ddd;border-radius:100px;background-size:cover;background-position:center center;margin:-10px 3px -10px -3px}
 .table_wrap table td.link a:hover span.arrow.red,
 .table_wrap table td.link a:active span.arrow.red{color:#a40e16}
