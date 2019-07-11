@@ -277,7 +277,7 @@ class AdminController extends Controller {
 	
 	// 카드 - 버전
 	static public function cardVersion(){
-		$content='<a href="'.url('http://cms.manapie.me/').'"><div class="card_visitors" style="text-align:right">MANAPIE CMS '.Controller::getVersion().'</div></a>';
+		$content='<a href="'.url('http://bakeware.manapie.me/').'"><div class="card_visitors" style="text-align:right">bakeware '.Controller::getVersion().'</div></a>';
 		
 		$content.='<div class="card_list"><ul>';
 			$content.='<li><a href="http://cms.manapie.me/guide" target="_blank">공통 가이드</a></li>';
