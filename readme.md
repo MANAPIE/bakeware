@@ -1,5 +1,5 @@
-## MANAIPE CMS
-MANAPIE CMS는 MANAPIE가 직접 참여하는 프로젝트를 쉽게 개발할 수 있도록 만든 CMS입니다.
+## bakeware
+bakeware는 MANAPIE가 직접 참여하는 프로젝트를 쉽게 개발할 수 있도록 만든 CMS입니다.
 Laravel 프레임워크로 만들어져 PHP 7.1.3~ 환경에서 작동합니다.
 
 # Install
