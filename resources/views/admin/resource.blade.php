@@ -35,17 +35,17 @@
 				@endforeach
 			</table>
 		</div>
-		
-		<div class="search_wrap" style="margin-bottom:0">
-			<form method="get" action="{{url('/admin/resources')}}">
-				<label class="input_wrap">
-					<input type="text" name="keyword" value="@if(isset($_GET['keyword'])){{$_GET['keyword']}}@endif">
-					<span>검색</span>
-					<button type="submit" class="blind">검색하기</button>
-				</label>
-			</form>
-		</div>
 	</form>
+		
+	<div class="search_wrap" style="margin-bottom:0">
+		<form method="get" action="{{url('/admin/resource')}}">
+			<label class="input_wrap">
+				<input type="text" name="keyword" value="@if(isset($_GET['keyword'])){{$_GET['keyword']}}@endif">
+				<span>검색</span>
+				<button type="submit" class="blind">검색하기</button>
+			</label>
+		</form>
+	</div>
 	
 	@section('pagination')
 	<?php $link_limit=5; ?>

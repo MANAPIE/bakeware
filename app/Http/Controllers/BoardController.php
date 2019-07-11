@@ -804,7 +804,7 @@ class BoardController extends Controller {
 				foreach($document->files() as $attach){
 					if(!in_array($attach->name,$request->attach_dropzone)){
 						\Storage::delete($attach->name);
-						DB::table('files')->where('name',$attach->name)->delete();
+						DB::table('files')->where('name',$attach->name)->update(['state'=>400]);
 					}
 				}
 		
@@ -814,7 +814,7 @@ class BoardController extends Controller {
 			if($document->files())
 				foreach($document->files() as $attach){
 					\Storage::delete($attach->name);
-					DB::table('files')->where('name',$attach->name)->delete();
+					DB::table('files')->where('name',$attach->name)->update(['state'=>400]);
 				}
 		}
 		

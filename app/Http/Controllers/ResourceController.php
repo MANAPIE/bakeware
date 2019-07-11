@@ -21,10 +21,12 @@ class ResourceController extends Controller {
 		\Route::get('/script/{name}','ResourceController@getScriptResource')->where('name','(.*)');
 	
 		\Route::post('/upload/dropzone','ResourceController@postUploadDropzone');
+		\Route::post('/upload/dropzone/image','ResourceController@postUploadDropzoneImage');
 		\Route::post('/upload/file','ResourceController@postUploadFile');
 		\Route::get('/file/{name}','ResourceController@getDownloadFile');
 		\Route::post('/upload/image','ResourceController@postUploadImage');
 		\Route::get('/file/image/{name}','ResourceController@getDownloadImage');
+		\Route::get('/file/thumb/{name}','ResourceController@getDownloadImageThumbnail');
 		
 		\Route::get('/admin/resource','ResourceController@getAdminList');
 		\Route::post('/admin/resource/delete','ResourceController@postAdminDelete');
@@ -108,6 +110,22 @@ class ResourceController extends Controller {
 	    ]);
 	}
 	
+	public function postUploadDropzoneImage(Request $request){
+		Controller::logActivity('USR');
+		
+		$file=$request->file('file');
+		if(!$request->hasFile('file')) return response()->json('파일이 없습니다.',422);
+		
+		$filename=ResourceController::saveFile('image',$file);
+		ResourceController::makeThumbnail($filename,500);
+		
+	    return response()->json([
+		    'name'=>$filename,
+		    'type'=>$file->getClientMimeType(),
+		    'url'=>$filename,
+	    ]);
+	}
+	
 	public function postUploadImage(Request $request){
 		Controller::logActivity('USR');
 		
@@ -161,6 +179,39 @@ class ResourceController extends Controller {
 		return ($type=='dropzone'?'':'/file/').($type=='image'?'image/':'').$filename;
 	}
 	
+	public static function makeThumbnail($name,$maxlength){
+		$name=explode('/',$name);
+		$name=end($name);
+		
+		$data=DB::table('files')->where(['name'=>$name,'type'=>'image'])->where('mime', 'like', 'image%')->first();
+		
+		$imgSrc=base_path().'/storage/app/'.$name;
+		$thumbnail=base_path().'/storage/app/thumbnail_'.$name;
+		
+		list($width,$height)=getimagesize($imgSrc);
+		if($data->mime=='image/gif')
+	    	$myImage=imagecreatefromgif($imgSrc);
+		elseif($data->mime=='image/png')
+	  		$myImage=imagecreatefrompng($imgSrc);
+	    else
+	    	$myImage=imagecreatefromjpeg($imgSrc);
+	    if($width>$height){
+	        $y=0;
+	        $x=($width-$height)/2;
+	        $smallestSide=$height;
+	    }else{
+	        $x=0;
+	        $y=($height-$width)/2;
+	        $smallestSide=$width;
+	    }
+	    $thumb=imagecreatetruecolor($maxlength,$maxlength);
+	    imagecopyresampled($thumb,$myImage,0,0,$x,$y,$maxlength,$maxlength,$smallestSide,$smallestSide);
+	    imagejpeg($thumb,$thumbnail);
+	    
+	    @imagedestroy($myImage);
+	    @imagedestroy($thumb);
+	}
+	
 	public function getDownloadFile($name){
 		Controller::logActivity('USR');
 		
@@ -187,6 +238,22 @@ class ResourceController extends Controller {
 		return response($file, 200)->withHeaders(['Content-Type'=>$data->mime,'Cache-Control'=>'public,max-age=3600']);
 	}
 	
+	public function getDownloadImageThumbnail($name,$length=500){
+		Controller::logActivity('USR');
+		
+		$data=DB::table('files')->where(['name'=>$name,'state'=>200,'type'=>'image'])->first();
+		if($data==null){
+			return abort(404);
+		}
+		
+		$file=Storage::get('thumbnail_'.$name);
+		if(!$file)
+			ResourceController::makeThumbnail($name,$length);
+		$file=Storage::get('thumbnail_'.$name);
+		
+		return response($file, 200)->withHeaders(['Content-Type'=>$data->mime,'Cache-Control'=>'public,max-age=3600']);
+	}
+	
     public static function staticRemoveImage($name){
 	    if(DB::table('files')->where(['name'=>$name,'type'=>'image'])->first()){
 			DB::table('files')->where(['name'=>$name,'type'=>'image'])->update([
@@ -199,7 +266,7 @@ class ResourceController extends Controller {
     // 관리자 첨부파일 > 첨부파일 관리
 	public function getAdminList(){
 		Controller::logActivity('USR');
-		BoardController::checkAuthority();
+		AdminController::checkAuthority();
 		View::share('current',['resource',null]);
 		
 		$query=\App\File::orderBy('id','desc');
@@ -214,7 +281,7 @@ class ResourceController extends Controller {
     // [POST] 첨부파일 삭제
 	public function postAdminDelete(Request $request){
 		Controller::logActivity('USR');
-		BoardController::checkAuthority();
+		AdminController::checkAuthority();
 		
 		foreach($request->resources as $id){
 			$resource=\App\File::where(['id'=>$id,'state'=>200])->first();
