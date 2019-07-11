@@ -266,7 +266,7 @@ class ResourceController extends Controller {
     // 관리자 첨부파일 > 첨부파일 관리
 	public function getAdminList(){
 		Controller::logActivity('USR');
-		BoardController::checkAuthority();
+		AdminController::checkAuthority();
 		View::share('current',['resource',null]);
 		
 		$query=\App\File::orderBy('id','desc');
@@ -281,7 +281,7 @@ class ResourceController extends Controller {
     // [POST] 첨부파일 삭제
 	public function postAdminDelete(Request $request){
 		Controller::logActivity('USR');
-		BoardController::checkAuthority();
+		AdminController::checkAuthority();
 		
 		foreach($request->resources as $id){
 			$resource=\App\File::where(['id'=>$id,'state'=>200])->first();
