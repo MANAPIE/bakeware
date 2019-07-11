@@ -36,7 +36,7 @@ class Basics extends Migration
         });
         
         Schema::create('ids', function (Blueprint $table) {
-            $table->string('id')->primary();
+            $table->string('id')->default('')->primary();
             $table->string('module');
             $table->timestamp('created_at');
         });
