@@ -70,6 +70,7 @@ class Pages extends Migration
 	        'module'=>'page',
         ]);
         
+        /*
         DB::table('page_versions')->insert([
 	        'id'=>$version,
 	        'page'=>$page,
@@ -78,6 +79,7 @@ class Pages extends Migration
 	        'layout'=>0,
 	        'content'=>'<h2 style="text-align:center">환영합니다</h2>',
         ]);
+        */
     }
 
     /**
