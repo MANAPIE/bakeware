@@ -88,7 +88,8 @@ class Form extends Migration
     {
         Schema::dropIfExists('forms');
         Schema::dropIfExists('form_questions');
-        Schema::dropIfExists('form_question_answers');
+        Schema::dropIfExists('form_answers');
+        Schema::dropIfExists('form_answer_items');
         
         DB::table('modules')->where('module','form')->delete();
         DB::table('ids')->where('module','form')->delete();
