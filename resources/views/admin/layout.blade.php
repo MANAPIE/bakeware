@@ -65,7 +65,7 @@
 			</ul>
 		</nav>
 		
-		<address>Powered by <a href="http://cms.manapie.me/" target="_blank" class="manapie"><span class="blind">MANAPIE</span></a></address>
+		<address>Powered by <a href="http://bakeware.manapie.me/" target="_blank" class="manapie"><span class="blind">MANAPIE</span></a></address>
 	</div>
 	
 	<div id="body">

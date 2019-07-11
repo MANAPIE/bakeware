@@ -64,7 +64,9 @@ class Controller extends BaseController
     
     public function getListFromUrl($url=''){
 	    $module=DB::table('ids')->where('id',$url)->first();
-	    if(!$module) abort(404);
+	    if(!$module)
+	    	if(!$url) return view('welcome');
+	    	else abort(404);
 	    
 	    $class='\\App\\Http\\Controllers\\'.ucfirst($module->module).'Controller';
 	    $object=new $class();

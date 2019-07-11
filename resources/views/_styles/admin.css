@@ -13,7 +13,7 @@
 .admin_login_right div.logo .logo_wrap{display:table-cell;vertical-align:middle;position:relative}
 .admin_login_right h1.logo{margin:0 auto}
 .admin_login_right h1.logo img{width:200px;height:auto}
-.admin_login_right address{position:absolute;bottom:10px;left:0;width:100%;text-align:center;font-style:normal;opacity:0.3;font-size:12px;color:#bbb}
+.admin_login_right address{position:absolute;bottom:10px;left:0;width:100%;text-align:center;font-style:normal;font-size:12px;color:#bbb}
 .admin_login_right address .manapie{background:url('/image/manapie.png') transparent no-repeat center center;background-size:100% 100%;width:88px;height:11px;display:inline-block}
 
 #header{position:fixed;top:0;left:0;width:230px;height:100%;overflow:auto;-webkit-overflow-scrolling:auto;background:#333;color:#fff}
@@ -34,7 +34,7 @@
 #header nav li li a{padding:7px 20px 7px 30px;font-size:14px;color:#999}
 #header nav li li a.active::before{display:none}
 #header nav .gap{margin:5px 15px;border-top:1px solid #555}
-#header address{position:fixed;bottom:15px;left:20px;font-style:normal;opacity:0.3;font-size:12px;color:#bbb}
+#header address{position:fixed;bottom:15px;left:20px;font-style:normal;font-size:12px;color:#bbb}
 #header address .manapie{background:url('/image/manapie.png') transparent no-repeat center center;background-size:100% 100%;width:88px;height:11px;display:inline-block}
 
 #body{margin-left:230px}
