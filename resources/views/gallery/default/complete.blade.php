@@ -1,7 +1,7 @@
-@extends($layout?'layout.'.$layout->path.'.layout':'common',['title'=>$board->name?'&gt; '.(\App\Encryption::checkEncrypted($board->name)?\App\Encryption::decrypt($board->name):$board->name):''])
+@extends($layout?'layout.'.$layout->path.'.layout':'common',['title'=>$gallery->name?'&gt; '.(\App\Encryption::checkEncrypted($gallery->name)?\App\Encryption::decrypt($gallery->name):$gallery->name):''])
 
-@section($board->layout?'body':'container')
-	<h3 class="table_caption">{{$board->name}}</h3>
+@section($gallery->layout?'body':'container')
+	<h3 class="table_caption">{{$gallery->name}}</h3>
 	
 	<div class="no_item">
 		작성을 완료했습니다.<br>

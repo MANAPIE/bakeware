@@ -159,7 +159,16 @@ div.description li{margin:5px 0}
 .table_wrap table td.link a:hover span.arrow.red,
 .table_wrap table td.link a:active span.arrow.red{color:#a40e16}
 
+.gallery_wrap{}
+.gallery_wrap .cadres{margin:5px}
+.gallery_wrap .cadres li{float:left;width:20%}
+.gallery_wrap .cadres a{display:block;margin:5px}
+.gallery_wrap .cadres img{width:100%;height:auto}
+
 .read_wrap{margin-bottom:100px}
+.read_gallery{margin:5px}
+.read_gallery .image{margin:10px 5px;border:1px solid #ddd}
+.read_gallery .image img{width:100%;height:auto;margin-bottom:-1px}
 .read_header{margin:10px}
 .read_header .title{font-size:18px;margin:10px}
 .read_header .title .category{font-weight:normal;padding:1px 7px;border-radius:5px;background:#ddd;color:#fff;margin:0 3px 0 -3px}
@@ -191,6 +200,7 @@ div.description li{margin:5px 0}
 .pagination{text-align:left;margin:18px 10px 10px 18px}
 .pagination li{display:inline-block;line-height:13px}
 .pagination li a{display:block;text-decoration:none;padding:0;text-align:center;color:#999;transition:color ease 0.3s;border-radius:20px;width:28px;height:28px;line-height:28px}
+.pagination li.description{line-height:18px;padding:5px 0;color:#999}
 .pagination li.active a{background:#0096e0;color:#fff !important}
 .pagination li.first,
 .pagination li.last{color:#999}
@@ -222,4 +232,5 @@ div.description li{margin:5px 0}
 
 @media only screen and (max-width:800px){
 	.input_wrap .thumbnail img{max-width:100%}
+	.gallery_wrap .cadres li{width:33.3%}
 }

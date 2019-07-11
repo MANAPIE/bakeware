@@ -1,4 +1,4 @@
-@extends($layout?'layout.'.$layout->path.'.layout':'common',['title'=>$board->name?'&gt; '.(\App\Encryption::checkEncrypted($board->name)?\App\Encryption::decrypt($board->name):$board->name):''])
+@extends($layout?'layout.'.$layout->path.'.layout':'common',['title'=>$gallery->name?'&gt; '.(\App\Encryption::checkEncrypted($gallery->name)?\App\Encryption::decrypt($gallery->name):$gallery->name):''])
 
 @section('head')
 	@parent
@@ -14,13 +14,21 @@
 		$('.order_list ul').sortable();
 		
 		Dropzone.autoDiscover = false;
-	    var myDropzone = new Dropzone("#dropzone",{
+	    myDropzone = new Dropzone("#dropzone",{
+		    dictDefaultMessage: "사진 파일을 드래그하거나 이곳을 눌러 업로드하세요",
+		    acceptedFiles: "image/*",
 			init: function(){
 				this.on("success", function(file, responseText){
 					file.previewTemplate.appendChild(document.createTextNode(responseText));
+					sortFile();
+					$('#dropzone').sortable();
+					$('#dropzone').off('sortupdate');
+					$('#dropzone').on('sortupdate',function(){
+						sortFile();
+					});
 				});
 			},
-	    	url: "/upload/dropzone",
+	    	url: "/upload/dropzone/image",
 	    	addRemoveLinks: true,
 	    	removedfile: function(file){
 	    		$('#attatched input[data-name=\''+file.name+'\']').remove();
@@ -29,37 +37,63 @@
 	    	},
 	    });
 		myDropzone.on("success", function(file,data){
-			addFile(data.name,'dropzone',file.name);
+            preview = file.previewElement;
+            
+            $(preview).append('<div class="dz-dataname blind">'+data.name+'</div>');
+            
+            sortFile();
 		});
-		@if(isset($document)&&$document->files())
-		@foreach($document->files() as $file)
-			var mockFile={name:"{{$file->original}}", size:{{$file->size}}};
-			myDropzone.emit("addedfile", mockFile);
-			myDropzone.emit("complete", mockFile);
-		@endforeach
+		@if(isset($cadre)&&$cadre->files())
+				
+	        var previews = document.getElementsByClassName('dz-preview');
+	        var previews_i=0;
+			@foreach($cadre->files() as $file)
+				var mockFile={name:"{{$file->original}}", size:{{$file->size}}};
+				myDropzone.emit("addedfile", mockFile);
+				myDropzone.emit("complete", mockFile);
+				myDropzone.emit("thumbnail", mockFile,"/file/thumb/{{$file->name}}");
+	            preview = previews[previews_i];
+	            $(preview).append('<div class="dz-dataname blind">{{$file->name}}</div>');
+	            previews_i++;
+			@endforeach
+			$('#dropzone').sortable();
+			$('#dropzone').off('sortupdate');
+			$('#dropzone').on('sortupdate',function(){
+				sortFile();
+			});
 		@endif
 	});
 	
+	function sortFile(){
+		setTimeout(function(){
+			$('#attatched').empty();
+			$('#dropzone .dz-complete').each(function(){
+				var name=$(this).find('.dz-dataname').text().split('/');
+				addFile(name[name.length-1],'dropzone',$(this).find('.dz-filename').text());
+			});
+		},500);
+	}
+	
 	function addFile(name,type,dataname){
-		$('#attatched').append('<input type="hidden" name="attach_'+type+'[]" value="'+name+'" data-name="'+dataname+'" />')
+		$('#attatched').append('<input type="hidden" name="attach_'+type+'[]" value="'+name+'" data-name="'+dataname+'" />');
 	}
 	</script>
 @stop
 
-@section($board->layout?'body':'container')
-	<h3 class="table_caption">{{$board->name}}</h3>
+@section($gallery->layout?'body':'container')
+	<h3 class="table_caption">{{$gallery->name}}</h3>
 	
-	<form method="post" action="{{url('/'.$board->url.'/'.(isset($document)?$document->id.'/edit':'create'))}}{{$_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''}}" @if(count($board->categories())) onsubmit="if(!$('input[name=category]:checked').val()){alert('분류를 선택해주세요.');return false;}" @endif enctype="multipart/form-data">
+	<form method="post" action="{{url('/'.$gallery->url.'/'.(isset($cadre)?$cadre->id.'/edit':'create'))}}{{$_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''}}" @if(count($gallery->categories())) onsubmit="if(!$('input[name=category]:checked').val()){alert('분류를 선택해주세요.');return false;}" @endif enctype="multipart/form-data">
 		<div class="form_wrap">
 			{!!csrf_field()!!}
 			
-			@if(count($board->categories()))
+			@if(count($gallery->categories()))
 				<div class="selects" id="category">
 					<span>분류</span>
-					@foreach($board->categories() as $category)
+					@foreach($gallery->categories() as $category)
 						<label class="select_wrap" onclick="$('#category a').removeClass('active');$(this).find('a').addClass('active')">
-							<input type="radio" name="category" value="{{$category->id}}" class="blind" @if(isset($document)&&$document->category==$category->id) checked @endif>
-							<a href="#" onclick="return false" @if(isset($document)&&$document->category==$category->id) class="active" @endif >✔︎</a>
+							<input type="radio" name="category" value="{{$category->id}}" class="blind" @if(isset($cadre)&&$cadre->category==$category->id) checked @endif>
+							<a href="#" onclick="return false" @if(isset($cadre)&&$cadre->category==$category->id) class="active" @endif >✔︎</a>
 							<span>{{$category->name}}</span>
 						</label>
 					@endforeach
@@ -69,25 +103,31 @@
 			<label class="blind">
 				<input type="text" name="title" value="">
 			</label>
-			<label class="input_wrap">
-				<input type="text" name="title_real" value="@if(isset($document)){{$document->title}}@endif">
-				<span>제목</span>
-			</label>
+							
+			<div id="dropzone" class="dropzone"></div>
+			<div id="attatched">
+				@if(isset($cadre)&&$cadre->files())
+				@foreach($cadre->files() as $file)
+					<input type="hidden" name="attach_dropzone[]" value="{{$file->name}}" data-name="{{$file->original}}" />
+				@endforeach
+				@endif
+			</div>
+			<span class="description">업로드된 사진은 드래그하여 순서를 조정할 수 있습니다.</span>
 			
-			@if(count($board->extravars()))
-				@foreach($board->extravars() as $extravar)
+			@if(count($gallery->extravars()))
+				@foreach($gallery->extravars() as $extravar)
 					<?php
 						$extravar->content=\App\Encryption::checkEncrypted($extravar->content)?\App\Encryption::decrypt($extravar->content):$extravar->content;
 					?>
 					@if($extravar->type=='text')
 						<label class="input_wrap">
-							<input type="text" name="extravar{{$extravar->id}}" value="@if(isset($document)&&$document->extravar($extravar->id)){{$document->extravar($extravar->id)}}@elseif($extravar->content){{$extravar->content}}@endif">
+							<input type="text" name="extravar{{$extravar->id}}" value="@if(isset($cadre)&&$cadre->extravar($extravar->id)){{$cadre->extravar($extravar->id)}}@elseif($extravar->content){{$extravar->content}}@endif">
 							<span>@if($extravar->type){{$extravar->name}}@endif</span>
 						</label>
 						
 					@elseif($extravar->type=='textarea')
 						<label class="input_wrap">
-							<textarea name="extravar{{$extravar->id}}">@if(isset($document)&&$document->extravar($extravar->id)){{$document->extravar($extravar->id)}}@elseif($extravar->content){{$extravar->content}}@endif</textarea>
+							<textarea name="extravar{{$extravar->id}}">@if(isset($cadre)&&$cadre->extravar($extravar->id)){{$cadre->extravar($extravar->id)}}@elseif($extravar->content){{$extravar->content}}@endif</textarea>
 							<span>@if($extravar->type){{$extravar->name}}@endif</span>
 						</label>
 						
@@ -97,8 +137,8 @@
 							@if($extravar->content)
 								@foreach(explode('|',$extravar->content) as $content)
 									<label class="select_wrap" onclick="$('#extravar{{$extravar->id}} a').removeClass('active');$(this).find('a').addClass('active')">
-										<input type="radio" name="extravar{{$extravar->id}}" value="{{$content}}" class="blind" @if(isset($document)&&$document->extravar($extravar->id)==$content) checked @endif>
-										<a href="#" onclick="$(this).parent().click();return false" @if(isset($document)&&$document->extravar($extravar->id)==$content) class="active" @endif >✔︎</a>
+										<input type="radio" name="extravar{{$extravar->id}}" value="{{$content}}" class="blind" @if(isset($cadre)&&$cadre->extravar($extravar->id)==$content) checked @endif>
+										<a href="#" onclick="$(this).parent().click();return false" @if(isset($cadre)&&$cadre->extravar($extravar->id)==$content) class="active" @endif >✔︎</a>
 										<span>{{$content}}</span>
 									</label>
 								@endforeach
@@ -111,8 +151,8 @@
 							@if($extravar->content)
 								@foreach(explode('|',$extravar->content) as $content)
 									<label class="select_wrap" onclick="$(this).find('input').each(function(){$(this).prop('checked',!$(this).prop('checked'));});$(this).find('a').toggleClass('active');return false">
-										<input type="checkbox" name="extravar{{$extravar->id}}[]" value="{{$content}}" class="blind" @if(isset($document)&&in_array($content,$document->extravar($extravar->id))) checked @endif >
-										<a href="#" onclick="return false" @if(isset($document)&&in_array($content,$document->extravar($extravar->id))) class="active" @endif >✔︎</a>
+										<input type="checkbox" name="extravar{{$extravar->id}}[]" value="{{$content}}" class="blind" @if(isset($cadre)&&in_array($content,$cadre->extravar($extravar->id))) checked @endif >
+										<a href="#" onclick="return false" @if(isset($cadre)&&in_array($content,$cadre->extravar($extravar->id))) class="active" @endif >✔︎</a>
 										<span>{{$content}}</span>
 									</label>
 								@endforeach
@@ -124,9 +164,9 @@
 							<span>@if($extravar->type){{$extravar->name}}@endif</span>
 							<div class="order_list">
 								<ul>
-									@if(isset($document))
-										@if(count($document->extravar($extravar->id)))
-											@foreach($document->extravar($extravar->id) as $content)
+									@if(isset($cadre))
+										@if(count($cadre->extravar($extravar->id)))
+											@foreach($cadre->extravar($extravar->id) as $content)
 												<li>
 													<input type="hidden" name="extravar{{$extravar->id}}[]" value="{{$content}}">
 													{{$content}}
@@ -149,21 +189,21 @@
 						
 					@elseif($extravar->type=='image')
 						<label class="input_wrap">
-							@if(isset($document)&&$document->extravar($extravar->id))
-								<div class="thumbnail"><img src="{{url($document->extravar($extravar->id))}}" alt=""></div>
+							@if(isset($cadre)&&$cadre->extravar($extravar->id))
+								<div class="thumbnail"><img src="{{url($cadre->extravar($extravar->id))}}" alt=""></div>
 							@endif
 							<input type="file" name="extravar{{$extravar->id}}" accept="image/*">
-							<input type="hidden" name="extravar{{$extravar->id}}_original" value="@if(isset($document)&&$document->extravar($extravar->id)){{$document->extravar($extravar->id)}}@endif">
+							<input type="hidden" name="extravar{{$extravar->id}}_original" value="@if(isset($cadre)&&$cadre->extravar($extravar->id)){{$cadre->extravar($extravar->id)}}@endif">
 							<span>@if($extravar->type){{$extravar->name}}@endif</span>
 						</label>
 						
 					@elseif($extravar->type=='file')
 						<label class="input_wrap">
-							@if(isset($document)&&$document->extravar($extravar->id))
-								<div class="thumbnail"><a href="{{url($document->extravar($extravar->id))}}">{{\App\File::where('name',str_replace('/file/','',$document->extravar($extravar->id)))->first()->original}}</a></div>
+							@if(isset($cadre)&&$cadre->extravar($extravar->id))
+								<div class="thumbnail"><a href="{{url($cadre->extravar($extravar->id))}}">{{\App\File::where('name',str_replace('/file/','',$cadre->extravar($extravar->id)))->first()->original}}</a></div>
 							@endif
 							<input type="file" name="extravar{{$extravar->id}}">
-							<input type="hidden" name="extravar{{$extravar->id}}_original" value="@if(isset($document)&&$document->extravar($extravar->id)){{$document->extravar($extravar->id)}}@endif">
+							<input type="hidden" name="extravar{{$extravar->id}}_original" value="@if(isset($cadre)&&$cadre->extravar($extravar->id)){{$cadre->extravar($extravar->id)}}@endif">
 							<span>@if($extravar->type){{$extravar->name}}@endif</span>
 						</label>
 					
@@ -175,47 +215,16 @@
 				<span>내용</span>
 			</label>
 			<div class="editor_wrap">
-				<textarea id="content" name="content">@if(isset($document)){{$document->content}}@endif</textarea>
-			</div>
-							
-			<div id="dropzone" class="dropzone"></div>
-			<div id="attatched">
-				@if(isset($document)&&$document->files())
-				@foreach($document->files() as $file)
-					<input type="hidden" name="attach_dropzone[]" value="{{$file->name}}" data-name="{{$file->original}}" />
-				@endforeach
-				@endif
-			</div>
-			
-			<div class="selects nolabel" style="text-align:right">
-				@if(Auth::check()&&array_key_exists(2,Auth::user()->groups()))
-				<label class="select_wrap" onclick="$(this).find('input').each(function(){$(this).prop('checked',!$(this).prop('checked'));});$(this).find('a').toggleClass('active');return false">
-					<input type="checkbox" name="notice" value="1" class="blind" @if(isset($document)&&$document->notice) checked @endif >
-					<a href="#" onclick="return false" @if(isset($document)&&$document->secret) class="active" @endif >✔︎</a>
-					<span>공지</span>
-				</label>
-				@endif
-				
-				<label class="select_wrap" onclick="$(this).find('input').each(function(){$(this).prop('checked',!$(this).prop('checked'));});$(this).find('a').toggleClass('active');return false">
-					<input type="checkbox" name="secret" value="1" class="blind" @if(isset($document)&&$document->secret) checked @endif >
-					<a href="#" onclick="return false" @if(isset($document)&&$document->secret) class="active" @endif >✔︎</a>
-					<span>비밀 글</span>
-				</label>
-				
-				<label class="select_wrap" onclick="$(this).find('input').each(function(){$(this).prop('checked',!$(this).prop('checked'));});$(this).find('a').toggleClass('active');return false">
-					<input type="checkbox" name="allow_comment" value="1" class="blind" @if(!isset($document)||$document->allow_comment) checked @endif >
-					<a href="#" onclick="return false" @if(!isset($document)||$document->allow_comment) class="active" @endif >✔︎</a>
-					<span>댓글 허용</span>
-				</label>
+				<textarea id="content" name="content">@if(isset($cadre)){{$cadre->content}}@endif</textarea>
 			</div>
 	
 			<div class="btnArea" style="margin-top:-10px">
 				@if(!Auth::check())
-					<span class="description" style="float:none">비회원은 게시글을 작성한 후에 수정·삭제를 할 수 없습니다.</span>
+					<span class="description" style="float:none">비회원은 액자를 만든 후에 수정·삭제를 할 수 없습니다.</span>
 				@endif
 				<button type="submit" class="button blue">등록하기</button>
 				<span></span>
-				<a href="{{url('/'.$board->url.(isset($document)?'/'.$document->id:''))}}{{$_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''}}" class="button gray" style="float:left">취소하기</a>
+				<a href="{{url('/'.$gallery->url.(isset($cadre)?'/'.$cadre->id:''))}}{{$_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''}}" class="button gray" style="float:left">취소하기</a>
 			</div>
 		
 		</div>

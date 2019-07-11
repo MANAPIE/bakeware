@@ -32,6 +32,7 @@ class GalleryController extends Controller {
 		\Route::get('/admin/gallery/{id}/cadres/{cadre}','GalleryController@getAdminCadresEdit')->where('id','[0-9]+')->where('cadre','[0-9]+');
 		\Route::post('/admin/gallery/cadres/edit','GalleryController@postAdminCadresEdit');
 		\Route::post('/admin/gallery/cadres/delete','GalleryController@postAdminCadresDelete');
+		\Route::post('/admin/gallery/cadres/order','GalleryController@postAdminCadresOrder');
 	}
 	
 	static public function admin_menu(){
@@ -443,7 +444,7 @@ class GalleryController extends Controller {
 		return $this->postEdit($request,$gallery->url,$cadre->id,true);
 	}
 	
-    // 관리자 갤러리 > 갤러리 관리 > 액자 삭제
+    // 관리자 갤러리 > 갤러리 관리 > 액자 목록
     // [POST] 액자 삭제
 	public function postAdminCadresDelete(Request $request,$fromGallery=true){
 		Controller::logActivity('USR');
@@ -462,6 +463,25 @@ class GalleryController extends Controller {
 		
 		Controller::notify('액자를 일괄 삭제했습니다.');
 		return redirect(($fromGallery?'/admin/gallery/'.$request->gallery.'/cadres':'/admin/gallery/cadre').($_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''))->with('message','액자를 삭제했습니다.');
+	}
+	
+    // 관리자 갤러리 > 갤러리 관리 > 액자 목록
+    // [POST] 액자 순서
+	public function postAdminCadresOrder(Request $request){
+		Controller::logActivity('USR');
+		GalleryController::checkAuthority();
+		
+		$i=0;
+		foreach(array_reverse($request->cadres) as $id){
+			$cadre=\App\Cadre::where(['id'=>$id,'state'=>200])->first();
+			$cadre->timestamps=false;
+			$cadre->order_show=$i;
+			$cadre->save();
+			$i++;
+		}
+		
+		Controller::notify('액자 순서를 조정했습니다.');
+		return redirect('/admin/gallery/'.$request->gallery.'/cadres'.($_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''))->with('message','액자 순서를 조정했습니다.');
 	}
 	
 	// 갤러리 목록
