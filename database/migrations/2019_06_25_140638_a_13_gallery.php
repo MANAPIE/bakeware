@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class A13FileGallery extends Migration
+class A13Gallery extends Migration
 {
     /**
      * Run the migrations.
@@ -81,7 +81,7 @@ class A13FileGallery extends Migration
 	        $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
         });
         
-        Schema::create('files', function (Blueprint $table) {
+        Schema::table('files', function (Blueprint $table) {
 	        $table->integer('order_show')->nullable();
         });
         
@@ -109,7 +109,7 @@ class A13FileGallery extends Migration
         Schema::dropIfExists('gallery_cadres');
         Schema::dropIfExists('gallery_cadre_extravars');
         
-        Schema::create('files', function (Blueprint $table) {
+        Schema::table('files', function (Blueprint $table) {
 	        $table->dropColumn('order_show');
         });
         
