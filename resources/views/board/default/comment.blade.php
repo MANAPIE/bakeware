@@ -3,8 +3,8 @@
 @section('head')
 	@parent
 	<script type="text/javascript" src="{{url('/ckeditor/ckeditor.js')}}"></script>
-	<script type="text/javascript" src="{{url('/script/dropzone.js')}}"></script>
-	<link rel="stylesheet" href="{{url('/style/dropzone.css')}}" />
+	<script type="text/javascript" src="{{url('/script/dropzone.js.bakeware')}}"></script>
+	<link rel="stylesheet" href="{{url('/style/dropzone.css.bakeware')}}" />
 	<script>
 	Dropzone.autoDiscover = false;
 	$(function(){

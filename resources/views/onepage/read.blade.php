@@ -2,7 +2,7 @@
 
 @section('head')
 	@parent
-	<link rel="stylesheet" href="{{url('/style/jquery.fullpage.min.css')}}" />
+	<link rel="stylesheet" href="{{url('/style/jquery.fullpage.min.css.bakeware')}}" />
 	<style>
 		#fullpage .section{background-size:cover;background-position:center center;padding:0 20px}
 		/*
@@ -12,7 +12,7 @@
 		}
 		*/
 	</style>
-	<script src="{{url('/script/jquery.fullpage.min.js')}}"></script>
+	<script src="{{url('/script/jquery.fullpage.min.js.bakeware')}}"></script>
 	<script>
 	$(function(){
 		$('#MANAPIE').addClass('onepage');

@@ -2,7 +2,7 @@
 
 @section('head')
 	@parent
-	<script src="{{url('/script/isotope.pkgd.min.js')}}"></script>
+	<script src="{{url('/script/isotope.pkgd.min.js.bakeware')}}"></script>
 	<script>
 	$(function(){
 		$('.cards').isotope({

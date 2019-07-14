@@ -2,8 +2,8 @@
 
 @section('head')
 	@parent
-	<script type="text/javascript" src="{{url('/script/jquery-ui.min.js')}}"></script>
-	<script type="text/javascript" src="{{url('/script/jquery.ui.touch-punch.min.js')}}"></script>
+	<script type="text/javascript" src="{{url('/script/jquery-ui.min.js.bakeware')}}"></script>
+	<script type="text/javascript" src="{{url('/script/jquery.ui.touch-punch.min.js.bakeware')}}"></script>
 	<script>
 	$(function(){
 		$('.page_list ul').sortable();

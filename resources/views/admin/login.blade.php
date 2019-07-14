@@ -2,7 +2,7 @@
 
 @section('head')
 	@parent
-	<link rel="stylesheet" href="{{url('/style/admin.css')}}" />
+	<link rel="stylesheet" href="{{url('/style/admin.css.bakeware')}}" />
 @endsection
 
 

@@ -35,7 +35,7 @@
 		#body .description{max-width:400px;margin:0 auto;text-align:center;margin:50px auto;background:rgba(220,220,220,0.3);padding:50px 0;color:#999}
 		
 		#body address{font-style:normal;font-size:12px;color:#bbb;text-align:center;padding:10px;box-sizing:border-box;margin:50px auto 80px auto}
-		#body address .manapie{background:url('/image/manapie_blk.png') transparent no-repeat center center;background-size:100% 100%;width:88px;height:11px;display:inline-block}
+		#body address .manapie{background:url('/image/manapie_blk.png.bakeware') transparent no-repeat center center;background-size:100% 100%;width:88px;height:11px;display:inline-block}
 	</style>
 @endsection
 
@@ -55,7 +55,7 @@
 	<div id="body">
 		<div class="paragraph">
 			<div class="logo">
-				<img src="{{url('/image/bakeware.png')}}" alt="bakeware">
+				<img src="{{url('/image/bakeware.png.bakeware')}}" alt="bakeware">
 			</div>
 		</div>
 		<div class="paragraph">

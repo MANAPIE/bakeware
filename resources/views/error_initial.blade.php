@@ -12,14 +12,13 @@
 		<meta property="og:type" content="website">
 		<meta property="og:title" content="{{config('app.name')}}">
 		<meta property="og:description" content="{{config('app.description')}}">
-		<meta property="og:image" content="{{url('/image/og.jpg')}}">
+		<meta property="og:image" content="{{url('/image/og.jpg.bakeware')}}">
 		<meta property="og:url" content="{{config('app.url')}}">
-		
-		<link rel="stylesheet" href="{{url('/font/SpoqaHanSans-kr.css')}}" />
-		<link rel="stylesheet" href="{{url('/style/common.css')}}" />
-		<link rel="stylesheet" href="{{url('/style/manapie.css')}}" />
+		\
+		<link rel="stylesheet" href="{{url('/style/common.css.bakeware')}}" />
+		<link rel="stylesheet" href="{{url('/style/manapie.css.bakeware')}}" />
 	
-		<script src="{{url('/script/jquery-3.3.1.min.js')}}"></script>
+		<script src="{{url('/script/jquery-3.3.1.min.js.bakeware')}}"></script>
 		
 		<title>MANAPIE</title>
 	@show
@@ -44,7 +43,7 @@
 			터미널에서 데이터베이스를 마이그레이션하여 최초의 설정을 진행하십시오.
 		</div>
 		<address>
-			<div class="logo"><a href="{{'/'}}"><img src="{{url('/image/admin_logo.png')}}" alt="{{config('app.name')}}"></a></div>
+			<div class="logo"><a href="{{'/'}}"><img src="{{url('/image/admin_logo.png.bakeware')}}" alt="{{config('app.name')}}"></a></div>
 			<div class="power">Powered by <a href="http://manapie.me/contact" target="_blank" class="manapie"><span class="blind">MANAPIE</span></a></div>
 		</address>
 	</div>

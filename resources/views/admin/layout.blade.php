@@ -2,8 +2,8 @@
 
 @section('head')
 	@parent
-	<link rel="stylesheet" href="{{url('/style/admin.css')}}" />
-	<script src="{{url('/script/admin.js')}}"></script>
+	<link rel="stylesheet" href="{{url('/style/admin.css.bakeware')}}" />
+	<script src="{{url('/script/admin.js.bakeware')}}"></script>
 @endsection
 
 @section('container')
