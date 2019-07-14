@@ -54,7 +54,7 @@
 			@endif
 		</div>
 			
-		<form method="post" id="delete" action="{{url('/admin/form/answer/delete')}}{{$_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''}}">
+		<form method="post" id="delete" action="{{url('/admin/form/answer/delete')}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}">
 			{!!csrf_field()!!}
 			
 			<div class="table_wrap answers">
@@ -138,7 +138,7 @@
 	@show
 		
 	<div class="btnArea" style="margin-right:-5px">
-		<a href="{{url('/admin/form/answer')}}{{$_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''}}" class="button white">돌아가기</a>
+		<a href="{{url('/admin/form/answer')}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}" class="button white">돌아가기</a>
 		<button type="button" class="button gray" onclick="if($('input:checked').length<1){alert('삭제할 답변을 선택해주세요.');return false;} if(confirm('정말로 삭제하시겠습니까?'))$('#delete').submit();return false"><span>일괄 삭제</span></button>
 	</div>
 	

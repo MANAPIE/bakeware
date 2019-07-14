@@ -21,7 +21,7 @@
 		<div class="message success">{!!session('message')!!}</div>
 	@endif
 	
-	<form class="form" method="post" action="{{url('/admin/user/setting')}}{{$_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''}}">
+	<form class="form" method="post" action="{{url('/admin/user/setting')}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}">
 		<div class="form_wrap">
 			{!!csrf_field()!!}
 			

@@ -90,12 +90,12 @@
 			@if($document->isMine())
 				<div class="read_footer">
 					<div class="btnArea">
-						<form id="board{{$document->id}}delete" class="form" method="post" action="{{url('/'.$board->url.'/'.$document->id.'/delete')}}{{$_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''}}">
+						<form id="board{{$document->id}}delete" class="form" method="post" action="{{url('/'.$board->url.'/'.$document->id.'/delete')}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}">
 							{!!csrf_field()!!}
 						</form>
 						<button style="float:left" type="button" class="button white" onclick="if(confirm('정말로 삭제하시겠습니까?'))$('#board{{$document->id}}delete').submit();return false"><span>삭제</span></button>
 						
-						<a href="{{url('/'.$board->url.'/'.$document->id.'/edit')}}{{$_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''}}" class="button gray">수정</a>
+						<a href="{{url('/'.$board->url.'/'.$document->id.'/edit')}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}" class="button gray">수정</a>
 					</div>
 				</div>
 			@endif
@@ -176,9 +176,9 @@
 								
 								@if($comment->isMine() && $document->allow_comment && $board->authority('comment'))
 									<div class="buttons">
-										<a href="{{url('/board/comment/'.$comment->id)}}{{$_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''}}">수정</a>
+										<a href="{{url('/board/comment/'.$comment->id)}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}">수정</a>
 										<a href="#" onclick="if(confirm('정말로 삭제하시겠습니까?'))$('#board{{$comment->id}}delete').submit();return false">삭제</a>
-										<form id="board{{$comment->id}}delete" class="form" method="post" action="{{url('/board/comment/delete/'.$comment->id)}}{{$_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''}}">
+										<form id="board{{$comment->id}}delete" class="form" method="post" action="{{url('/board/comment/delete/'.$comment->id)}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}">
 											{!!csrf_field()!!}
 										</form>
 									</div>
@@ -241,9 +241,9 @@
 								
 								@if($comment->isMine() && $document->allow_comment && $board->authority('comment'))
 									<div class="buttons">
-										<a href="{{url('/board/comment/'.$comment->id)}}{{$_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''}}">수정</a>
+										<a href="{{url('/board/comment/'.$comment->id)}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}">수정</a>
 										<a href="#" onclick="if(confirm('정말로 삭제하시겠습니까?'))$('#board{{$comment->id}}delete').submit();return false">삭제</a>
-										<form id="board{{$comment->id}}delete" class="form" method="post" action="{{url('/board/comment/delete/'.$comment->id)}}{{$_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''}}">
+										<form id="board{{$comment->id}}delete" class="form" method="post" action="{{url('/board/comment/delete/'.$comment->id)}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}">
 											{!!csrf_field()!!}
 										</form>
 									</div>
@@ -287,7 +287,7 @@
 				</div>
 				
 				<div id="comment_write" style="display:none">
-					<form method="post" action="{{url('/'.$board->url.'/'.$document->id.'/comment')}}{{$_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''}}">
+					<form method="post" action="{{url('/'.$board->url.'/'.$document->id.'/comment')}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}">
 						{!! csrf_field() !!}
 						
 						@if(session('error'))

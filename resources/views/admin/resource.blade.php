@@ -7,7 +7,7 @@
 		<div class="message success">{!!session('message')!!}</div>
 	@endif
 	
-	<form method="post" id="delete" action="{{url('/admin/resource/delete')}}{{$_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''}}">
+	<form method="post" id="delete" action="{{url('/admin/resource/delete')}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}">
 		{!!csrf_field()!!}
 		<div class="table_wrap">
 			<table>

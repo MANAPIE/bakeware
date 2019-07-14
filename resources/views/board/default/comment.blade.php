@@ -51,7 +51,7 @@
 			<div class="message">{!!session('message')!!}</div>
 		@endif
 	
-		<form method="post" action="{{url('/board/comment/'.$comment->id)}}{{$_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''}}">
+		<form method="post" action="{{url('/board/comment/'.$comment->id)}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}">
 			{!! csrf_field() !!}
 			
 			@if(session('error'))
@@ -93,7 +93,7 @@
 			<div class="btnArea" style="margin-top:-10px">
 				<button type="submit" class="button black">등록하기</button>
 				<span></span>
-				<a href="{{url('/'.$board->url.(isset($document)?'/'.$document->id:''))}}{{$_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''}}#comment{{$comment->id}}" class="button gray" style="float:left">취소하기</a>
+				<a href="{{url('/'.$board->url.(isset($document)?'/'.$document->id:''))}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}#comment{{$comment->id}}" class="button gray" style="float:left">취소하기</a>
 			</div>
 		</form>
 	</div>

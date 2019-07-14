@@ -77,12 +77,12 @@
 		@if($cadre->isMine())
 			<div class="read_footer">
 				<div class="btnArea">
-					<form id="gallery{{$cadre->id}}delete" class="form" method="post" action="{{url('/'.$gallery->url.'/'.$cadre->id.'/delete')}}{{$_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''}}">
+					<form id="gallery{{$cadre->id}}delete" class="form" method="post" action="{{url('/'.$gallery->url.'/'.$cadre->id.'/delete')}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}">
 						{!!csrf_field()!!}
 					</form>
 					<button style="float:left" type="button" class="button white" onclick="if(confirm('정말로 삭제하시겠습니까?'))$('#gallery{{$cadre->id}}delete').submit();return false"><span>삭제</span></button>
 					
-					<a href="{{url('/'.$gallery->url.'/'.$cadre->id.'/edit')}}{{$_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''}}" class="button gray">수정</a>
+					<a href="{{url('/'.$gallery->url.'/'.$cadre->id.'/edit')}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}" class="button gray">수정</a>
 				</div>
 			</div>
 		@endif

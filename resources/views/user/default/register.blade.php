@@ -20,7 +20,7 @@
 		<div class="message success">{!!session('message')!!}</div>
 	@endif
 	
-	<form method="post" action="{{url('/register/join')}}{{$_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''}}" enctype="multipart/form-data">
+	<form method="post" action="{{url('/register/join')}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}" enctype="multipart/form-data">
 		<div class="form_wrap">
 			{!!csrf_field()!!}
 				

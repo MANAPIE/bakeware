@@ -11,7 +11,7 @@
 		<div class="message success">{!!session('message')!!}</div>
 	@endif
 	
-	<form class="form" method="post" action="{{url('/admin/user/'.(isset($user)?'edit':'create'))}}{{$_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''}}" enctype="multipart/form-data">
+	<form class="form" method="post" action="{{url('/admin/user/'.(isset($user)?'edit':'create'))}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}" enctype="multipart/form-data">
 		<div class="form_wrap">
 			{!!csrf_field()!!}
 			@if(isset($user))
@@ -225,7 +225,7 @@
 			<div class="btnArea">
 				@if(isset($user))
 					<button type="button" class="button white" onclick="if(confirm('정말로 삭제하시겠습니까?'))$('#user{{$user->id}}delete').submit();return false"><span>회원 삭제</span></button>
-					<a href="{{url('/admin/user')}}{{$_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''}}" class="button gray">돌아가기</a>
+					<a href="{{url('/admin/user')}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}" class="button gray">돌아가기</a>
 					<button type="submit" class="button blue"><span>저장하기</span></button>
 				@else
 					<button type="submit" class="button blue"><span>회원 추가하기</span></button>
@@ -236,7 +236,7 @@
 	</form>
 	
 	@if(isset($user))
-		<form id="user{{$user->id}}delete" class="form" method="post" action="{{url('/admin/user/delete')}}{{$_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''}}">
+		<form id="user{{$user->id}}delete" class="form" method="post" action="{{url('/admin/user/delete')}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}">
 			{!!csrf_field()!!}
 			<input type="hidden" name="id" value="{{$user->id}}">
 		</form>

@@ -30,7 +30,7 @@
 				<ul class="cadres">
 					@foreach($gallery->cadres() as $d)
 						<li @if(isset($cadre)&&$cadre->id==$d->id) class="active" @endif>
-							<a href="{{url('/'.$gallery->url.'/'.$d->id)}}{{$_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''}}">
+							<a href="{{url('/'.$gallery->url.'/'.$d->id)}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}">
 								@foreach($d->files() as $file)
 									<img src="/file/thumb/{{$file->name}}" alt="">
 									@break
@@ -82,7 +82,7 @@
 	
 		@if($gallery->authority('cadre'))
 			<div class="btnArea">
-				<a href="{{url('/'.$gallery->url.'/create')}}{{$_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''}}" class="button blue">액자 만들기</a>
+				<a href="{{url('/'.$gallery->url.'/create')}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}" class="button blue">액자 만들기</a>
 			</div>
 		@endif
 	@endif

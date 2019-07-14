@@ -36,7 +36,7 @@
 		<div class="message success">{!!session('message')!!}</div>
 	@endif
 	
-	<form method="post" id="delete" action="{{url('/admin/gallery/cadres/delete')}}{{$_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''}}">
+	<form method="post" id="delete" action="{{url('/admin/gallery/cadres/delete')}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}">
 		{!!csrf_field()!!}
 		<input type="hidden" name="gallery" value="{{$gallery->id}}">
 		
@@ -89,7 +89,7 @@
 	</form>
 	
 	<div class="search_wrap" style="margin-bottom:0">
-		<form method="get" action="{{url('/admin/gallery/cadre')}}{{$_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''}}">
+		<form method="get" action="{{url('/admin/gallery/cadre')}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}">
 			<label class="input_wrap">
 				<input type="text" name="keyword" value="@if(isset($_GET['keyword'])){{$_GET['keyword']}}@endif">
 				<span>검색</span>
@@ -106,10 +106,10 @@
 	@show
 
 	<div class="btnArea" style="margin:0 5px">
-		<a href="{{url('/admin/gallery/'.$gallery->id)}}{{$_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''}}" class="button gray" style="float:left">돌아가기</a>
+		<a href="{{url('/admin/gallery/'.$gallery->id)}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}" class="button gray" style="float:left">돌아가기</a>
 		
 		<span id="btnDelete">
-			<a href="{{url('/admin/gallery/'.$gallery->id.'/cadres/create')}}{{$_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''}}" class="button blue">액자 만들기</a>
+			<a href="{{url('/admin/gallery/'.$gallery->id.'/cadres/create')}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}" class="button blue">액자 만들기</a>
 			<button type="button" class="button gray" onclick="if($('input:checked').length<1){alert('삭제할 액자을 선택해주세요.');return false;} if(confirm('정말로 삭제하시겠습니까?'))$('#delete').submit();return false"><span>일괄 삭제</span></button>
 		</span>
 		

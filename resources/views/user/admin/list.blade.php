@@ -25,7 +25,7 @@
 				</tr>
 				@foreach($pending as $user)
 				<tr>
-					<td class="link"><a href="{{url('/admin/user/'.$user->id)}}{{$_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''}}">
+					<td class="link"><a href="{{url('/admin/user/'.$user->id)}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}">
 						<span class="profile" @if($user->thumbnail()) style="background-image:url('{{url($user->thumbnail())}}')" @endif></span>
 						<span class="tag red">대기</span>
 						{{$user->nickname}}&nbsp;<span class="arrow">&gt;</span>
@@ -60,7 +60,7 @@
 			</tr>
 			@foreach($users as $user)
 			<tr>
-				<td class="link"><a href="{{url('/admin/user/'.$user->id)}}{{$_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''}}">
+				<td class="link"><a href="{{url('/admin/user/'.$user->id)}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}">
 					<span class="profile" @if($user->thumbnail()) style="background-image:url('{{url($user->thumbnail())}}')" @endif></span>
 					@if(array_key_exists(1,$user->groups()))
 						<span class="tag blue">{{$user->groups()[1]}}</span>
