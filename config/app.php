@@ -167,7 +167,7 @@ return [
         /*
          * Package Service Providers...
          */
-        Superbalist\LaravelGoogleCloudStorage\GoogleCloudStorageServiceProvider::class,
+        App\Providers\GoogleCloudStorageServiceProvider::class,
 
         /*
          * Application Service Providers...
