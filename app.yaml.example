@@ -42,5 +42,13 @@ env_variables:
  APP_LOG: errorlog
  LOG_DELETE: true
  
+ FILESYSTEM_DRIVER: gcs
+ 
+ GOOGLE_CLOUD_PROJECT_ID: 
+ GOOGLE_CLOUD_KEY_FILE: 
+ GOOGLE_CLOUD_STORAGE_BUCKET: 
+ GOOGLE_CLOUD_STORAGE_PATH_PREFIX: 
+ GOOGLE_CLOUD_STORAGE_API_URI: 
+ 
 beta_settings:
    cloud_sql_instances: ""
