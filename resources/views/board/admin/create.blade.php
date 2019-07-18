@@ -3,8 +3,8 @@
 @section('head')
 	@parent
 	<script type="text/javascript" src="{{url('/ckeditor/ckeditor.js')}}"></script>
-	<script type="text/javascript" src="{{url('/script/jquery-ui.min.js')}}"></script>
-	<script type="text/javascript" src="{{url('/script/jquery.ui.touch-punch.min.js')}}"></script>
+	<script type="text/javascript" src="{{url('/script/jquery-ui.min.js.bakeware')}}"></script>
+	<script type="text/javascript" src="{{url('/script/jquery.ui.touch-punch.min.js.bakeware')}}"></script>
 	<script>
 	$(function(){
 		CKEDITOR.replace('content',{});
@@ -20,7 +20,7 @@
 		<div class="message success">{!!session('message')!!}</div>
 	@endif
 	
-	<form class="form" method="post" action="{{url('/admin/board/'.(isset($board)?'edit':'create'))}}{{$_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''}}">
+	<form class="form" method="post" action="{{url('/admin/board/'.(isset($board)?'edit':'create'))}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}">
 		<div class="form_wrap">
 			{!!csrf_field()!!}
 			@if(isset($board))
@@ -370,9 +370,9 @@
 			<div class="btnArea">
 				@if(isset($board))
 					<a href="{{url('/'.$board->url)}}" class="button black" target="_blank" style="float:left">게시판 보기</a>
-					<a href="{{url('/admin/board/'.$board->id.'/documents')}}{{$_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''}}" class="button gray" style="float:left">게시글 목록</a>
+					<a href="{{url('/admin/board/'.$board->id.'/documents')}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}" class="button gray" style="float:left">게시글 목록</a>
 					<button type="button" class="button white" onclick="if(confirm('정말로 삭제하시겠습니까?'))$('#board{{$board->id}}delete').submit();return false"><span>게시판 삭제</span></button>
-					<a href="{{url('/admin/board')}}{{$_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''}}" class="button gray">돌아가기</a>
+					<a href="{{url('/admin/board')}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}" class="button gray">돌아가기</a>
 					<button type="submit" class="button blue"><span>저장하기</span></button>
 				@else
 					<button type="submit" class="button blue"><span>게시판 추가하기</span></button>
@@ -382,7 +382,7 @@
 	</form>
 	
 	@if(isset($board))
-		<form id="board{{$board->id}}delete" class="form" method="post" action="{{url('/admin/board/delete')}}{{$_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''}}">
+		<form id="board{{$board->id}}delete" class="form" method="post" action="{{url('/admin/board/delete')}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}">
 			{!!csrf_field()!!}
 			<input type="hidden" name="id" value="{{$board->id}}">
 		</form>

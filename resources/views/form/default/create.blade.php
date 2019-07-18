@@ -2,8 +2,8 @@
 
 @section('head')
 	@parent
-	<script type="text/javascript" src="{{url('/script/jquery-ui.min.js')}}"></script>
-	<script type="text/javascript" src="{{url('/script/jquery.ui.touch-punch.min.js')}}"></script>
+	<script type="text/javascript" src="{{url('/script/jquery-ui.min.js.bakeware')}}"></script>
+	<script type="text/javascript" src="{{url('/script/jquery.ui.touch-punch.min.js.bakeware')}}"></script>
 	<script>
 	$(function(){
 		$('.order_list ul').sortable();
@@ -15,7 +15,7 @@
 	<h3 class="table_caption">{{$form->name}}</h3>
 	
 	@if($form->inPeriod())
-		<form method="post" action="{{url('/'.$form->url.'/'.(isset($document)?$document->id.'/edit':'create'))}}{{$_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''}}" enctype="multipart/form-data">
+		<form method="post" action="{{url('/'.$form->url.'/'.(isset($document)?$document->id.'/edit':'create'))}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}" enctype="multipart/form-data">
 			<div class="form_wrap">
 				{!!csrf_field()!!}
 					

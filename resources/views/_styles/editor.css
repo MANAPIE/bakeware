@@ -1,4 +1,4 @@
-@import url('/style/common.css');
+@import url('/style/common.css.bakeware');
 
 body{font-size:14px;line-height:1.5}
 h1{color:#999;font-size:30px;padding:10px 0}
@@ -16,7 +16,7 @@ ol{margin-left:25px;list-style:decimal}
 li{margin:5px 0}
 .hljs{overflow-x:auto}
 p{margin:5px 0}
-blockquote{border:1px solid #ddd;padding:10px 10px 10px 30px;margin:10px 0;background:url('/images/blockquote.png') #eee no-repeat 5px 5px;background-size:20px 20px}
+blockquote{border:1px solid #ddd;padding:10px 10px 10px 30px;margin:10px 0;background:url('/images/blockquote.png.bakeware') #eee no-repeat 5px 5px;background-size:20px 20px}
 img{max-width:100%;height:auto}
 
 .accordion-content{padding:5px;background:#eee}

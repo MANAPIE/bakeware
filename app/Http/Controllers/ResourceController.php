@@ -33,7 +33,9 @@ class ResourceController extends Controller {
 	}
 	
 	public function getImageResource($name){
-		$path=base_path().'/resources/views/_images/'.$name;
+		$path=base_path().'/resources/views/_images/'.str_replace('.bakeware','',$name);
+		if(!File::exists($path)) $path=base_path().'/resources/views/_images/'.$name.'.jpg';
+		if(!File::exists($path)) $path=base_path().'/resources/views/_images/'.$name.'.gif';
 		if(!File::exists($path)) abort(404);
 		$file=File::get($path);
 		$type=File::mimeType($path);
@@ -45,8 +47,8 @@ class ResourceController extends Controller {
 	}
 	
 	public function getStyleResource($name){
-		$path=base_path().'/resources/views/_styles/'.$name;
-		if(!File::exists($path)) $path=base_path().'/resources/views/layout/'.str_replace('.css','',$name).'/style.css';
+		$path=base_path().'/resources/views/_styles/'.str_replace('.bakeware','',$name);
+		if(!File::exists($path)) $path=base_path().'/resources/views/layout/'.str_replace('.css','',str_replace('.bakeware','',$name)).'/style.css';
 		if(!File::exists($path)) abort(404);
 		$file=File::get($path);
 		$type='text/css';
@@ -69,8 +71,8 @@ class ResourceController extends Controller {
 	}
 	
 	public function getScriptResource($name){
-		$path=base_path().'/resources/views/_scripts/'.$name;
-		if(!File::exists($path)) $path=base_path().'/resources/views/layout/'.str_replace('.js','',$name).'/script.js';
+		$path=base_path().'/resources/views/_scripts/'.str_replace('.bakeware','',$name);
+		if(!File::exists($path)) $path=base_path().'/resources/views/layout/'.str_replace('.js','',str_replace('.bakeware','',$name)).'/script.js';
 		if(!File::exists($path)) abort(404);
 		$file=File::get($path);
 		$type='text/javascript';

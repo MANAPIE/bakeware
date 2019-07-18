@@ -15,12 +15,12 @@
 		@if(\App\Setting::find('app_preview')->content)<meta property="og:image" content="{{url(\App\Setting::find('app_preview')->content)}}">@endif
 		<meta property="og:url" content="{{url('')}}">
 		
-		<link rel="stylesheet" href="{{url('/style/common.css')}}">
-		<link rel="stylesheet" href="{{url('/style/manapie.css')}}">
-		<link rel="stylesheet" href="{{url('/style/content.css')}}">
+		<link rel="stylesheet" href="{{url('/style/common.css.bakeware')}}">
+		<link rel="stylesheet" href="{{url('/style/manapie.css.bakeware')}}">
+		<link rel="stylesheet" href="{{url('/style/content.css.bakeware')}}">
 	
-		<script src="{{url('/script/jquery-3.3.1.min.js')}}"></script>
-		<script src="{{url('/script/manapie.js')}}"></script>
+		<script src="{{url('/script/jquery-3.3.1.min.js.bakeware')}}"></script>
+		<script src="{{url('/script/manapie.js.bakeware')}}"></script>
 		
 		<title>{{\App\Setting::find('app_name')->content}} {{$title or ''}}</title>
 	@show

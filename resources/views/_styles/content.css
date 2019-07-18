@@ -14,7 +14,7 @@
 .real_content li{margin:5px 0}
 .real_content .hljs{overflow-x:auto}
 .real_content p{margin:5px 0}
-.real_content blockquote{border:1px solid #ddd;padding:10px 10px 10px 30px;margin:10px 0;background:url('/images/blockquote.png') #eee no-repeat 5px 5px;background-size:20px 20px}
+.real_content blockquote{border:1px solid #ddd;padding:10px 10px 10px 30px;margin:10px 0;background:url('/images/blockquote.png.bakeware') #eee no-repeat 5px 5px;background-size:20px 20px}
 .real_content img{max-width:100%;height:auto}
 
 .real_content .accordion-content{padding:5px;background:#eee}

@@ -3,7 +3,7 @@
 @section('head')
 	@parent
 	<script type="text/javascript" src="{{url('/ckeditor/ckeditor.js')}}"></script>
-	<script type="text/javascript" src="{{url('/script/jquery.ui.touch-punch.min.js')}}"></script>
+	<script type="text/javascript" src="{{url('/script/jquery.ui.touch-punch.min.js.bakeware')}}"></script>
 	<script>
 	$(function(){
 		CKEDITOR.replace('content',{});
@@ -18,7 +18,7 @@
 		<div class="message success">{!!session('message')!!}</div>
 	@endif
 	
-	<form class="form" method="post" action="{{url('/admin/page/'.(isset($page)?'edit':'create'))}}{{$_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''}}">
+	<form class="form" method="post" action="{{url('/admin/page/'.(isset($page)?'edit':'create'))}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}">
 		<div class="form_wrap">
 			{!!csrf_field()!!}
 			@if(isset($page))
@@ -134,7 +134,7 @@
 				@if(isset($page))
 					<a href="{{url('/'.$page->url)}}" class="button black" target="_blank" style="float:left">페이지 보기</a>
 					<button type="button" class="button white" onclick="if(confirm('정말로 삭제하시겠습니까?'))$('#page{{$page->id}}delete').submit();return false"><span>페이지 삭제</span></button>
-					<a href="{{url('/admin/page')}}{{$_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''}}" class="button gray">돌아가기</a>
+					<a href="{{url('/admin/page')}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}" class="button gray">돌아가기</a>
 					<button type="submit" class="button blue"><span>저장하기</span></button>
 				@else
 					<button type="submit" class="button blue"><span>페이지 추가하기</span></button>
@@ -144,7 +144,7 @@
 	</form>
 	
 	@if(isset($page))
-		<form id="page{{$page->id}}delete" class="form" method="post" action="{{url('/admin/page/delete')}}{{$_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''}}">
+		<form id="page{{$page->id}}delete" class="form" method="post" action="{{url('/admin/page/delete')}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}">
 			{!!csrf_field()!!}
 			<input type="hidden" name="id" value="{{$page->id}}">
 		</form>

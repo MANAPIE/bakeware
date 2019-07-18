@@ -2,8 +2,8 @@
 
 @section('head')
 	@parent
-	<script type="text/javascript" src="{{url('/script/jquery-ui.min.js')}}"></script>
-	<script type="text/javascript" src="{{url('/script/jquery.ui.touch-punch.min.js')}}"></script>
+	<script type="text/javascript" src="{{url('/script/jquery-ui.min.js.bakeware')}}"></script>
+	<script type="text/javascript" src="{{url('/script/jquery.ui.touch-punch.min.js.bakeware')}}"></script>
 	<script>
 	$(function(){
 		$('.order_list ul').sortable();
@@ -20,7 +20,7 @@
 		<div class="message success">{!!session('message')!!}</div>
 	@endif
 	
-	<form method="post" action="{{url('/register/join')}}{{$_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''}}" enctype="multipart/form-data">
+	<form method="post" action="{{url('/register/join')}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}" enctype="multipart/form-data">
 		<div class="form_wrap">
 			{!!csrf_field()!!}
 						

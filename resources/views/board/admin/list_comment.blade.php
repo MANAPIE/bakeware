@@ -7,7 +7,7 @@
 		<div class="message success">{!!session('message')!!}</div>
 	@endif
 	
-	<form method="post" id="delete" action="{{url('/admin/board/comment/delete')}}{{$_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''}}">
+	<form method="post" id="delete" action="{{url('/admin/board/comment/delete')}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}">
 		{!!csrf_field()!!}
 		
 		<div class="table_wrap">
@@ -45,7 +45,7 @@
 	</form>
 	
 	<div class="search_wrap" style="margin-bottom:0">
-		<form method="get" action="{{url('/admin/board/comment')}}{{$_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''}}">
+		<form method="get" action="{{url('/admin/board/comment')}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}">
 			<label class="input_wrap">
 				<input type="text" name="keyword" value="@if(isset($_GET['keyword'])){{$_GET['keyword']}}@endif">
 				<span>검색</span>

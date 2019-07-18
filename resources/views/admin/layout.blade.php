@@ -2,8 +2,8 @@
 
 @section('head')
 	@parent
-	<link rel="stylesheet" href="{{url('/style/admin.css')}}" />
-	<script src="{{url('/script/admin.js')}}"></script>
+	<link rel="stylesheet" href="{{url('/style/admin.css.bakeware')}}" />
+	<script src="{{url('/script/admin.js.bakeware')}}"></script>
 @endsection
 
 @section('container')
@@ -38,7 +38,7 @@
 						@foreach($mainmenu as $menu)
 							<li>
 								<a href="{{url($menu['url'])}}"@if($menu['external']) target="_blank"@endif @if($current[0]==$menu['current']) class="active"@endif>{{$menu['name']}}</a>
-								@if(count($menu['submenu']))
+								@if(is_array($menu['submenu'])&&count($menu['submenu']))
 									<ul>
 										@foreach($menu['submenu'] as $m)
 											<li>

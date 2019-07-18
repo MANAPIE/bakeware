@@ -58,6 +58,7 @@ class Layouts extends Migration
     public function down()
     {
         Schema::dropIfExists('layouts');
+        Schema::dropIfExists('layouts_configs');
         
         DB::table('modules')->where('module','layout')->delete();
     }

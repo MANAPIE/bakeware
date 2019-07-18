@@ -3,10 +3,10 @@
 @section('head')
 	@parent
 	<script type="text/javascript" src="{{url('/ckeditor/ckeditor.js')}}"></script>
-	<script type="text/javascript" src="{{url('/script/jquery-ui.min.js')}}"></script>
-	<script type="text/javascript" src="{{url('/script/jquery.ui.touch-punch.min.js')}}"></script>
-	<script type="text/javascript" src="{{url('/script/dropzone.js')}}"></script>
-	<link rel="stylesheet" href="{{url('/style/dropzone.css')}}" />
+	<script type="text/javascript" src="{{url('/script/jquery-ui.min.js.bakeware')}}"></script>
+	<script type="text/javascript" src="{{url('/script/jquery.ui.touch-punch.min.js.bakeware')}}"></script>
+	<script type="text/javascript" src="{{url('/script/dropzone.js.bakeware')}}"></script>
+	<link rel="stylesheet" href="{{url('/style/dropzone.css.bakeware')}}" />
 	<script>
 	Dropzone.autoDiscover = false;
 	var myDropzone;
@@ -88,7 +88,7 @@
 		<div class="message success">{!!session('message')!!}</div>
 	@endif
 	
-	<form class="form" method="post" action="{{url('/admin/gallery/cadres/'.(isset($cadre)?'edit':'create'))}}{{$_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''}}" enctype="multipart/form-data">
+	<form class="form" method="post" action="{{url('/admin/gallery/cadres/'.(isset($cadre)?'edit':'create'))}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}" enctype="multipart/form-data">
 		<div class="form_wrap">
 			{!!csrf_field()!!}
 			<input type="hidden" name="gallery" value="{{$gallery->id}}">
@@ -231,7 +231,7 @@
 			<div class="btnArea" style="margin-top:-10px">
 				<button type="submit" class="button blue">등록하기</button>
 				<span></span>
-				<a href="{{url('/admin/gallery/'.$gallery->id.'/cadres')}}{{$_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''}}" class="button gray" style="float:left">취소하기</a>
+				<a href="{{url('/admin/gallery/'.$gallery->id.'/cadres')}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}" class="button gray" style="float:left">취소하기</a>
 			</div>
 		</div>
 	</form>

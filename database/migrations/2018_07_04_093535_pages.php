@@ -52,7 +52,8 @@ class Pages extends Migration
 	        'updated_at'=>DB::raw('CURRENT_TIMESTAMP'),
 	        'created_at'=>DB::raw('CURRENT_TIMESTAMP'),
         ]);
-        
+          
+        /*
         $page=\App\Http\Controllers\Controller::getSequence();
         $version=\App\Http\Controllers\Controller::getSequence();
         DB::table('pages')->insert([
@@ -64,13 +65,12 @@ class Pages extends Migration
 	        'updated_at'=>DB::raw('CURRENT_TIMESTAMP'),
 	        'created_at'=>DB::raw('CURRENT_TIMESTAMP'),
         ]);
-        
+              
         DB::table('ids')->insert([
 	        'id'=>'',
 	        'module'=>'page',
         ]);
         
-        /*
         DB::table('page_versions')->insert([
 	        'id'=>$version,
 	        'page'=>$page,

@@ -46,7 +46,7 @@
 									@endif
 								</td>
 							@endif
-							<td class="link"><a href="{{url('/'.$board->url.'/'.$d->id)}}{{$_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''}}">
+							<td class="link"><a href="{{url('/'.$board->url.'/'.$d->id)}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}">
 								@if($d->secret)🔒@endif
 								@if($d->notice)📣@endif
 								{{$d->title}}
@@ -83,7 +83,7 @@
 									@endif
 								</td>
 							@endif
-							<td class="link"><a href="{{url('/'.$board->url.'/'.$d->id)}}{{$_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''}}">
+							<td class="link"><a href="{{url('/'.$board->url.'/'.$d->id)}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}">
 								@if($d->secret)🔒@endif
 								@if($d->notice)📣@endif
 								{{$d->title}}
@@ -166,7 +166,7 @@
 	
 		@if($board->authority('document'))
 			<div class="btnArea">
-				<a href="{{url('/'.$board->url.'/create')}}{{$_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''}}" class="button blue">글 쓰기</a>
+				<a href="{{url('/'.$board->url.'/create')}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}" class="button blue">글 쓰기</a>
 			</div>
 		@endif
 	@endif

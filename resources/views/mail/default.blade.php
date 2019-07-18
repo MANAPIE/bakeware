@@ -1,5 +1,5 @@
 <style>
-	#MANAPIE{background:url('{{url('/image/admin_login.jpg')}}') no-repeat center center;background-size:cover;padding:30px 15px}
+	#MANAPIE{background:url('{{url('/image/admin_login.jpg.bakeware')}}') no-repeat center center;background-size:cover;padding:30px 15px}
 	#header{text-align:center;padding-bottom:30px}
 	#header img{width:200px;height:auto}
 	#body{background:#fff;padding:20px;line-height:1.7}
@@ -10,7 +10,7 @@
 </style>
 <div id="MANAPIE">
 	<div id="header">
-		<img src="{{url('/image/admin_logo.png')}}" alt="{{\App\Setting::find('app_name')->content}}">
+		<img src="{{url('/admin/logo')}}" alt="{{\App\Setting::find('app_name')->content}}">
 	</div>
 	<div id="body">
 		{!!$data!!}

@@ -167,6 +167,7 @@ return [
         /*
          * Package Service Providers...
          */
+        App\Providers\GoogleCloudStorageServiceProvider::class,
 
         /*
          * Application Service Providers...
