@@ -194,6 +194,7 @@ class GalleryController extends Controller {
 		\App\Gallery::create([
 			'id'=>$id,
 			'url'=>$request->url,
+			'domain'=>$request->domain,
 			'name'=>\App\Encryption::isEncrypt('gallery')?\App\Encryption::encrypt($request->name):$request->name,
 			'content'=>\App\Encryption::isEncrypt('gallery')?\App\Encryption::encrypt($request->content):$request->content,
 			'allowed_group'=>$group,
@@ -233,7 +234,7 @@ class GalleryController extends Controller {
 		}
         
         DB::table('ids')->insert([
-	        'id'=>$request->url,
+	        'id'=>$request->domain.'/'.$request->url,
 	        'module'=>'gallery',
         ]);
 		
@@ -269,13 +270,13 @@ class GalleryController extends Controller {
 		$gallery=\App\Gallery::where(['id'=>$request->id,'state'=>200])->first();
 		if(!$gallery) abort(404);
         
-        if($gallery->url!=$request->url){
+        if($gallery->url!=$request->url||$gallery->domain!=$request->domain){
 	        DB::table('ids')->where([
-		        'id'=>$gallery->url,
+		        'id'=>$gallery->domain.'/'.$gallery->url,
 		        'module'=>'gallery',
 	        ])->delete();
 	        DB::table('ids')->insert([
-		        'id'=>$request->url,
+		        'id'=>$request->domain.'/'.$request->url,
 		        'module'=>'gallery',
 	        ]);
 	    }
@@ -296,6 +297,7 @@ class GalleryController extends Controller {
 		Controller::notify(($gallery->name!=$request->name?'<u>'.$gallery->name.'</u> → ':'').'<u>'.$request->name.'</u> 갤러리를 수정했습니다.');
 		
 		$gallery->url=$request->url;
+		$gallery->domain=$request->domain;
 		$gallery->name=\App\Encryption::isEncrypt('gallery')?\App\Encryption::encrypt($request->name):$request->name;
 		$gallery->content=\App\Encryption::isEncrypt('gallery')?\App\Encryption::encrypt($request->content):$request->content;
 		$gallery->layout=$request->layout;
@@ -368,7 +370,7 @@ class GalleryController extends Controller {
 		if(!$gallery) abort(404);
 		
         DB::table('ids')->where([
-	        'id'=>$gallery->url,
+	        'id'=>$gallery->domain.'/'.$gallery->url,
 	        'module'=>'gallery',
         ])->delete();
         
@@ -772,7 +774,7 @@ class GalleryController extends Controller {
 		
 		$content='<div class="card_list"><h4><a href="'.url('/admin/gallery').'">액자 조회 수</a></h4><ul>';
 		foreach($cadres as $cadre){
-			$content.='<li><a href="'.url('/'.$cadre->gallery()->url.'/'.$cadre->id).'" target="_blank">';
+			$content.='<li><a href="'.url('/'.$cadre->gallery()->url().'/'.$cadre->id).'" target="_blank">';
 			foreach($cadre->files() as $file)
 				$content.='<img src="/file/thumb/'.$file->name.'" alt="">';
 			$content.='&nbsp;<span>'.$cadre->count_read.'</span></a><div class="clear"></div></li>';

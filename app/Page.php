@@ -10,6 +10,10 @@ class Page extends Model
     protected $table = 'pages';
     protected $guarded = [];
     
+    public function url(){
+	    return url(($this->domain?'//'.$this->domain:'').'/'.$this->url);
+    }
+    
     public function renewal($name,$layout,$content){
 	    $id=\App\Http\Controllers\Controller::getSequence();
 	    

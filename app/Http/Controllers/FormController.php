@@ -193,6 +193,7 @@ class FormController extends Controller {
 		\App\Form::create([
 			'id'=>$id,
 			'url'=>$request->url,
+			'domain'=>$request->domain,
 			'name'=>\App\Encryption::isEncrypt('form')?\App\Encryption::encrypt($request->name):$request->name,
 			'allowed_group'=>$group,
 			'allowed_group_mail'=>$group_mail,
@@ -221,7 +222,7 @@ class FormController extends Controller {
 		}
         
         DB::table('ids')->insert([
-	        'id'=>$request->url,
+	        'id'=>$request->domain.'/'.$request->url,
 	        'module'=>'form',
         ]);
 		
@@ -259,11 +260,11 @@ class FormController extends Controller {
         
         if($form->url!=$request->url){
 	        DB::table('ids')->where([
-		        'id'=>$form->url,
+		        'id'=>$form->domain.'/'.$form->url,
 		        'module'=>'form',
 	        ])->delete();
 	        DB::table('ids')->insert([
-		        'id'=>$request->url,
+		        'id'=>$request->domain.'/'.$request->url,
 		        'module'=>'form',
 	        ]);
 	    }
@@ -281,6 +282,7 @@ class FormController extends Controller {
 		Controller::notify(($form->name!=$request->name?'<u>'.$form->name.'</u> → ':'').'<u>'.$request->name.'</u> 폼을 수정했습니다.');
 		
 		$form->url=$request->url;
+		$form->domain=$request->domain;
 		$form->name=\App\Encryption::isEncrypt('form')?\App\Encryption::encrypt($request->name):$request->name;
 		$form->layout=$request->layout;
 		$form->skin=$request->skin;
@@ -333,7 +335,7 @@ class FormController extends Controller {
 		if(!$form) abort(404);
 		
         DB::table('ids')->where([
-	        'id'=>$form->url,
+	        'id'=>$form->domain.'/'.$form->url,
 	        'module'=>'form',
         ])->delete();
         
@@ -508,7 +510,7 @@ class FormController extends Controller {
 		$form->name=\App\Encryption::checkEncrypted($form->name)?\App\Encryption::decrypt($form->name):$form->name;
 		
 		foreach($form->mailing_list() as $email){
-			AdminController::sendmail($email,'['.\App\Setting::find('app_name')->content.'] '.$form->name.'에 새로운 답변','<a href="'.url($form->url).'">'.$form->name.'</a> 폼에 답변이 새로 작성되었습니다. '.($mail_content?'<div class="content">'.$mail_content.'</div>':''));
+			AdminController::sendmail($email,'['.\App\Setting::find('app_name')->content.'] '.$form->name.'에 새로운 답변','<a href="'.$form->url().'">'.$form->name.'</a> 폼에 답변이 새로 작성되었습니다. '.($mail_content?'<div class="content">'.$mail_content.'</div>':''));
 		}
 		
 		Controller::notify('<u>'.$form->name.'</u> 폼에 답변을 작성했습니다.');

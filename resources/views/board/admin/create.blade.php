@@ -28,6 +28,12 @@
 			@endif
 			
 			<label class="input_wrap">
+				<input type="text" name="domain" value="@if(isset($board)){{$board->domain}}@endif">
+				<span>도메인</span>
+			</label>
+			<span class="description">특정 도메인에서만 접근할 수 있게 합니다. 프로토콜(https://)과 맨 뒤 슬래시(/)는 제외하고 입력해주세요. 비워두는 경우 연결된 도메인에서 접속이 가능합니다.</span>
+			
+			<label class="input_wrap">
 				<input type="text" name="url" value="@if(isset($board)){{$board->url}}@endif">
 				<span>주소</span>
 			</label>
@@ -36,19 +42,19 @@
 			<script>
 			$(function(){
 				@if(!isset($board))
-					$.get('{{url('/admin/check/url/')}}'+'?url='+$(this).val(),function(data){
+					$.get('{{url('/admin/check/url/')}}'+'?url='+encodeURI($('input[name=domain]').val()+'/'+$('input[name=url]').val()),function(data){
 						if(data=='Y')
 							$('input[name=url')[0].setCustomValidity('이미 존재하는 주소입니다.');
 						else
 							$('input[name=url')[0].setCustomValidity('');
 					});
 				@endif
-				$('input[name=url').keyup(function(){
-					$.get('{{url('/admin/check/url/')}}'+'?url='+$(this).val()@if(isset($board))+'&original={{$board->url}}'@endif,function(data){
+				$('input[name=url],input[name=domain]').keyup(function(){
+					$.get('{{url('/admin/check/url/')}}'+'?url='+encodeURI($('input[name=domain]').val()+'/'+$('input[name=url]').val())@if(isset($board))+'&original='+encodeURI('{{$board->url}}')@endif,function(data){
 						if(data=='Y')
-							$('input[name=url')[0].setCustomValidity('이미 존재하는 주소입니다.');
+							$('input[name=url]')[0].setCustomValidity('이미 존재하는 주소입니다.');
 						else
-							$('input[name=url')[0].setCustomValidity('');
+							$('input[name=url]')[0].setCustomValidity('');
 					});
 				});
 			});
@@ -369,7 +375,7 @@
 			
 			<div class="btnArea">
 				@if(isset($board))
-					<a href="{{url('/'.$board->url)}}" class="button black" target="_blank" style="float:left">게시판 보기</a>
+					<a href="{{$board->url()}}" class="button black" target="_blank" style="float:left">게시판 보기</a>
 					<a href="{{url('/admin/board/'.$board->id.'/documents')}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}" class="button gray" style="float:left">게시글 목록</a>
 					<button type="button" class="button white" onclick="if(confirm('정말로 삭제하시겠습니까?'))$('#board{{$board->id}}delete').submit();return false"><span>게시판 삭제</span></button>
 					<a href="{{url('/admin/board')}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}" class="button gray">돌아가기</a>

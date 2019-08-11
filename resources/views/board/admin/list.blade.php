@@ -16,7 +16,7 @@
 			</tr>
 			@foreach($boards as $board)
 			<tr>
-				<td class="link date"><a href="{{url($board->url)}}" target="_blank">{{$board->url}}&nbsp;<span class="arrow">&gt;</span></a></a></td>
+				<td class="link date"><a href="{{$board->url()}}" target="_blank">{{($board->domain?$board->domain.'/':'').$board->url}}&nbsp;<span class="arrow">&gt;</span></a></a></td>
 				<td class="link"><a href="{{url('/admin/board/'.$board->id)}}{{$_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''}}">{{$board->name}}&nbsp;<span class="arrow">&gt;</span></a></td>
 				<td class="count">{{$board->count_document}}</td>
 			</tr>

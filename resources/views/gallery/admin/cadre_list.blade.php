@@ -71,7 +71,7 @@
 								<img src="/file/thumb/{{$file->name}}" alt="">
 							@endforeach
 							&nbsp;<span class="arrow">&gt;</span></a></td>
-						<td class="count link"><a href="{{url('/'.$d->gallery()->url.'/'.$d->id)}}" target="_blank">
+						<td class="count link"><a href="{{url('/'.$d->gallery()->url().'/'.$d->id)}}" target="_blank">
 							{{$d->count_read}}
 						&nbsp;<span class="arrow">&gt;</span></a></td>
 						<td class="date">

@@ -126,6 +126,7 @@ class PageController extends Controller {
 		\App\Page::create([
 			'id'=>$id,
 			'url'=>$request->url,
+			'domain'=>$request->domain,
 			'type'=>$request->type,
 			'allowed_group'=>$group,
 			'state'=>200,
@@ -137,7 +138,7 @@ class PageController extends Controller {
 		$page->save();
         
         DB::table('ids')->insert([
-	        'id'=>$request->url,
+	        'id'=>$request->domain.'/'.$request->url,
 	        'module'=>'page',
         ]);
 		
@@ -168,11 +169,11 @@ class PageController extends Controller {
         
         if($page->url!=$request->url){
 	        DB::table('ids')->where([
-		        'id'=>$page->url,
+		        'id'=>$page->domain.'/'.$page->url,
 		        'module'=>'page',
 	        ])->delete();
 	        DB::table('ids')->insert([
-		        'id'=>$request->url,
+		        'id'=>$request->domain.'/'.$request->url,
 		        'module'=>'page',
 	        ]);
 	    }
@@ -182,6 +183,7 @@ class PageController extends Controller {
 		$page->allowed_group=$group;
 		if(!$request->url) $request->url='';
 		$page->url=$request->url;
+		$page->domain=$request->domain;
 		
 		$content=($page->type=='outer'?$request->content_outer:$request->content_inner);
 		
@@ -207,7 +209,7 @@ class PageController extends Controller {
 		if(!$page) abort(404);
 		
         DB::table('ids')->where([
-	        'id'=>$page->url,
+	        'id'=>$page->domain.'/'.$page->url,
 	        'module'=>'page',
         ])->delete();
 		

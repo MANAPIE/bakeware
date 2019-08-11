@@ -122,6 +122,7 @@ class OnepageController extends Controller {
 		\App\Onepage::create([
 			'id'=>$id,
 			'url'=>$request->url,
+			'domain'=>$request->domain,
 			'name'=>\App\Encryption::isEncrypt('onepage')?\App\Encryption::encrypt($request->name):$request->name,
 			'layout'=>$request->layout,
 			'allowed_group'=>$group,
@@ -149,7 +150,7 @@ class OnepageController extends Controller {
 		}
         
         DB::table('ids')->insert([
-	        'id'=>$request->url,
+	        'id'=>$request->domain.'/'.$request->url,
 	        'module'=>'onepage',
         ]);
 		
@@ -180,11 +181,11 @@ class OnepageController extends Controller {
         
         if($page->url!=$request->url){
 	        DB::table('ids')->where([
-		        'id'=>$page->url,
+		        'id'=>$page->domain.'/'.$page->url,
 		        'module'=>'onepage',
 	        ])->delete();
 	        DB::table('ids')->insert([
-		        'id'=>$request->url,
+		        'id'=>$request->domain.'/'.$request->url,
 		        'module'=>'onepage',
 	        ]);
 	    }
@@ -198,6 +199,7 @@ class OnepageController extends Controller {
 		$page->allowed_group=$group;
 		if(!$request->url) $request->url='';
 		$page->url=$request->url;
+		$page->domain=$request->domain;
 		$page->name=\App\Encryption::isEncrypt('onepage')?\App\Encryption::encrypt($request->name):$request->name;
 		$page->layout=$request->layout;
 		
@@ -234,7 +236,7 @@ class OnepageController extends Controller {
 		if(!$page) abort(404);
 		
         DB::table('ids')->where([
-	        'id'=>$page->url,
+	        'id'=>$page->domain.'/'.$page->url,
 	        'module'=>'onepage',
         ])->delete();
 		

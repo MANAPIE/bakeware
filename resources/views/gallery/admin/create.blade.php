@@ -28,6 +28,12 @@
 			@endif
 			
 			<label class="input_wrap">
+				<input type="text" name="domain" value="@if(isset($gallery)){{$gallery->domain}}@endif">
+				<span>도메인</span>
+			</label>
+			<span class="description">특정 도메인에서만 접근할 수 있게 합니다. 프로토콜(https://)과 맨 뒤 슬래시(/)는 제외하고 입력해주세요. 비워두는 경우 연결된 도메인에서 접속이 가능합니다.</span>
+			
+			<label class="input_wrap">
 				<input type="text" name="url" value="@if(isset($gallery)){{$gallery->url}}@endif">
 				<span>주소</span>
 			</label>
@@ -36,19 +42,19 @@
 			<script>
 			$(function(){
 				@if(!isset($gallery))
-					$.get('{{url('/admin/check/url/')}}'+'?url='+$(this).val(),function(data){
+					$.get('{{url('/admin/check/url/')}}'+'?url='+encodeURI($('input[name=domain]').val()+'/'+$('input[name=url]').val()),function(data){
 						if(data=='Y')
 							$('input[name=url')[0].setCustomValidity('이미 존재하는 주소입니다.');
 						else
 							$('input[name=url')[0].setCustomValidity('');
 					});
 				@endif
-				$('input[name=url').keyup(function(){
-					$.get('{{url('/admin/check/url/')}}'+'?url='+$(this).val()@if(isset($gallery))+'&original={{$gallery->url}}'@endif,function(data){
+				$('input[name=url],input[name=domain]').keyup(function(){
+					$.get('{{url('/admin/check/url/')}}'+'?url='+encodeURI($('input[name=domain]').val()+'/'+$('input[name=url]').val())@if(isset($gallery))+'&original='+encodeURI('{{$gallery->url}}')@endif,function(data){
 						if(data=='Y')
-							$('input[name=url')[0].setCustomValidity('이미 존재하는 주소입니다.');
+							$('input[name=url]')[0].setCustomValidity('이미 존재하는 주소입니다.');
 						else
-							$('input[name=url')[0].setCustomValidity('');
+							$('input[name=url]')[0].setCustomValidity('');
 					});
 				});
 			});
@@ -283,7 +289,7 @@
 			
 			<div class="btnArea">
 				@if(isset($gallery))
-					<a href="{{url('/'.$gallery->url)}}" class="button black" target="_blank" style="float:left">갤러리 보기</a>
+					<a href="{{$gallery->url()}}" class="button black" target="_blank" style="float:left">갤러리 보기</a>
 					<a href="{{url('/admin/gallery/'.$gallery->id.'/cadres')}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}" class="button gray" style="float:left">액자 목록</a>
 					<button type="button" class="button white" onclick="if(confirm('정말로 삭제하시겠습니까?'))$('#gallery{{$gallery->id}}delete').submit();return false"><span>갤러리 삭제</span></button>
 					<a href="{{url('/admin/gallery')}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}" class="button gray">돌아가기</a>

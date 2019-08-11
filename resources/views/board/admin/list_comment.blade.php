@@ -25,7 +25,7 @@
 						<input type="checkbox" name="documents[]" value="{{$d->id}}">
 					</td>
 					<td class="link date"><a href="{{url('/admin/board/'.$d->board()->id)}}">{{$d->board()->name}}&nbsp;<span class="arrow">&gt;</span></a></a></td>
-					<td class="link date"><a href="{{url('/'.$d->board()->url.'/'.$d->document)}}" target="_blank">{{$d->document()->title}}&nbsp;<span class="arrow">&gt;</span></a></td>
+					<td class="link date"><a href="{{url('/'.$d->board()->url().'/'.$d->document)}}" target="_blank">{{$d->document()->title}}&nbsp;<span class="arrow">&gt;</span></a></td>
 					<td>
 						@if($d->secret)🔒@endif
 						@if($d->notice)📣@endif
