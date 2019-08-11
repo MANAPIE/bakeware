@@ -63,67 +63,104 @@ class Controller extends BaseController
 	}
     
     public function getListFromUrl($url=''){
-	    $module=DB::table('ids')->where('id',$url)->first();
-	    if(!$module)
-	    	if(!$url) return view('welcome');
-	    	else abort(404);
+	    $host=request()->getHost().'/';
+	    $module=DB::table('ids')->where('id',$host.$url)->first();
+	    if(!$module){
+		    $host='/';
+	    	$module=DB::table('ids')->where('id',$host.$url)->first();
+	    	if(!$module)
+		    	if(!$url) return view('welcome');
+		    	else abort(404);
+	    }
 	    
 	    $class='\\App\\Http\\Controllers\\'.ucfirst($module->module).'Controller';
+	    
 	    $object=new $class();
 	    if(!method_exists($object,'getList')) abort(404);
-	    return $object->getList($module->id);
+	    return $object->getList(str_replace($host,'',$module->id));
     }
     
     public function getReadFromUrl($url='',$id=''){
-	    $module=DB::table('ids')->where('id',$url)->first();
-	    if(!$module) abort(404);
+	    $host=request()->getHost().'/';
+	    $module=DB::table('ids')->where('id',$host.$url)->first();
+	    if(!$module){
+		    $host='/';
+	    	$module=DB::table('ids')->where('id',$host.$url)->first();
+	    	if(!$module)
+	    		abort(404);
+		}
 	    
 	    $class='\\App\\Http\\Controllers\\'.ucfirst($module->module).'Controller';
 	    $object=new $class();
 	    if(!method_exists($object,'getRead')) abort(404);
-	    return $object->getRead($module->id,$id);
+	    return $object->getRead(str_replace($host,'',$module->id),$id);
     }
     
     public function getActionFromUrl($url='',$action=''){
-	    $module=DB::table('ids')->where('id',$url)->first();
-	    if(!$module) abort(404);
+	    $host=request()->getHost().'/';
+	    $module=DB::table('ids')->where('id',$host.$url)->first();
+	    if(!$module){
+		    $host='/';
+	    	$module=DB::table('ids')->where('id',$host.$url)->first();
+	    	if(!$module)
+	    		abort(404);
+		}
 	    
 	    $class='\\App\\Http\\Controllers\\'.ucfirst($module->module).'Controller';
 	    $object=new $class();
 	    $function='get'.ucfirst($action);
 	    if(!method_exists($object,$function)) abort(404);
-	    return $object->$function($module->id);
+	    return $object->$function(str_replace($host,'',$module->id));
     }
     
     public function postActionFromUrl(Request $request,$url='',$action=''){
-	    $module=DB::table('ids')->where('id',$url)->first();
-	    if(!$module) abort(404);
+	    $host=request()->getHost().'/';
+	    $module=DB::table('ids')->where('id',$host.$url)->first();
+	    if(!$module){
+		    $host='/';
+	    	$module=DB::table('ids')->where('id',$host.$url)->first();
+	    	if(!$module)
+	    		abort(404);
+		}
 	    
 	    $class='\\App\\Http\\Controllers\\'.ucfirst($module->module).'Controller';
 	    $object=new $class();
 	    $function='post'.ucfirst($action);
 	    if(!method_exists($object,$function)) abort(404);
-	    return $object->$function($request,$module->id);
+	    return $object->$function($request,str_replace($host,'',$module->id));
     }
     
     public function getActionFromUrlWithId($url='',$id='',$action=''){
-	    $module=DB::table('ids')->where('id',$url)->first();
-	    if(!$module) abort(404);
+	    $host=request()->getHost().'/';
+	    $module=DB::table('ids')->where('id',$host.$url)->first();
+	    if(!$module){
+		    $host='/';
+	    	$module=DB::table('ids')->where('id',$host.$url)->first();
+	    	if(!$module)
+	    		abort(404);
+		}
 	    
 	    $class='\\App\\Http\\Controllers\\'.ucfirst($module->module).'Controller';
 	    $object=new $class();
 	    $function='get'.ucfirst($action);
 	    if(!method_exists($object,$function)) abort(404);
-	    return $object->$function($module->id,$id);
+	    return $object->$function(str_replace($host,'',$module->id),$id);
     }
     
     public function postActionFromUrlWithId(Request $request,$url='',$id='',$action=''){
-	    $module=DB::table('ids')->where('id',$url)->first();
-	    if(!$module) abort(404);
+	    $host=request()->getHost().'/';
+	    $module=DB::table('ids')->where('id',$host.$url)->first();
+	    if(!$module){
+		    $host='/';
+	    	$module=DB::table('ids')->where('id',$host.$url)->first();
+	    	if(!$module)
+	    		abort(404);
+		}
+		
 	    $class='\\App\\Http\\Controllers\\'.ucfirst($module->module).'Controller';
 	    $object=new $class();
 	    $function='post'.ucfirst($action);
 	    if(!method_exists($object,$function)) abort(404);
-	    return $object->$function($request,$module->id,$id);
+	    return $object->$function($request,str_replace($host,'',$module->id),$id);
     }
 }

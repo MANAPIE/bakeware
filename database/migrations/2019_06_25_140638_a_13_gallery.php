@@ -19,8 +19,6 @@ class A13Gallery extends Migration
         	모델: Gallery, Cadre
         	뷰: gallery
         */
-        
-	    $this->down();
 	    
 	    Schema::create('galleries', function (Blueprint $table) {
 	        $table->integer('id')->primary();

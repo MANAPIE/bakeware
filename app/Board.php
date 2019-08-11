@@ -10,6 +10,10 @@ class Board extends Model
     protected $table = 'boards';
     protected $guarded = [];
     
+    public function url(){
+	    return url(($this->domain?'//'.$this->domain:'').'/'.$this->url);
+    }
+    
     public function notices($category=null){
 	    if($category)
 	    	$_GET['category']=$category;

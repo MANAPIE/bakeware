@@ -10,6 +10,10 @@ class Form extends Model
     protected $table = 'forms';
     protected $guarded = [];
     
+    public function url(){
+	    return url(($this->domain?'//'.$this->domain:'').'/'.$this->url);
+    }
+    
     public function inPeriod(){
 	    $start_at=strtotime($this->start_at);
 	    $end_at=strtotime($this->end_at);

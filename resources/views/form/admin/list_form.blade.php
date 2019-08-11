@@ -17,7 +17,7 @@
 			</tr>
 			@foreach($forms as $form)
 			<tr>
-				<td class="link date"><a href="{{url($form->url)}}" target="_blank">{{$form->url}}&nbsp;<span class="arrow">&gt;</span></a></a></td>
+				<td class="link date"><a href="{{$form->url()}}" target="_blank">{{($form->domain?$form->domain.'/':'').$form->url}}&nbsp;<span class="arrow">&gt;</span></a></a></td>
 				<td class="link"><a href="{{url('/admin/form/answer/'.$form->id)}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}">{{$form->name}}&nbsp;<span class="arrow">&gt;</span></a></td>
 				<td class="count">{{$form->count_answer}}</td>
 				<td class="no"><span class="online @if($form->inPeriod()) active @else inactive @endif "></span></td>

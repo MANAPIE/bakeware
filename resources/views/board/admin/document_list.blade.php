@@ -39,7 +39,7 @@
 						@if($d->secret)🔒@endif
 						📣
 						{{$d->title}}&nbsp;<span class="arrow">&gt;</span></a></td>
-					<td class="count link"><a href="{{url('/'.$d->board()->url.'/'.$d->id)}}" target="_blank">
+					<td class="count link"><a href="{{url('/'.$d->board()->url().'/'.$d->id)}}" target="_blank">
 						{{$d->count_read}}
 					&nbsp;<span class="arrow">&gt;</span></a></td>
 					<td class="count">{{$d->count_comment}}</td>
@@ -67,7 +67,7 @@
 					<td class="link"><a href="{{url('/admin/board/'.$board->id.'/documents/'.$d->id)}}">
 						@if($d->secret)🔒@endif
 						{{$d->title}}&nbsp;<span class="arrow">&gt;</span></a></td>
-					<td class="count link"><a href="{{url('/'.$d->board()->url.'/'.$d->id)}}" target="_blank">
+					<td class="count link"><a href="{{url('/'.$d->board()->url().'/'.$d->id)}}" target="_blank">
 						{{$d->count_read}}
 					&nbsp;<span class="arrow">&gt;</span></a></td>
 					<td class="count">{{$d->count_comment}}</td>

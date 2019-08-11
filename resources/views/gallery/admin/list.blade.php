@@ -16,7 +16,7 @@
 			</tr>
 			@foreach($galleries as $gallery)
 			<tr>
-				<td class="link date"><a href="{{url($gallery->url)}}" target="_blank">{{$gallery->url}}&nbsp;<span class="arrow">&gt;</span></a></a></td>
+				<td class="link date"><a href="{{$gallery->url()}}" target="_blank">{{($gallery->domain?$gallery->domain.'/':'').$gallery->url}}&nbsp;<span class="arrow">&gt;</span></a></a></td>
 				<td class="link"><a href="{{url('/admin/gallery/'.$gallery->id)}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}">{{$gallery->name}}&nbsp;<span class="arrow">&gt;</span></a></td>
 				<td class="count">{{$gallery->count_cadre}}</td>
 			</tr>

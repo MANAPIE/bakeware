@@ -20,7 +20,7 @@
 			</tr>
 			@foreach($pages as $page)
 			<tr>
-				<td class="link date"><a href="{{url($page->url)}}" target="_blank">{{$page->url}}&nbsp;<span class="arrow">&gt;</span></a></a></td>
+				<td class="link date"><a href="{{$page->url()}}" target="_blank">{{($page->domain?$page->domain.'/':'').$page->url}}&nbsp;<span class="arrow">&gt;</span></a></a></td>
 				<td class="link"><a href="{{url('/admin/page/onepage/'.$page->id)}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}">{{$page->name}}&nbsp;<span class="arrow">&gt;</span></a></td>
 				<td class="count">{{$page->count_read}}</td>
 			</tr>

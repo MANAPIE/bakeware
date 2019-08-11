@@ -10,6 +10,10 @@ class Gallery extends Model
     protected $table = 'galleries';
     protected $guarded = [];
     
+    public function url(){
+	    return url(($this->domain?'//'.$this->domain:'').'/'.$this->url);
+    }
+    
     public function cadres($count=30,$category=null){
 	    if($category)
 	    	$_GET['category']=$category;

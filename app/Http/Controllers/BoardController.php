@@ -221,6 +221,7 @@ class BoardController extends Controller {
 		\App\Board::create([
 			'id'=>$id,
 			'url'=>$request->url,
+			'domain'=>$request->domain,
 			'name'=>\App\Encryption::isEncrypt('board')?\App\Encryption::encrypt($request->name):$request->name,
 			'content'=>\App\Encryption::isEncrypt('board')?\App\Encryption::encrypt($request->content):$request->content,
 			'sort_by'=>$request->sort_by,
@@ -265,7 +266,7 @@ class BoardController extends Controller {
 		}
         
         DB::table('ids')->insert([
-	        'id'=>$request->url,
+	        'id'=>$request->domain.'/'.$request->url,
 	        'module'=>'board',
         ]);
 		
@@ -303,11 +304,11 @@ class BoardController extends Controller {
         
         if($board->url!=$request->url){
 	        DB::table('ids')->where([
-		        'id'=>$board->url,
+		        'id'=>$board->domain.'/'.$board->url,
 		        'module'=>'board',
 	        ])->delete();
 	        DB::table('ids')->insert([
-		        'id'=>$request->url,
+		        'id'=>$request->domain.'/'.$request->url,
 		        'module'=>'board',
 	        ]);
 	    }
@@ -334,6 +335,7 @@ class BoardController extends Controller {
 		Controller::notify(($board->name!=$request->name?'<u>'.$board->name.'</u> → ':'').'<u>'.$request->name.'</u> 게시판을 수정했습니다.');
 		
 		$board->url=$request->url;
+		$board->domain=$request->domain;
 		$board->name=\App\Encryption::isEncrypt('board')?\App\Encryption::encrypt($request->name):$request->name;
 		$board->content=\App\Encryption::isEncrypt('board')?\App\Encryption::encrypt($request->content):$request->content;
 		$board->sort_by=$request->sort_by;
@@ -409,7 +411,7 @@ class BoardController extends Controller {
 		if(!$board) abort(404);
 		
         DB::table('ids')->where([
-	        'id'=>$board->url,
+	        'id'=>$board->domain.'/'.$board->url,
 	        'module'=>'board',
         ])->delete();
         
@@ -713,7 +715,7 @@ class BoardController extends Controller {
 		$board->name=\App\Encryption::checkEncrypted($board->name)?\App\Encryption::decrypt($board->name):$board->name;
 		
 		foreach($board->mailing_list() as $email){
-			AdminController::sendmail($email,'['.\App\Setting::find('app_name')->content.'] '.$board->name.'에 새로운 게시글: '.$request->title_real,'<a href="'.url($board->url).'">'.$board->name.'</a> 게시판에 <a href="'.url($board->url.'/'.$id).'">'.$request->title_real.'</a> 게시글이 새로 작성되었습니다. '.($mail_content?'<div class="content">'.$mail_content.'</div>':''));
+			AdminController::sendmail($email,'['.\App\Setting::find('app_name')->content.'] '.$board->name.'에 새로운 게시글: '.$request->title_real,'<a href="'.$board->url().'">'.$board->name.'</a> 게시판에 <a href="'.url($board->url.'/'.$id).'">'.$request->title_real.'</a> 게시글이 새로 작성되었습니다. '.($mail_content?'<div class="content">'.$mail_content.'</div>':''));
 		}
 		
 		Controller::notify('<u>'.$board->name.'</u> 게시판의 <u>'.$request->title_real.'</u> 게시글을 작성했습니다.');
@@ -1035,7 +1037,7 @@ class BoardController extends Controller {
 		$content='<div class="card_list"><h4><a href="'.url('/admin/board').'">게시글 조회 수</a></h4><ul>';
 		foreach($documents as $document){
 			$document->title=\App\Encryption::checkEncrypted($document->title)?\App\Encryption::decrypt($document->title):$document->title;
-			$content.='<li><a href="'.url('/'.$document->board()->url.'/'.$document->id).'" target="_blank">'.$document->title.'&nbsp;<span>'.$document->count_read.'</span></a><div class="clear"></div></li>';
+			$content.='<li><a href="'.url('/'.$document->board()->url().'/'.$document->id).'" target="_blank">'.$document->title.'&nbsp;<span>'.$document->count_read.'</span></a><div class="clear"></div></li>';
 		}
 		$content.='</ul></div>';
 		
@@ -1049,7 +1051,7 @@ class BoardController extends Controller {
 		$content='<div class="card_list"><h4><a href="'.url('/admin/board').'">게시글 댓글 수</a></h4><ul>';
 		foreach($documents as $document){
 			$document->title=\App\Encryption::checkEncrypted($document->title)?\App\Encryption::decrypt($document->title):$document->title;
-			$content.='<li><a href="'.url('/'.$document->board()->url.'/'.$document->id).'" target="_blank">'.$document->title.'&nbsp;<span>'.$document->count_comment.'</span></a><div class="clear"></div></li>';
+			$content.='<li><a href="'.url('/'.$document->board()->url().'/'.$document->id).'" target="_blank">'.$document->title.'&nbsp;<span>'.$document->count_comment.'</span></a><div class="clear"></div></li>';
 		}
 		$content.='</ul></div>';
 		
