@@ -53,7 +53,7 @@ class Controller extends BaseController
 		}
 		while ($old_data !== $data);
 		
-		return $content;
+		return $data;
     }
     
     public static function logActivity($type,$message=''){
