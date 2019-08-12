@@ -258,7 +258,7 @@ class FormController extends Controller {
 		$form=\App\Form::where(['id'=>$request->id,'state'=>200])->first();
 		if(!$form) abort(404);
         
-        if($form->url!=$request->url){
+        if($form->url!=$request->url||$form->domain!=$request->domain){
 	        DB::table('ids')->where([
 		        'id'=>$form->domain.'/'.$form->url,
 		        'module'=>'form',
@@ -404,14 +404,14 @@ class FormController extends Controller {
 	}
 	
 	// 답변 쓰기
-	public function getList($url){
+	public function getList($url,$domain){
 		return $this->getCreate($url);
 	}
 	
-	public function getCreate($url){
+	public function getCreate($url,$domain){
 		Controller::logActivity('USR');
 		
-		$form=\App\Form::where(['url'=>$url,'state'=>200])->first();
+		$form=\App\Form::where(['url'=>$url,'domain'=>$domain,'state'=>200])->first();
 		if(!$form) abort(404);
 		if(!$form->authority()) abort(401);
 		
@@ -423,12 +423,12 @@ class FormController extends Controller {
 	
 	// 답변 쓰기
 	// [POST] 답변 쓰기
-	public function postCreate(Request $request,$url){
+	public function postCreate(Request $request,$url,$domain){
 		Controller::logActivity('USR');
 		
 		if($request->title) abort(418); // 자동 입력 로봇들을 방지함
 		
-		$form=\App\Form::where(['url'=>$url,'state'=>200])->first();
+		$form=\App\Form::where(['url'=>$url,'domain'=>$domain,'state'=>200])->first();
 		if(!$form) abort(404);
 		if(!$form->inPeriod()) abort(404);
 		if(!$form->authority()) abort(401);
@@ -518,10 +518,10 @@ class FormController extends Controller {
 	}
 	
 	// 답변 쓰기 - 게시글 열람 권한 없을 때 오는 작성 완료 페이지
-	public function getComplete($url){
+	public function getComplete($url,$domain){
 		Controller::logActivity('USR');
 		
-		$form=\App\Form::where(['url'=>$url,'state'=>200])->first();
+		$form=\App\Form::where(['url'=>$url,'domain'=>$domain,'state'=>200])->first();
 		if(!$form) abort(404);
 		if(!$form->inPeriod()) abort(404);
 		

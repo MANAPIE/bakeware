@@ -416,7 +416,7 @@ class GalleryController extends Controller {
 		$gallery=\App\Gallery::where(['id'=>$request->gallery,'state'=>200])->first();
 		if(!$gallery) abort(404);
 		
-		return $this->postCreate($request,$gallery->url,true);
+		return $this->postCreate($request,$gallery->url,$gallery->domain,true);
 	}
 	
     // 관리자 갤러리 > 갤러리 관리 > 액자 수정
@@ -443,7 +443,7 @@ class GalleryController extends Controller {
 		$cadre=\App\Cadre::where(['gallery'=>$gallery->id,'id'=>$request->id,'state'=>200])->first();
 		if(!$cadre) abort(404);
 		
-		return $this->postEdit($request,$gallery->url,$cadre->id,true);
+		return $this->postEdit($request,$gallery->url,$gallery->domain,$cadre->id,true);
 	}
 	
     // 관리자 갤러리 > 갤러리 관리 > 액자 목록
@@ -487,10 +487,10 @@ class GalleryController extends Controller {
 	}
 	
 	// 갤러리 목록
-	public function getList($url){
+	public function getList($url,$domain){
 		Controller::logActivity('USR');
 		
-		$gallery=\App\Gallery::where(['url'=>$url,'state'=>200])->first();
+		$gallery=\App\Gallery::where(['url'=>$url,'domain'=>$domain,'state'=>200])->first();
 		if(!$gallery) abort(404);
 		
 		$gallery->timestamps=false;
@@ -502,10 +502,10 @@ class GalleryController extends Controller {
 	}
 	
 	// 액자 보기
-	public function getRead($url,$id){
+	public function getRead($url,$domain,$id){
 		Controller::logActivity('USR');
 		
-		$gallery=\App\Gallery::where(['url'=>$url,'state'=>200])->first();
+		$gallery=\App\Gallery::where(['url'=>$url,'domain'=>$domain,'state'=>200])->first();
 		if(!$gallery) abort(404);
 		if(!$gallery->authority('read')) abort(401);
 		
@@ -519,10 +519,10 @@ class GalleryController extends Controller {
 	}
 	
 	// 액자 만들기
-	public function getCreate($url){
+	public function getCreate($url,$domain){
 		Controller::logActivity('USR');
 		
-		$gallery=\App\Gallery::where(['url'=>$url,'state'=>200])->first();
+		$gallery=\App\Gallery::where(['url'=>$url,'domain'=>$domain,'state'=>200])->first();
 		if(!$gallery) abort(404);
 		if(!$gallery->authority('cadre')) abort(401);
 		
@@ -531,12 +531,12 @@ class GalleryController extends Controller {
 	
 	// 액자 만들기
 	// [POST] 액자 만들기
-	public function postCreate(Request $request,$url,$fromAdmin=false){
+	public function postCreate(Request $request,$url,$domain,$fromAdmin=false){
 		Controller::logActivity('USR');
 		
 		if($request->title) abort(418); // 자동 입력 로봇들을 방지함
 		
-		$gallery=\App\Gallery::where(['url'=>$url,'state'=>200])->first();
+		$gallery=\App\Gallery::where(['url'=>$url,'domain'=>$domain,'state'=>200])->first();
 		if(!$gallery) abort(404);
 		if(!$fromAdmin)
 			if(!$gallery->authority('cadre')) abort(401);
@@ -605,20 +605,20 @@ class GalleryController extends Controller {
 	}
 	
 	// 액자 만들기 - 액자 열람 권한 없을 때 오는 작성 완료 페이지
-	public function getComplete($url){
+	public function getComplete($url,$domain){
 		Controller::logActivity('USR');
 		
-		$gallery=\App\Gallery::where(['url'=>$url,'state'=>200])->first();
+		$gallery=\App\Gallery::where(['url'=>$url,'domain'=>$domain,'state'=>200])->first();
 		if(!$gallery) abort(404);
 		
 		return view('gallery.'.$gallery->skin.'.complete',['layout'=>$gallery->layout?\App\Layout::find($gallery->layout):null,'gallery'=>$gallery]);
 	}
 	
 	// 액자 수정
-	public function getEdit($url,$id){
+	public function getEdit($url,$domain,$id){
 		Controller::logActivity('USR');
 		
-		$gallery=\App\Gallery::where(['url'=>$url,'state'=>200])->first();
+		$gallery=\App\Gallery::where(['url'=>$url,'domain'=>$domain,'state'=>200])->first();
 		if(!$gallery) abort(404);
 		if(!$gallery->authority('cadre')) abort(401);
 		
@@ -631,12 +631,12 @@ class GalleryController extends Controller {
 	
 	// 액자 수정
 	// [POST] 액자 수정
-	public function postEdit(Request $request,$url,$id,$fromAdmin=false){
+	public function postEdit(Request $request,$url,$domain,$id,$fromAdmin=false){
 		Controller::logActivity('USR');
 		
 		if($request->title) abort(418); // 자동 입력 로봇들을 방지함
 		
-		$gallery=\App\Gallery::where(['url'=>$url,'state'=>200])->first();
+		$gallery=\App\Gallery::where(['url'=>$url,'domain'=>$domain,'state'=>200])->first();
 		if(!$gallery) abort(404);
 		if(!$fromAdmin)
 			if(!$gallery->authority('cadre')) abort(401);
@@ -717,10 +717,10 @@ class GalleryController extends Controller {
     
     // 액자 삭제
     // [POST] 액자 삭제
-	public function postDelete(Request $request,$url,$id){
+	public function postDelete(Request $request,$url,$domain,$id){
 		Controller::logActivity('USR');
 		
-		$gallery=\App\Gallery::where(['url'=>$url,'state'=>200])->first();
+		$gallery=\App\Gallery::where(['url'=>$url,'domain'=>$domain,'state'=>200])->first();
 		if(!$gallery) abort(404);
 		if(!$gallery->authority('cadre')) abort(401);
 		

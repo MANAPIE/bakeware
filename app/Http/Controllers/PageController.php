@@ -166,8 +166,7 @@ class PageController extends Controller {
 		
 		$page=\App\Page::where(['id'=>$request->id,'state'=>200])->first();
 		if(!$page) abort(404);
-        
-        if($page->url!=$request->url){
+        if($page->url!=$request->url||$page->domain!=$request->domain){
 	        DB::table('ids')->where([
 		        'id'=>$page->domain.'/'.$page->url,
 		        'module'=>'page',
@@ -221,10 +220,10 @@ class PageController extends Controller {
 	}
 	
 	// 페이지 보기
-	public function getList($url){
+	public function getList($url,$domain){
 		Controller::logActivity('USR');
 		
-		$page=\App\Page::where(['url'=>$url,'state'=>200])->first();
+		$page=\App\Page::where(['url'=>$url,'domain'=>$domain,'state'=>200])->first();
 		if(!$page) abort(404);
 		
 		if(count($page->groups())){
