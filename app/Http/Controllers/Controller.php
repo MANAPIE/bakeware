@@ -100,7 +100,7 @@ class Controller extends BaseController
 	    
 	    $object=new $class();
 	    if(!method_exists($object,'getList')) abort(404);
-	    return $object->getList(str_replace($host,'',$module->id));
+	    return $object->getList(ltrim($module->id,$host));
     }
     
     public function getReadFromUrl($url='',$id=''){
@@ -116,7 +116,7 @@ class Controller extends BaseController
 	    $class='\\App\\Http\\Controllers\\'.ucfirst($module->module).'Controller';
 	    $object=new $class();
 	    if(!method_exists($object,'getRead')) abort(404);
-	    return $object->getRead(str_replace($host,'',$module->id),$id);
+	    return $object->getRead(ltrim($module->id,$host),$id);
     }
     
     public function getActionFromUrl($url='',$action=''){
@@ -133,7 +133,7 @@ class Controller extends BaseController
 	    $object=new $class();
 	    $function='get'.ucfirst($action);
 	    if(!method_exists($object,$function)) abort(404);
-	    return $object->$function(str_replace($host,'',$module->id));
+	    return $object->$function(ltrim($module->id,$host));
     }
     
     public function postActionFromUrl(Request $request,$url='',$action=''){
@@ -150,7 +150,7 @@ class Controller extends BaseController
 	    $object=new $class();
 	    $function='post'.ucfirst($action);
 	    if(!method_exists($object,$function)) abort(404);
-	    return $object->$function($request,str_replace($host,'',$module->id));
+	    return $object->$function($request,ltrim($module->id,$host));
     }
     
     public function getActionFromUrlWithId($url='',$id='',$action=''){
@@ -167,7 +167,7 @@ class Controller extends BaseController
 	    $object=new $class();
 	    $function='get'.ucfirst($action);
 	    if(!method_exists($object,$function)) abort(404);
-	    return $object->$function(str_replace($host,'',$module->id),$id);
+	    return $object->$function(ltrim($module->id,$host),$id);
     }
     
     public function postActionFromUrlWithId(Request $request,$url='',$id='',$action=''){
@@ -184,6 +184,6 @@ class Controller extends BaseController
 	    $object=new $class();
 	    $function='post'.ucfirst($action);
 	    if(!method_exists($object,$function)) abort(404);
-	    return $object->$function($request,str_replace($host,'',$module->id),$id);
+	    return $object->$function($request,ltrim($module->id,$host),$id);
     }
 }
