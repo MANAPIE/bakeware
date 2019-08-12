@@ -20,15 +20,38 @@ class Controller extends BaseController
 	   return \DB::table('sequence')->insertGetId([]);
     }
     
-    public static function filterHTML($content){
-		$content=preg_replace('#<script(.*?)>(.*?)</script>#is','&lt;script$1>$2&lt;/script>',$content);
+    public static function filterHTML($data){
+	    
+		// Fix &entity\n;
+		$data = str_replace(array('&amp;','&lt;','&gt;'), array('&amp;amp;','&amp;lt;','&amp;gt;'), $data);
+		$data = preg_replace('/(&#*\w+)[\x00-\x20]+;/u', '$1;', $data);
+		$data = preg_replace('/(&#x*[0-9A-F]+);*/iu', '$1;', $data);
+		$data = html_entity_decode($data, ENT_COMPAT, 'UTF-8');
 		
-		$content=preg_replace_callback("/([^a-z])(o)(n)/i",
-		create_function('$matches', 'if($matches[2]=="o") $matches[2] = "&#111;";
-		else $matches[2] = "&#79;"; return $matches[1].$matches[2].$matches[3];'), $content);
+		// Remove any attribute starting with "on" or xmlns
+		$data = preg_replace('#(<[^>]+?[\x00-\x20"\'])(?:on|xmlns)[^>]*+>#iu', '$1>', $data);
 		
-		$content=preg_replace('#j\s*a\s*v\s*a\s*s\s*c\s*r\s*i\s*p\s*t\s*:#i','javascript&#760;',$content);
-		$content=str_replace('data:','data&#760;',$content);
+		// Remove javascript:, vbscript:, data:, -moz-binding: protocols
+		$data = preg_replace('#([a-z]*)[\x00-\x20]*=[\x00-\x20]*([`\'"]*)[\x00-\x20]*j[\x00-\x20]*a[\x00-\x20]*v[\x00-\x20]*a[\x00-\x20]*s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:#iu', '$1=$2javascript&#760;', $data);
+		$data = preg_replace('#([a-z]*)[\x00-\x20]*=([\'"]*)[\x00-\x20]*v[\x00-\x20]*b[\x00-\x20]*s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:#iu', '$1=$2vbscript&#760;', $data);
+		$data = preg_replace('#([a-z]*)[\x00-\x20]*=([\'"]*)[\x00-\x20]*-moz-binding[\x00-\x20]*:#u', '$1=$2-moz-binding&#760;', $data);
+		$data = preg_replace('#([a-z]*)[\x00-\x20]*=[\x00-\x20]*([`\'"]*)[\x00-\x20]*d[\x00-\x20]*a[\x00-\x20]*t[\x00-\x20]*a[\x00-\x20]*:#iu', '$1=$2data&#760;', $data);
+		
+		// Only works in IE: <span style="width: expression(alert('Ping!'));"></span>
+		$data = preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?expression[\x00-\x20]*\([^>]*+>#i', '$1>', $data);
+		$data = preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?behaviour[\x00-\x20]*\([^>]*+>#i', '$1>', $data);
+		$data = preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:*[^>]*+>#iu', '$1>', $data);
+		
+		// Remove namespaced elements (we do not need them)
+		$data = preg_replace('#</*\w+:\w[^>]*+>#i', '', $data);
+		
+		do
+		{
+			// Remove really unwanted tags
+			$old_data = $data;
+			$data = preg_replace('#</*(?:applet|b(?:ase|gsound|link)|embed|frame(?:set)?|i(?:frame|layer)|l(?:ayer|ink)|meta|object|s(?:cript|tyle)|title|xml)[^>]*+>#i', '', $data);
+		}
+		while ($old_data !== $data);
 		
 		return $content;
     }
