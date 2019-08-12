@@ -33,14 +33,17 @@ class ResourceController extends Controller {
 	}
 	
 	public function getImageResource($name){
-		$path=base_path().'/resources/views/_images/'.str_replace('.bakeware','',$name);
-		if(!File::exists($path)) $path=base_path().'/resources/views/_images/'.$name.'.jpg';
-		if(!File::exists($path)) $path=base_path().'/resources/views/_images/'.$name.'.gif';
+		$name=str_replace('.bakeware','',$name);
+		$path=base_path().'/resources/views/_images/'.$name;
+		if(!File::exists($path)){
+			$layout=explode('/',$name)[0];
+			$name=str_replace($layout.'/','',$name);
+			$path=base_path().'/resources/views/layout/'.$layout.'/images/'.$name;
+		}
 		if(!File::exists($path)) abort(404);
 		$file=File::get($path);
 		$type=File::mimeType($path);
 		$response=Response::make($file,200);
-	//	$response->withHeaders(['Content-Type'=>$type]);
 		$response->withHeaders(['Content-Type'=>$type,'Cache-Control'=>'public,max-age=86400']);
 		return $response;
 
@@ -53,8 +56,7 @@ class ResourceController extends Controller {
 		$file=File::get($path);
 		$type='text/css';
 		$response=Response::make($file,200);
-		$response->withHeaders(['Content-Type'=>$type]);
-	//	$response->withHeaders(['Content-Type'=>$type,'Cache-Control'=>'public,max-age=86400']);
+		$response->withHeaders(['Content-Type'=>$type,'Cache-Control'=>'public,max-age=86400']);
 		return $response;
 	}
 	
@@ -77,8 +79,7 @@ class ResourceController extends Controller {
 		$file=File::get($path);
 		$type='text/javascript';
 		$response=Response::make($file,200);
-		$response->withHeaders(['Content-Type'=>$type]);
-	//	$response->withHeaders(['Content-Type'=>$type,'Cache-Control'=>'public,max-age=86400']);
+		$response->withHeaders(['Content-Type'=>$type,'Cache-Control'=>'public,max-age=86400']);
 		return $response;
 	}
 	
