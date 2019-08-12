@@ -89,11 +89,15 @@ class Controller extends BaseController
 	    $host=request()->getHost().'/';
 	    $module=DB::table('ids')->where('id',$host.$url)->first();
 	    if(!$module){
-		    $host='/';
-	    	$module=DB::table('ids')->where('id',$host.$url)->first();
-	    	if(!$module)
-		    	if(!$url) return view('welcome');
-		    	else abort(404);
+			$host=ltrim($host,'www.');
+		    $module=DB::table('ids')->where('id',$host.$url)->first();
+		    if(!$module){
+			    $host='/';
+		    	$module=DB::table('ids')->where('id',$host.$url)->first();
+		    	if(!$module)
+			    	if(!$url) return view('welcome');
+			    	else abort(404);
+		    }
 	    }
 	    
 	    $class='\\App\\Http\\Controllers\\'.ucfirst($module->module).'Controller';
@@ -107,11 +111,16 @@ class Controller extends BaseController
 	    $host=request()->getHost().'/';
 	    $module=DB::table('ids')->where('id',$host.$url)->first();
 	    if(!$module){
-		    $host='/';
-	    	$module=DB::table('ids')->where('id',$host.$url)->first();
-	    	if(!$module)
-	    		abort(404);
-		}
+			$host=ltrim($host,'www.');
+		    $module=DB::table('ids')->where('id',$host.$url)->first();
+		    if(!$module){
+			    $host='/';
+		    	$module=DB::table('ids')->where('id',$host.$url)->first();
+		    	if(!$module)
+			    	if(!$url) return view('welcome');
+			    	else abort(404);
+		    }
+	    }
 	    
 	    $class='\\App\\Http\\Controllers\\'.ucfirst($module->module).'Controller';
 	    $object=new $class();
@@ -123,11 +132,16 @@ class Controller extends BaseController
 	    $host=request()->getHost().'/';
 	    $module=DB::table('ids')->where('id',$host.$url)->first();
 	    if(!$module){
-		    $host='/';
-	    	$module=DB::table('ids')->where('id',$host.$url)->first();
-	    	if(!$module)
-	    		abort(404);
-		}
+			$host=ltrim($host,'www.');
+		    $module=DB::table('ids')->where('id',$host.$url)->first();
+		    if(!$module){
+			    $host='/';
+		    	$module=DB::table('ids')->where('id',$host.$url)->first();
+		    	if(!$module)
+			    	if(!$url) return view('welcome');
+			    	else abort(404);
+		    }
+	    }
 	    
 	    $class='\\App\\Http\\Controllers\\'.ucfirst($module->module).'Controller';
 	    $object=new $class();
@@ -140,11 +154,16 @@ class Controller extends BaseController
 	    $host=request()->getHost().'/';
 	    $module=DB::table('ids')->where('id',$host.$url)->first();
 	    if(!$module){
-		    $host='/';
-	    	$module=DB::table('ids')->where('id',$host.$url)->first();
-	    	if(!$module)
-	    		abort(404);
-		}
+			$host=ltrim($host,'www.');
+		    $module=DB::table('ids')->where('id',$host.$url)->first();
+		    if(!$module){
+			    $host='/';
+		    	$module=DB::table('ids')->where('id',$host.$url)->first();
+		    	if(!$module)
+			    	if(!$url) return view('welcome');
+			    	else abort(404);
+		    }
+	    }
 	    
 	    $class='\\App\\Http\\Controllers\\'.ucfirst($module->module).'Controller';
 	    $object=new $class();
@@ -157,11 +176,16 @@ class Controller extends BaseController
 	    $host=request()->getHost().'/';
 	    $module=DB::table('ids')->where('id',$host.$url)->first();
 	    if(!$module){
-		    $host='/';
-	    	$module=DB::table('ids')->where('id',$host.$url)->first();
-	    	if(!$module)
-	    		abort(404);
-		}
+			$host=ltrim($host,'www.');
+		    $module=DB::table('ids')->where('id',$host.$url)->first();
+		    if(!$module){
+			    $host='/';
+		    	$module=DB::table('ids')->where('id',$host.$url)->first();
+		    	if(!$module)
+			    	if(!$url) return view('welcome');
+			    	else abort(404);
+		    }
+	    }
 	    
 	    $class='\\App\\Http\\Controllers\\'.ucfirst($module->module).'Controller';
 	    $object=new $class();
@@ -174,11 +198,16 @@ class Controller extends BaseController
 	    $host=request()->getHost().'/';
 	    $module=DB::table('ids')->where('id',$host.$url)->first();
 	    if(!$module){
-		    $host='/';
-	    	$module=DB::table('ids')->where('id',$host.$url)->first();
-	    	if(!$module)
-	    		abort(404);
-		}
+			$host=ltrim($host,'www.');
+		    $module=DB::table('ids')->where('id',$host.$url)->first();
+		    if(!$module){
+			    $host='/';
+		    	$module=DB::table('ids')->where('id',$host.$url)->first();
+		    	if(!$module)
+			    	if(!$url) return view('welcome');
+			    	else abort(404);
+		    }
+	    }
 		
 	    $class='\\App\\Http\\Controllers\\'.ucfirst($module->module).'Controller';
 	    $object=new $class();
