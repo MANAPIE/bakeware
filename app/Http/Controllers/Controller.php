@@ -84,106 +84,111 @@ class Controller extends BaseController
 	public static function getVersion(){
 		return \File::get(base_path().'/version');
 	}
-    
-    public function getListFromUrl($url=''){
+	
+	public static function remove_prefix($str,$prefix){
+		if(substr($str,0,strlen($prefix))==$prefix){
+		    $str=substr($str,strlen($prefix));
+		}
+		return $str;
+	}
+	
+	public static function remove_suffix($str,$suffix){
+		if(substr($str,-strlen($suffix))==$suffix){
+		    $str=substr($str,0,strlen($str)-strlen($suffix));
+		}
+		return $str;
+	}
+	
+	public static function findModule($url){
 	    $host=request()->getHost().'/';
 	    $module=DB::table('ids')->where('id',$host.$url)->first();
 	    if(!$module){
-		    $host='/';
-	    	$module=DB::table('ids')->where('id',$host.$url)->first();
-	    	if(!$module)
-		    	if(!$url) return view('welcome');
-		    	else abort(404);
+			$host=Controller::remove_prefix($host,'www.');
+		    $module=DB::table('ids')->where('id',$host.$url)->first();
+		    if(!$module){
+			    $host='/';
+		    	$module=DB::table('ids')->where('id',$host.$url)->first();
+		    	if(!$module)
+			    	if(!$url) return false;
+			    	else abort(404);
+		    }
 	    }
+	    return ['module'=>$module, 'host'=>$host];
+	}
+    
+    public function getListFromUrl($url=''){
+	    $data=Controller::findModule($url);
+	    if(!$data) return view('welcome');
+	    $module=$data['module'];
+	    $host=$data['host'];
 	    
 	    $class='\\App\\Http\\Controllers\\'.ucfirst($module->module).'Controller';
-	    
-	    $object=new $class();
+	    $object=new $class(); 
 	    if(!method_exists($object,'getList')) abort(404);
-	    return $object->getList(ltrim($module->id,$host));
+	    return $object->getList(Controller::remove_prefix($module->id,$host),Controller::remove_suffix($host,'/'));
     }
     
     public function getReadFromUrl($url='',$id=''){
-	    $host=request()->getHost().'/';
-	    $module=DB::table('ids')->where('id',$host.$url)->first();
-	    if(!$module){
-		    $host='/';
-	    	$module=DB::table('ids')->where('id',$host.$url)->first();
-	    	if(!$module)
-	    		abort(404);
-		}
+	    $data=Controller::findModule($url);
+	    if(!$data) return view('welcome');
+	    $module=$data['module'];
+	    $host=$data['host'];
 	    
 	    $class='\\App\\Http\\Controllers\\'.ucfirst($module->module).'Controller';
 	    $object=new $class();
 	    if(!method_exists($object,'getRead')) abort(404);
-	    return $object->getRead(ltrim($module->id,$host),$id);
+	    return $object->getRead(Controller::remove_prefix($module->id,$host),Controller::remove_suffix($host,'/'),$id);
     }
     
     public function getActionFromUrl($url='',$action=''){
-	    $host=request()->getHost().'/';
-	    $module=DB::table('ids')->where('id',$host.$url)->first();
-	    if(!$module){
-		    $host='/';
-	    	$module=DB::table('ids')->where('id',$host.$url)->first();
-	    	if(!$module)
-	    		abort(404);
-		}
+	    $data=Controller::findModule($url);
+	    if(!$data) return view('welcome');
+	    $module=$data['module'];
+	    $host=$data['host'];
 	    
 	    $class='\\App\\Http\\Controllers\\'.ucfirst($module->module).'Controller';
 	    $object=new $class();
 	    $function='get'.ucfirst($action);
 	    if(!method_exists($object,$function)) abort(404);
-	    return $object->$function(ltrim($module->id,$host));
+	    return $object->$function(Controller::remove_prefix($module->id,Controller::remove_suffix($host,'/'),$host));
     }
     
     public function postActionFromUrl(Request $request,$url='',$action=''){
-	    $host=request()->getHost().'/';
-	    $module=DB::table('ids')->where('id',$host.$url)->first();
-	    if(!$module){
-		    $host='/';
-	    	$module=DB::table('ids')->where('id',$host.$url)->first();
-	    	if(!$module)
-	    		abort(404);
-		}
+	    $data=Controller::findModule($url);
+	    if(!$data) return view('welcome');
+	    $module=$data['module'];
+	    $host=$data['host'];
 	    
 	    $class='\\App\\Http\\Controllers\\'.ucfirst($module->module).'Controller';
 	    $object=new $class();
 	    $function='post'.ucfirst($action);
 	    if(!method_exists($object,$function)) abort(404);
-	    return $object->$function($request,ltrim($module->id,$host));
+	    return $object->$function($request,Controller::remove_prefix($module->id,$host),Controller::remove_suffix($host,'/'));
     }
     
     public function getActionFromUrlWithId($url='',$id='',$action=''){
-	    $host=request()->getHost().'/';
-	    $module=DB::table('ids')->where('id',$host.$url)->first();
-	    if(!$module){
-		    $host='/';
-	    	$module=DB::table('ids')->where('id',$host.$url)->first();
-	    	if(!$module)
-	    		abort(404);
-		}
+	    $data=Controller::findModule($url);
+	    if(!$data) return view('welcome');
+	    $module=$data['module'];
+	    $host=$data['host'];
 	    
 	    $class='\\App\\Http\\Controllers\\'.ucfirst($module->module).'Controller';
 	    $object=new $class();
 	    $function='get'.ucfirst($action);
 	    if(!method_exists($object,$function)) abort(404);
-	    return $object->$function(ltrim($module->id,$host),$id);
+	    return $object->$function(Controller::remove_prefix($module->id,$host),Controller::remove_suffix($host,'/'),$id);
     }
     
     public function postActionFromUrlWithId(Request $request,$url='',$id='',$action=''){
-	    $host=request()->getHost().'/';
-	    $module=DB::table('ids')->where('id',$host.$url)->first();
-	    if(!$module){
-		    $host='/';
-	    	$module=DB::table('ids')->where('id',$host.$url)->first();
-	    	if(!$module)
-	    		abort(404);
-		}
+	    $data=Controller::findModule($url);
+	    if(!$data) return view('welcome');
+	    $module=$data['module'];
+	    $host=$data['host'];
 		
 	    $class='\\App\\Http\\Controllers\\'.ucfirst($module->module).'Controller';
 	    $object=new $class();
 	    $function='post'.ucfirst($action);
 	    if(!method_exists($object,$function)) abort(404);
-	    return $object->$function($request,ltrim($module->id,$host),$id);
+	    return $object->$function($request,Controller::remove_prefix($module->id,$host),Controller::remove_suffix($host,'/'),$id);
     }
 }

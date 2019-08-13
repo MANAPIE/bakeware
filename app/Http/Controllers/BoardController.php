@@ -302,7 +302,7 @@ class BoardController extends Controller {
 		$board=\App\Board::where(['id'=>$request->id,'state'=>200])->first();
 		if(!$board) abort(404);
         
-        if($board->url!=$request->url){
+        if($board->url!=$request->url||$board->domain!=$request->domain){
 	        DB::table('ids')->where([
 		        'id'=>$board->domain.'/'.$board->url,
 		        'module'=>'board',
@@ -458,7 +458,7 @@ class BoardController extends Controller {
 		$board=\App\Board::where(['id'=>$request->board,'state'=>200])->first();
 		if(!$board) abort(404);
 		
-		return $this->postCreate($request,$board->url,true);
+		return $this->postCreate($request,$board->url,$board->domain,true);
 	}
 	
     // 관리자 게시판 > 게시판 관리 > 글 수정
@@ -485,7 +485,7 @@ class BoardController extends Controller {
 		$document=\App\Document::where(['board'=>$board->id,'id'=>$request->id,'state'=>200])->first();
 		if(!$document) abort(404);
 		
-		return $this->postEdit($request,$board->url,$document->id,true);
+		return $this->postEdit($request,$board->url,$board->domain,$document->id,true);
 	}
 	
     // 관리자 게시판 > 게시판 관리 > 글 삭제
@@ -567,10 +567,10 @@ class BoardController extends Controller {
 	}
 	
 	// 게시판 목록
-	public function getList($url){
+	public function getList($url,$domain){
 		Controller::logActivity('USR');
 		
-		$board=\App\Board::where(['url'=>$url,'state'=>200])->first();
+		$board=\App\Board::where(['url'=>$url,'domain'=>$domain,'state'=>200])->first();
 		if(!$board) abort(404);
 		
 		$board->timestamps=false;
@@ -582,10 +582,10 @@ class BoardController extends Controller {
 	}
 	
 	// 게시글 보기
-	public function getRead($url,$id){
+	public function getRead($url,$domain,$id){
 		Controller::logActivity('USR');
 		
-		$board=\App\Board::where(['url'=>$url,'state'=>200])->first();
+		$board=\App\Board::where(['url'=>$url,'domain'=>$domain,'state'=>200])->first();
 		if(!$board) abort(404);
 		if(!$board->authority('read')) abort(401);
 		
@@ -599,10 +599,10 @@ class BoardController extends Controller {
 	}
 	
 	// 게시글 쓰기
-	public function getCreate($url){
+	public function getCreate($url,$domain){
 		Controller::logActivity('USR');
 		
-		$board=\App\Board::where(['url'=>$url,'state'=>200])->first();
+		$board=\App\Board::where(['url'=>$url,'domain'=>$domain,'state'=>200])->first();
 		if(!$board) abort(404);
 		if(!$board->authority('document')) abort(401);
 		
@@ -611,12 +611,12 @@ class BoardController extends Controller {
 	
 	// 게시글 쓰기
 	// [POST] 게시글 쓰기
-	public function postCreate(Request $request,$url,$fromAdmin=false){
+	public function postCreate(Request $request,$url,$domain,$fromAdmin=false){
 		Controller::logActivity('USR');
 		
 		if($request->title) abort(418); // 자동 입력 로봇들을 방지함
 		
-		$board=\App\Board::where(['url'=>$url,'state'=>200])->first();
+		$board=\App\Board::where(['url'=>$url,'domain'=>$domain,'state'=>200])->first();
 		if(!$board) abort(404);
 		if(!$fromAdmin)
 			if(!$board->authority('document')) abort(401);
@@ -723,20 +723,20 @@ class BoardController extends Controller {
 	}
 	
 	// 게시글 쓰기 - 게시글 열람 권한 없을 때 오는 작성 완료 페이지
-	public function getComplete($url){
+	public function getComplete($url,$domain){
 		Controller::logActivity('USR');
 		
-		$board=\App\Board::where(['url'=>$url,'state'=>200])->first();
+		$board=\App\Board::where(['url'=>$url,'domain'=>$domain,'state'=>200])->first();
 		if(!$board) abort(404);
 		
 		return view('board.'.$board->skin.'.complete',['layout'=>$board->layout?\App\Layout::find($board->layout):null,'board'=>$board]);
 	}
 	
 	// 게시글 수정
-	public function getEdit($url,$id){
+	public function getEdit($url,$domain,$id){
 		Controller::logActivity('USR');
 		
-		$board=\App\Board::where(['url'=>$url,'state'=>200])->first();
+		$board=\App\Board::where(['url'=>$url,'domain'=>$domain,'state'=>200])->first();
 		if(!$board) abort(404);
 		if(!$board->authority('document')) abort(401);
 		
@@ -749,12 +749,12 @@ class BoardController extends Controller {
 	
 	// 게시글 수정
 	// [POST] 게시글 수정
-	public function postEdit(Request $request,$url,$id,$fromAdmin=false){
+	public function postEdit(Request $request,$url,$domain,$id,$fromAdmin=false){
 		Controller::logActivity('USR');
 		
 		if($request->title) abort(418); // 자동 입력 로봇들을 방지함
 		
-		$board=\App\Board::where(['url'=>$url,'state'=>200])->first();
+		$board=\App\Board::where(['url'=>$url,'domain'=>$domain,'state'=>200])->first();
 		if(!$board) abort(404);
 		if(!$fromAdmin)
 			if(!$board->authority('document')) abort(401);
@@ -837,10 +837,10 @@ class BoardController extends Controller {
     
     // 게시글 삭제
     // [POST] 게시글 삭제
-	public function postDelete(Request $request,$url,$id){
+	public function postDelete(Request $request,$url,$domain,$id){
 		Controller::logActivity('USR');
 		
-		$board=\App\Board::where(['url'=>$url,'state'=>200])->first();
+		$board=\App\Board::where(['url'=>$url,'domain'=>$domain,'state'=>200])->first();
 		if(!$board) abort(404);
 		if(!$board->authority('document')) abort(401);
 		
@@ -863,12 +863,12 @@ class BoardController extends Controller {
     
     // 댓글 쓰기
     // [POST] 댓글 쓰기
-	public function postComment(Request $request,$url,$id){
+	public function postComment(Request $request,$url,$domain,$id){
 		Controller::logActivity('USR');
 		
 		if($request->title) abort(418); // 자동 입력 로봇들을 방지함
 		
-		$board=\App\Board::where(['url'=>$url,'state'=>200])->first();
+		$board=\App\Board::where(['url'=>$url,'domain'=>$domain,'state'=>200])->first();
 		if(!$board) abort(404);
 		if(!$board->authority('comment')) abort(401);
 		
