@@ -150,7 +150,7 @@ class Controller extends BaseController
 	    $object=new $class();
 	    $function='get'.ucfirst($action);
 	    if(!method_exists($object,$function)) abort(404);
-	    return $object->$function(Controller::remove_prefix($module->id,Controller::remove_suffix($host,'/'),$host));
+	    return $object->$function(Controller::remove_prefix($module->id,$host),Controller::remove_suffix($host,'/'));
     }
     
     public function postActionFromUrl(Request $request,$url='',$action=''){
