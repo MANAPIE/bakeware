@@ -85,11 +85,25 @@ class Controller extends BaseController
 		return \File::get(base_path().'/version');
 	}
 	
+	public static function remove_prefix($str,$prefix){
+		if(substr($str,0,strlen($prefix))==$prefix){
+		    $str=substr($str,strlen($prefix));
+		}
+		return $str;
+	}
+	
+	public static function remove_suffix($str,$suffix){
+		if(substr($str,-strlen($suffix))==$suffix){
+		    $str=substr($str,0,strlen($str)-strlen($suffix));
+		}
+		return $str;
+	}
+	
 	public static function findModule($url){
 	    $host=request()->getHost().'/';
 	    $module=DB::table('ids')->where('id',$host.$url)->first();
 	    if(!$module){
-			$host=ltrim($host,'www.');
+			$host=Controller::remove_prefix($host,'www.');
 		    $module=DB::table('ids')->where('id',$host.$url)->first();
 		    if(!$module){
 			    $host='/';
@@ -109,9 +123,9 @@ class Controller extends BaseController
 	    $host=$data['host'];
 	    
 	    $class='\\App\\Http\\Controllers\\'.ucfirst($module->module).'Controller';
-	    $object=new $class();
+	    $object=new $class(); 
 	    if(!method_exists($object,'getList')) abort(404);
-	    return $object->getList(ltrim($module->id,$host),rtrim($host,'/'));
+	    return $object->getList(Controller::remove_prefix($module->id,$host),Controller::remove_suffix($host,'/'));
     }
     
     public function getReadFromUrl($url='',$id=''){
@@ -123,7 +137,7 @@ class Controller extends BaseController
 	    $class='\\App\\Http\\Controllers\\'.ucfirst($module->module).'Controller';
 	    $object=new $class();
 	    if(!method_exists($object,'getRead')) abort(404);
-	    return $object->getRead(ltrim($module->id,$host),rtrim($host,'/'),$id);
+	    return $object->getRead(Controller::remove_prefix($module->id,$host),Controller::remove_suffix($host,'/'),$id);
     }
     
     public function getActionFromUrl($url='',$action=''){
@@ -136,7 +150,7 @@ class Controller extends BaseController
 	    $object=new $class();
 	    $function='get'.ucfirst($action);
 	    if(!method_exists($object,$function)) abort(404);
-	    return $object->$function(ltrim($module->id,rtrim($host,'/'),$host));
+	    return $object->$function(Controller::remove_prefix($module->id,Controller::remove_suffix($host,'/'),$host));
     }
     
     public function postActionFromUrl(Request $request,$url='',$action=''){
@@ -149,7 +163,7 @@ class Controller extends BaseController
 	    $object=new $class();
 	    $function='post'.ucfirst($action);
 	    if(!method_exists($object,$function)) abort(404);
-	    return $object->$function($request,ltrim($module->id,$host),rtrim($host,'/'));
+	    return $object->$function($request,Controller::remove_prefix($module->id,$host),Controller::remove_suffix($host,'/'));
     }
     
     public function getActionFromUrlWithId($url='',$id='',$action=''){
@@ -162,7 +176,7 @@ class Controller extends BaseController
 	    $object=new $class();
 	    $function='get'.ucfirst($action);
 	    if(!method_exists($object,$function)) abort(404);
-	    return $object->$function(ltrim($module->id,$host),rtrim($host,'/'),$id);
+	    return $object->$function(Controller::remove_prefix($module->id,$host),Controller::remove_suffix($host,'/'),$id);
     }
     
     public function postActionFromUrlWithId(Request $request,$url='',$id='',$action=''){
@@ -175,6 +189,6 @@ class Controller extends BaseController
 	    $object=new $class();
 	    $function='post'.ucfirst($action);
 	    if(!method_exists($object,$function)) abort(404);
-	    return $object->$function($request,ltrim($module->id,$host),rtrim($host,'/'),$id);
+	    return $object->$function($request,Controller::remove_prefix($module->id,$host),Controller::remove_suffix($host,'/'),$id);
     }
 }
