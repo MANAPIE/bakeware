@@ -15,6 +15,11 @@ class AppServiceProvider extends ServiceProvider
     {
         \Illuminate\Support\Facades\Schema::defaultStringLength(191);
 		\Illuminate\Support\Facades\View::share('current',[null,null]);
+		
+        // Make sure the directory for compiled views exist
+        if (! is_dir(config('view.compiled'))) {
+            mkdir(config('view.compiled'), 0755, true);
+        }
     }
 
     /**
