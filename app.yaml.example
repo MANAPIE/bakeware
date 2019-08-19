@@ -1,13 +1,9 @@
 # Google Cloud Platform App Engine Support
 
-runtime: php
-env: flex
+runtime: php72
 
 runtime_config:
  document_root: public
-
-skip_files:
- - .env
 
 env_variables:
  APP_NAME: MANAPIE
@@ -27,8 +23,11 @@ env_variables:
  DB_SOCKET: 
  DB_PREFIX: manapie_
 
+ APP_STORAGE: /tmp
+ VIEW_COMPILED_PATH: /tmp
+
  BROADCAST_DRIVER: log
- CACHE_DRIVER: file
+ CACHE_DRIVER: database
  SESSION_DRIVER: database
  QUEUE_DRIVER: sync
 
