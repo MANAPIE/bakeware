@@ -408,7 +408,7 @@ class FormController extends Controller {
 	
 	// 답변 쓰기
 	public function getList($url,$domain){
-		return $this->getCreate($url);
+		return $this->getCreate($url,$domain);
 	}
 	
 	public function getCreate($url,$domain){

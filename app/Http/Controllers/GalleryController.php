@@ -499,7 +499,7 @@ class GalleryController extends Controller {
 		$gallery->timestamps=false;
 		$gallery->increment('count_read');
 		
-		if(!$gallery->authority()) return $this->getCreate($url);
+		if(!$gallery->authority()) return $this->getCreate($url,$domain);
 		
 		return view('gallery.'.$gallery->skin.'.list',['layout'=>$gallery->layout?\App\Layout::find($gallery->layout):null,'gallery'=>$gallery]);
 	}

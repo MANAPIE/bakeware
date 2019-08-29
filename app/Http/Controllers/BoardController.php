@@ -579,7 +579,7 @@ class BoardController extends Controller {
 		$board->timestamps=false;
 		$board->increment('count_read');
 		
-		if(!$board->authority()) return $this->getCreate($url);
+		if(!$board->authority()) return $this->getCreate($url,$domain);
 		
 		return view('board.'.$board->skin.'.list',['layout'=>$board->layout?\App\Layout::find($board->layout):null,'board'=>$board]);
 	}
