@@ -90,6 +90,7 @@
 		</div>
 	</form>
 	
+	@if(!\App\Encryption::isEncrypt('gallery'))
 	<div class="search_wrap" style="margin-bottom:0">
 		<form method="get" action="{{url('/admin/gallery/cadre')}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}">
 			<label class="input_wrap">
@@ -99,6 +100,7 @@
 			</label>
 		</form>
 	</div>
+	@endif
 	
 	@section('pagination')
 	<?php $link_limit=5; ?>
