@@ -590,10 +590,10 @@ class BoardController extends Controller {
 		
 		$board=\App\Board::where(['url'=>$url,'domain'=>$domain,'state'=>200])->first();
 		if(!$board) abort(404);
-		if(!$board->authority('read')) abort(401);
 		
 		$document=\App\Document::where(['board'=>$board->id,'id'=>$id,'state'=>200])->first();
 		if(!$document) abort(404);
+		if(!$board->authority('read') && !(\Auth::check()&&\Auth::user()->id==$document->author)) abort(401);
 		
 		$document->timestamps=false;
 		$document->increment('count_read');
