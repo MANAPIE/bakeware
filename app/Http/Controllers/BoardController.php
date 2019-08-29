@@ -126,6 +126,7 @@ class BoardController extends Controller {
     }
 	
 	public function getImageResource($skin,$name){
+		$name=str_replace('.bakeware','',$name);
 		$path=base_path().'/resources/views/board/'.$skin.'/_image/'.$name;
 		if(!File::exists($path)) abort(404);
 		$file=File::get($path);
@@ -137,6 +138,7 @@ class BoardController extends Controller {
 	}
 	
 	public function getStyleResource($skin,$name){
+		$name=str_replace('.bakeware','',$name);
 		$path=base_path().'/resources/views/board/'.$skin.'/_style/'.$name;
 		if(!File::exists($path)) abort(404);
 		$file=File::get($path);
@@ -160,6 +162,7 @@ class BoardController extends Controller {
 	}
 	
 	public function getScriptResource($skin,$name){
+		$name=str_replace('.bakeware','',$name);
 		$path=base_path().'/resources/views/board/'.$skin.'/_script/'.$name;
 		if(!File::exists($path)) abort(404);
 		$file=File::get($path);

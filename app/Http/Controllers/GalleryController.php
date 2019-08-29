@@ -103,6 +103,7 @@ class GalleryController extends Controller {
     }
 	
 	public function getImageResource($skin,$name){
+		$name=str_replace('.bakeware','',$name);
 		$path=base_path().'/resources/views/gallery/'.$skin.'/_image/'.$name;
 		if(!File::exists($path)) abort(404);
 		$file=File::get($path);
@@ -114,6 +115,7 @@ class GalleryController extends Controller {
 	}
 	
 	public function getStyleResource($skin,$name){
+		$name=str_replace('.bakeware','',$name);
 		$path=base_path().'/resources/views/gallery/'.$skin.'/_style/'.$name;
 		if(!File::exists($path)) abort(404);
 		$file=File::get($path);
@@ -137,6 +139,7 @@ class GalleryController extends Controller {
 	}
 	
 	public function getScriptResource($skin,$name){
+		$name=str_replace('.bakeware','',$name);
 		$path=base_path().'/resources/views/gallery/'.$skin.'/_script/'.$name;
 		if(!File::exists($path)) abort(404);
 		$file=File::get($path);
