@@ -70,8 +70,8 @@ class Controller extends BaseController
 	    ]);
     }
     
-    public static function notify($message='',$user=null){
-	    $author=Auth::check()?Auth::user()->id:null;
+    public static function notify($message='',$user=null,$anonymous=false){
+	    $author=$anonymous?($anonymous!==true?$anonymous:0):(Auth::check()?Auth::user()->id:null);
 	    if(!$user) $user=$author;
 	    
 	    \DB::table('notifications')->insert([

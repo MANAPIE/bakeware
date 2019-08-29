@@ -684,6 +684,15 @@ class BoardController extends Controller {
 		
 		$document=\App\Document::find($id);
 		
+		$anonymous = false;
+		if($board->anonymous)
+			$anonymous = true;
+		else if($board->anonymous==1)
+			if(Auth::check()&&array_key_exists(2,Auth::user()->groups()))
+				$anonymous = false;
+			else
+				$anonymous = true;
+		
 		// 메일 발송
 		$mail_content='';
 		foreach($board->extravars() as $extravar){
@@ -721,7 +730,7 @@ class BoardController extends Controller {
 			AdminController::sendmail($email,'['.\App\Setting::find('app_name')->content.'] '.$board->name.'에 새로운 게시글: '.$request->title_real,'<a href="'.$board->url().'">'.$board->name.'</a> 게시판에 <a href="'.url($board->url.'/'.$id).'">'.$request->title_real.'</a> 게시글이 새로 작성되었습니다. '.($mail_content?'<div class="content">'.$mail_content.'</div>':''));
 		}
 		
-		Controller::notify('<u>'.$board->name.'</u> 게시판의 <u>'.$request->title_real.'</u> 게시글을 작성했습니다.');
+		Controller::notify('<u>'.$board->name.'</u> 게시판의 <u>'.$request->title_real.'</u> 게시글을 작성했습니다.',null,$anonymous);
 		return redirect($redirect.($_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''));
 	}
 	
@@ -903,7 +912,16 @@ class BoardController extends Controller {
 		$board->name=\App\Encryption::checkEncrypted($board->name)?\App\Encryption::decrypt($board->name):$board->name;
 		$document->title=\App\Encryption::checkEncrypted($document->title)?\App\Encryption::decrypt($document->title):$document->title;
 		
-		Controller::notify('<u>'.$board->name.'</u> 게시판의 <u>'.$document->title.'</u> 게시글에 댓글을 작성했습니다.');
+		$anonymous = false;
+		if($board->anonymous)
+			$anonymous = true;
+		else if($board->anonymous==1)
+			if(Auth::check()&&array_key_exists(2,Auth::user()->groups()))
+				$anonymous = false;
+			else
+				$anonymous = true;
+		
+		Controller::notify('<u>'.$board->name.'</u> 게시판의 <u>'.$document->title.'</u> 게시글에 댓글을 작성했습니다.',null,$anonymous);
 		return redirect('/'.$board->url.'/'.$document->id.($_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:'').'#comment'.$id);
 	}
 	
