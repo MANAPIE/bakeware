@@ -777,7 +777,7 @@ class GalleryController extends Controller {
 		
 		$content='<div class="card_list"><h4><a href="'.url('/admin/gallery').'">액자 조회 수</a></h4><ul>';
 		foreach($cadres as $cadre){
-			$content.='<li><a href="'.url('/'.$cadre->gallery()->url().'/'.$cadre->id).'" target="_blank">';
+			$content.='<li><a href="'.url($cadre->gallery()->url().'/'.$cadre->id).'" target="_blank">';
 			foreach($cadre->files() as $file)
 				$content.='<img src="/file/thumb/'.$file->name.'" alt="">';
 			$content.='&nbsp;<span>'.$cadre->count_read.'</span></a><div class="clear"></div></li>';

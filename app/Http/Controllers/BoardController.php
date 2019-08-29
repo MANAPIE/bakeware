@@ -1040,7 +1040,7 @@ class BoardController extends Controller {
 		$content='<div class="card_list"><h4><a href="'.url('/admin/board').'">게시글 조회 수</a></h4><ul>';
 		foreach($documents as $document){
 			$document->title=\App\Encryption::checkEncrypted($document->title)?\App\Encryption::decrypt($document->title):$document->title;
-			$content.='<li><a href="'.url('/'.$document->board()->url().'/'.$document->id).'" target="_blank">'.$document->title.'&nbsp;<span>'.$document->count_read.'</span></a><div class="clear"></div></li>';
+			$content.='<li><a href="'.url($document->board()->url().'/'.$document->id).'" target="_blank">'.$document->title.'&nbsp;<span>'.$document->count_read.'</span></a><div class="clear"></div></li>';
 		}
 		$content.='</ul></div>';
 		
@@ -1054,7 +1054,7 @@ class BoardController extends Controller {
 		$content='<div class="card_list"><h4><a href="'.url('/admin/board').'">게시글 댓글 수</a></h4><ul>';
 		foreach($documents as $document){
 			$document->title=\App\Encryption::checkEncrypted($document->title)?\App\Encryption::decrypt($document->title):$document->title;
-			$content.='<li><a href="'.url('/'.$document->board()->url().'/'.$document->id).'" target="_blank">'.$document->title.'&nbsp;<span>'.$document->count_comment.'</span></a><div class="clear"></div></li>';
+			$content.='<li><a href="'.url($document->board()->url().'/'.$document->id).'" target="_blank">'.$document->title.'&nbsp;<span>'.$document->count_comment.'</span></a><div class="clear"></div></li>';
 		}
 		$content.='</ul></div>';
 		
