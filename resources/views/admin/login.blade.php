@@ -8,6 +8,18 @@
 
 @section('container')
 <div class="admin_login">
+	<div class="background">
+		<div class="line l1"></div>
+		<div class="line l2"></div>
+		<div class="line l3"></div>
+		<div class="line l4"></div>
+		<div class="line l5"></div>
+		<div class="line l6"></div>
+		<div class="line l7"></div>
+		<div class="line l8"></div>
+		<div class="line l9"></div>
+	</div>
+	
 	<div class="admin_login_right">
 		<div class="logo">
 			<div class="logo_wrap">
@@ -25,8 +37,8 @@
 				
 				@if($errors->has('name') || $errors->has('password'))
 					<div class="message error">
-						@if ($errors->has('name')) {{$errors->first('name')}}
-						@elseif($errors->has('password')) {{$errors->first('password')}}
+						@if ($errors->has('name')) {!!$errors->first('name')!!}
+						@elseif($errors->has('password')) {!!$errors->first('password')!!}
 						@endif
 					</div>
 				@endif

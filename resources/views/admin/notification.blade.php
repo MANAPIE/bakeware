@@ -18,8 +18,8 @@
 			@foreach($notifications as $notification)
 			<tr>
 				<td class="date">{{$notification->created_at}}</td>
-				<td>@if($notification->author){{\App\User::find($notification->author)->nickname}}@else<i>비회원</i>@endif</td>
-				<td>@if($notification->user){{\App\User::find($notification->user)->nickname}}@else<i>비회원</i>@endif</td>
+				<td>@if($notification->author===null)<i>비회원</i>@elseif($notification->author==-1)<i>시스템</i>@elseif($notification->author==0)<i>익명</i>@else{{\App\User::find($notification->author)->nickname}}@endif</td>
+				<td>@if($notification->user===null)<i>비회원</i>@elseif($notification->user==-1)<i>시스템</i>@elseif($notification->user==0)<i>익명</i>@else{{\App\User::find($notification->user)->nickname}}@endif</td>
 				<td>{!!$notification->message!!}</td>
 			</tr>
 			@endforeach

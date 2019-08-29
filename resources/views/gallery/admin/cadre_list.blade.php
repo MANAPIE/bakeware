@@ -67,9 +67,11 @@
 							</td>
 						@endif
 						<td class="link thumbnails"><a href="{{url('/admin/gallery/'.$gallery->id.'/cadres/'.$d->id)}}">
-							@foreach($d->files() as $file)
-								<img src="/file/thumb/{{$file->name}}" alt="">
-							@endforeach
+							@if($d->files())
+								@foreach($d->files() as $file)
+									<img src="/file/thumb/{{$file->name}}" alt="">
+								@endforeach
+							@endif
 							&nbsp;<span class="arrow">&gt;</span></a></td>
 						<td class="count link"><a href="{{url('/'.$d->gallery()->url().'/'.$d->id)}}" target="_blank">
 							{{$d->count_read}}
@@ -88,6 +90,7 @@
 		</div>
 	</form>
 	
+	@if(!\App\Encryption::isEncrypt('gallery'))
 	<div class="search_wrap" style="margin-bottom:0">
 		<form method="get" action="{{url('/admin/gallery/cadre')}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}">
 			<label class="input_wrap">
@@ -97,6 +100,7 @@
 			</label>
 		</form>
 	</div>
+	@endif
 	
 	@section('pagination')
 	<?php $link_limit=5; ?>

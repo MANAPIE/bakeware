@@ -28,6 +28,7 @@
 		</table>
 	</div>
 	
+	@if(!\App\Encryption::isEncrypt('form'))
 	<div class="search_wrap">
 		<form method="get" action="{{url('/admin/form')}}">
 			<label class="input_wrap">
@@ -37,6 +38,7 @@
 			</label>
 		</form>
 	</div>
+	@endif
 	
 	@section('pagination')
 	<?php $link_limit=5; ?>

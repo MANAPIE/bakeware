@@ -103,6 +103,7 @@ class GalleryController extends Controller {
     }
 	
 	public function getImageResource($skin,$name){
+		$name=str_replace('.bakeware','',$name);
 		$path=base_path().'/resources/views/gallery/'.$skin.'/_image/'.$name;
 		if(!File::exists($path)) abort(404);
 		$file=File::get($path);
@@ -114,6 +115,7 @@ class GalleryController extends Controller {
 	}
 	
 	public function getStyleResource($skin,$name){
+		$name=str_replace('.bakeware','',$name);
 		$path=base_path().'/resources/views/gallery/'.$skin.'/_style/'.$name;
 		if(!File::exists($path)) abort(404);
 		$file=File::get($path);
@@ -137,6 +139,7 @@ class GalleryController extends Controller {
 	}
 	
 	public function getScriptResource($skin,$name){
+		$name=str_replace('.bakeware','',$name);
 		$path=base_path().'/resources/views/gallery/'.$skin.'/_script/'.$name;
 		if(!File::exists($path)) abort(404);
 		$file=File::get($path);
@@ -496,7 +499,7 @@ class GalleryController extends Controller {
 		$gallery->timestamps=false;
 		$gallery->increment('count_read');
 		
-		if(!$gallery->authority()) return $this->getCreate($url);
+		if(!$gallery->authority()) return $this->getCreate($url,$domain);
 		
 		return view('gallery.'.$gallery->skin.'.list',['layout'=>$gallery->layout?\App\Layout::find($gallery->layout):null,'gallery'=>$gallery]);
 	}
@@ -774,9 +777,10 @@ class GalleryController extends Controller {
 		
 		$content='<div class="card_list"><h4><a href="'.url('/admin/gallery').'">액자 조회 수</a></h4><ul>';
 		foreach($cadres as $cadre){
-			$content.='<li><a href="'.url('/'.$cadre->gallery()->url().'/'.$cadre->id).'" target="_blank">';
-			foreach($cadre->files() as $file)
-				$content.='<img src="/file/thumb/'.$file->name.'" alt="">';
+			$content.='<li><a href="'.url($cadre->gallery()->url().'/'.$cadre->id).'" target="_blank">';
+			if($cadre->files())
+				foreach($cadre->files() as $file)
+					$content.='<img src="/file/thumb/'.$file->name.'" alt="">';
 			$content.='&nbsp;<span>'.$cadre->count_read.'</span></a><div class="clear"></div></li>';
 		}
 		$content.='</ul></div>';

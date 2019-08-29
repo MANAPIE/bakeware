@@ -126,6 +126,7 @@ class BoardController extends Controller {
     }
 	
 	public function getImageResource($skin,$name){
+		$name=str_replace('.bakeware','',$name);
 		$path=base_path().'/resources/views/board/'.$skin.'/_image/'.$name;
 		if(!File::exists($path)) abort(404);
 		$file=File::get($path);
@@ -137,6 +138,7 @@ class BoardController extends Controller {
 	}
 	
 	public function getStyleResource($skin,$name){
+		$name=str_replace('.bakeware','',$name);
 		$path=base_path().'/resources/views/board/'.$skin.'/_style/'.$name;
 		if(!File::exists($path)) abort(404);
 		$file=File::get($path);
@@ -160,6 +162,7 @@ class BoardController extends Controller {
 	}
 	
 	public function getScriptResource($skin,$name){
+		$name=str_replace('.bakeware','',$name);
 		$path=base_path().'/resources/views/board/'.$skin.'/_script/'.$name;
 		if(!File::exists($path)) abort(404);
 		$file=File::get($path);
@@ -576,7 +579,7 @@ class BoardController extends Controller {
 		$board->timestamps=false;
 		$board->increment('count_read');
 		
-		if(!$board->authority()) return $this->getCreate($url);
+		if(!$board->authority()) return $this->getCreate($url,$domain);
 		
 		return view('board.'.$board->skin.'.list',['layout'=>$board->layout?\App\Layout::find($board->layout):null,'board'=>$board]);
 	}
@@ -587,10 +590,10 @@ class BoardController extends Controller {
 		
 		$board=\App\Board::where(['url'=>$url,'domain'=>$domain,'state'=>200])->first();
 		if(!$board) abort(404);
-		if(!$board->authority('read')) abort(401);
 		
 		$document=\App\Document::where(['board'=>$board->id,'id'=>$id,'state'=>200])->first();
 		if(!$document) abort(404);
+		if(!$board->authority('read') && !(\Auth::check()&&\Auth::user()->id==$document->author)) abort(401);
 		
 		$document->timestamps=false;
 		$document->increment('count_read');
@@ -681,6 +684,15 @@ class BoardController extends Controller {
 		
 		$document=\App\Document::find($id);
 		
+		$anonymous = false;
+		if($board->anonymous)
+			$anonymous = true;
+		else if($board->anonymous==1)
+			if(Auth::check()&&array_key_exists(2,Auth::user()->groups()))
+				$anonymous = false;
+			else
+				$anonymous = true;
+		
 		// 메일 발송
 		$mail_content='';
 		foreach($board->extravars() as $extravar){
@@ -718,7 +730,7 @@ class BoardController extends Controller {
 			AdminController::sendmail($email,'['.\App\Setting::find('app_name')->content.'] '.$board->name.'에 새로운 게시글: '.$request->title_real,'<a href="'.$board->url().'">'.$board->name.'</a> 게시판에 <a href="'.url($board->url.'/'.$id).'">'.$request->title_real.'</a> 게시글이 새로 작성되었습니다. '.($mail_content?'<div class="content">'.$mail_content.'</div>':''));
 		}
 		
-		Controller::notify('<u>'.$board->name.'</u> 게시판의 <u>'.$request->title_real.'</u> 게시글을 작성했습니다.');
+		Controller::notify('<u>'.$board->name.'</u> 게시판의 <u>'.$request->title_real.'</u> 게시글을 작성했습니다.',null,$anonymous);
 		return redirect($redirect.($_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:''));
 	}
 	
@@ -900,7 +912,16 @@ class BoardController extends Controller {
 		$board->name=\App\Encryption::checkEncrypted($board->name)?\App\Encryption::decrypt($board->name):$board->name;
 		$document->title=\App\Encryption::checkEncrypted($document->title)?\App\Encryption::decrypt($document->title):$document->title;
 		
-		Controller::notify('<u>'.$board->name.'</u> 게시판의 <u>'.$document->title.'</u> 게시글에 댓글을 작성했습니다.');
+		$anonymous = false;
+		if($board->anonymous)
+			$anonymous = true;
+		else if($board->anonymous==1)
+			if(Auth::check()&&array_key_exists(2,Auth::user()->groups()))
+				$anonymous = false;
+			else
+				$anonymous = true;
+		
+		Controller::notify('<u>'.$board->name.'</u> 게시판의 <u>'.$document->title.'</u> 게시글에 댓글을 작성했습니다.',null,$anonymous);
 		return redirect('/'.$board->url.'/'.$document->id.($_SERVER['QUERY_STRING']?'?'.$_SERVER['QUERY_STRING']:'').'#comment'.$id);
 	}
 	
@@ -1037,7 +1058,7 @@ class BoardController extends Controller {
 		$content='<div class="card_list"><h4><a href="'.url('/admin/board').'">게시글 조회 수</a></h4><ul>';
 		foreach($documents as $document){
 			$document->title=\App\Encryption::checkEncrypted($document->title)?\App\Encryption::decrypt($document->title):$document->title;
-			$content.='<li><a href="'.url('/'.$document->board()->url().'/'.$document->id).'" target="_blank">'.$document->title.'&nbsp;<span>'.$document->count_read.'</span></a><div class="clear"></div></li>';
+			$content.='<li><a href="'.url($document->board()->url().'/'.$document->id).'" target="_blank">'.$document->title.'&nbsp;<span>'.$document->count_read.'</span></a><div class="clear"></div></li>';
 		}
 		$content.='</ul></div>';
 		
@@ -1051,7 +1072,7 @@ class BoardController extends Controller {
 		$content='<div class="card_list"><h4><a href="'.url('/admin/board').'">게시글 댓글 수</a></h4><ul>';
 		foreach($documents as $document){
 			$document->title=\App\Encryption::checkEncrypted($document->title)?\App\Encryption::decrypt($document->title):$document->title;
-			$content.='<li><a href="'.url('/'.$document->board()->url().'/'.$document->id).'" target="_blank">'.$document->title.'&nbsp;<span>'.$document->count_comment.'</span></a><div class="clear"></div></li>';
+			$content.='<li><a href="'.url($document->board()->url().'/'.$document->id).'" target="_blank">'.$document->title.'&nbsp;<span>'.$document->count_comment.'</span></a><div class="clear"></div></li>';
 		}
 		$content.='</ul></div>';
 		

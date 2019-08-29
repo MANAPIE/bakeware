@@ -32,10 +32,20 @@
 						{{$d->summary(100)}}
 					</td>
 					<td class="date">
-						@if($d->author())
-							{{$d->author()->nickname}}
+						@if($d->board()->anonymous==2)
+							<i>익명</i>
+						@elseif($d->board()->anonymous==1)
+							@if($d->author()&&array_key_exists(2,$d->author()->groups()))
+								{{$d->author()->nickname}}
+							@else
+								<i>익명</i>
+							@endif
 						@else
-							<i>비회원</i>
+							@if($d->author())
+								{{$d->author()->nickname}}
+							@else
+								<i>비회원</i>
+							@endif
 						@endif
 					</td>
 				</tr>

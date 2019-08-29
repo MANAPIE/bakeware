@@ -262,13 +262,36 @@ class AdminController extends Controller {
 	
 	// 카드 - 알림
 	static public function cardNotification(){
-	//	$notifications=DB::table('notifications')->where('user',Auth::user()->id)->orderBy('id','desc')->limit(15)->get();
 		$notifications=DB::table('notifications')->orderBy('id','desc')->limit(15)->get();
 		
 		$content='<div class="card_list"><h4><a href="'.url('/admin/notification').'">알림</a></h4><ul>';
 		foreach($notifications as $noti){
 			$user=\App\User::find($noti->author);
-			$content.='<li>'.$noti->message.($noti->author?' <div class="user">'.(\App\Encryption::checkEncrypted($user->nickname)?\App\Encryption::decrypt($user->nickname):$user->nickname).', '.$noti->created_at.'</div>':'').'</li>';
+			
+			if($noti->author===null)
+				$author='<i>비회원</i>';
+			elseif($noti->author==-1)
+				$author='<i>시스템</i>';
+			elseif($noti->author==0)
+				$author='<i>익명</i>';
+			else
+				$author=\App\Encryption::checkEncrypted($user->nickname)?\App\Encryption::decrypt($user->nickname):$user->nickname;
+				
+			if($noti->author!=$noti->user){
+				$userto=\App\User::find($noti->user);
+				$author.=' &gt; ';
+				if($noti->user===null)
+					$author.='<i>비회원</i>';
+				elseif($noti->user==-1)
+					$author.='<i>시스템</i>';
+				elseif($noti->user==0)
+					$author.='<i>익명</i>';
+				else
+					$author.=\App\Encryption::checkEncrypted($userto->nickname)?\App\Encryption::decrypt($userto->nickname):$userto->nickname;
+			}
+				
+			
+			$content.='<li>'.$noti->message.' <div class="user">'.$author.', '.$noti->created_at.'</div></li>';
 		}
 		$content.='</ul></div>';
 		

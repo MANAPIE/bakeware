@@ -54,7 +54,7 @@ class Cadre extends Model
     public function extravar($id){
 	    $query=DB::table('gallery_cadre_extravars')->where(['extravar'=>$id,'cadre'=>$this->id])->first();
 	    $extravar=DB::table('gallery_extravars')->where(['id'=>$id,'gallery'=>$this->gallery])->first();
-	    if(!$query||!$query->content) return $extravar->type=='checkbox'||$extravar->type=='order'?[]:null;
+	    if(!$query||!$query->content) return $extravar->type=='checkbox'||$extravar->type=='order'?[]:'';
 	    
 	    $query->content=\App\Encryption::checkEncrypted($query->content)?\App\Encryption::decrypt($query->content):$query->content;
 	    

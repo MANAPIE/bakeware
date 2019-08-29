@@ -16,6 +16,28 @@
 .admin_login_right address{position:absolute;bottom:10px;left:0;width:100%;text-align:center;font-style:normal;font-size:12px;color:#bbb}
 .admin_login_right address .manapie{background:url('/image/manapie.png.bakeware') transparent no-repeat center center;background-size:100% 100%;width:88px;height:11px;display:inline-block}
 
+.admin_login .background{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;overflow:hidden}
+.admin_login .background .line{position:absolute;width:25px;height:100px;background:#fff;opacity:0;border-radius:100px;transform:rotate(45deg)}
+.admin_login .background .line.l1{top:-20%;right:-20%;animation:diagonal1 10s infinite;animation-delay:2s}
+.admin_login .background .line.l2{top:-20%;right:0%;animation:diagonal2 9s infinite}
+.admin_login .background .line.l3{top:-20%;right:30%;animation:diagonal3 8s infinite;animation-delay:3s}
+.admin_login .background .line.l4{top:60%;right:10%;animation:diagonal4 5s infinite}
+.admin_login .background .line.l5{top:30%;right:40%;animation:diagonal5 8s infinite;animation-delay:2s}
+.admin_login .background .line.l6{top:30%;right:-10%;animation:diagonal6 7s infinite}
+.admin_login .background .line.l7{top:0%;right:40%;animation:diagonal7 4s infinite;animation-delay:3s}
+.admin_login .background .line.l8{top:40%;right:50%;animation:diagonal8 7s infinite}
+.admin_login .background .line.l9{top:20%;right:10%;animation:diagonal9 6s infinite;animation-delay:2s}
+
+@keyframes  diagonal1{50%{opacity:0.2} 100% {top:120%;right:110%}}
+@keyframes  diagonal2{50%{opacity:0.2} 100% {top:120%;right:130%}}
+@keyframes  diagonal3{50%{opacity:0.2} 100% {top:120%;right:160%}}
+@keyframes  diagonal4{50%{opacity:0.2} 100% {top:200%;right:140%}}
+@keyframes  diagonal5{50%{opacity:0.2} 100% {top:170%;right:170%}}
+@keyframes  diagonal6{50%{opacity:0.2} 100% {top:170%;right:120%}}
+@keyframes  diagonal7{50%{opacity:0.2} 100% {top:140%;right:170%}}
+@keyframes  diagonal8{50%{opacity:0.2} 100% {top:180%;right:180%}}
+@keyframes  diagonal9{50%{opacity:0.2} 100% {top:160%;right:150%}}
+
 #header{position:fixed;top:0;left:0;width:230px;height:100%;overflow:auto;-webkit-overflow-scrolling:auto;background:#333;color:#fff}
 #header .logo{padding:15px 15px 25px 15px;text-align:center}
 #header .logo img{width:100px;height:auto}
