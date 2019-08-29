@@ -67,9 +67,11 @@
 							</td>
 						@endif
 						<td class="link thumbnails"><a href="{{url('/admin/gallery/'.$gallery->id.'/cadres/'.$d->id)}}">
-							@foreach($d->files() as $file)
-								<img src="/file/thumb/{{$file->name}}" alt="">
-							@endforeach
+							@if($d->files())
+								@foreach($d->files() as $file)
+									<img src="/file/thumb/{{$file->name}}" alt="">
+								@endforeach
+							@endif
 							&nbsp;<span class="arrow">&gt;</span></a></td>
 						<td class="count link"><a href="{{url('/'.$d->gallery()->url().'/'.$d->id)}}" target="_blank">
 							{{$d->count_read}}
