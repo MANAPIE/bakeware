@@ -103,228 +103,231 @@
 		
 		
 		@section('comment')
-			<a id="comment"></a>
-			
-			@if($document->allow_comment && $board->authority('comment'))
-				@section('head')
-					@parent
-					<script type="text/javascript" src="{{url('/ckeditor/ckeditor.js')}}"></script>
-					<script type="text/javascript" src="{{url('/script/dropzone.js.bakeware')}}"></script>
-					<link rel="stylesheet" href="{{url('/style/dropzone.css.bakeware')}}" />
-					<script>
-					Dropzone.autoDiscover = false;
-					$(function(){
-						CKEDITOR.replace('content',{});
-						
-						Dropzone.autoDiscover = false;
-					    var myDropzone = new Dropzone("#dropzone",{
-							init: function(){
-								this.on("success", function(file, responseText){
-									file.previewTemplate.appendChild(document.createTextNode(responseText));
-								});
-							},
-					    	url: "/upload/dropzone",
-					    	addRemoveLinks: true,
-					    	removedfile: function(file){
-					    		$('#attatched input[data-name=\''+file.name+'\']').remove();
-					    		var _ref;
-					    		return (_ref = file.previewElement) != null ? _ref.parentNode.removeChild(file.previewElement) : void 0;
-					    	},
-					    });
-						myDropzone.on("success", function(file,data){
-							addFile(data.name,'dropzone',file.name);
-						});
-					});
-					
-					function addFile(name,type,dataname){
-						$('#attatched').append('<input type="hidden" name="attach_'+type+'[]" value="'+name+'" data-name="'+dataname+'" />')
-					}
-					</script>
-				@stop
-			@endif
-			
-			@if($document->count_comment>0)
-				<div id="comment_list">
-					<h3 class="comment_count">댓글 {{$document->count_comment}}개</h3>
-					<ul class="comment_list">
-					@foreach($document->comments(true) as $comment)
-						<li>
-							<a id="comment{{$comment->id}}"></a>
-							<div class="meta">
-								<span class="author">
-									@if($comment->secret)🔒@endif
-									📣	
-									@if($board->anonymous==2)
-										<i>익명</i>
-									@elseif($board->anonymous==1)
-										@if($comment->author()&&array_key_exists(2,$comment->author()->groups()))
-											{{$comment->author()->nickname}}
-										@else
-											<i>익명</i>
-										@endif
-									@else
-										@if($comment->author())
-											{{$comment->author()->nickname}}
-										@else
-											<i>비회원</i>
-										@endif
-									@endif
-								</span>
-								<span class="date">
-									{{$comment->created_at}} 작성
-								</span>
-								
-								@if($comment->isMine() && $document->allow_comment && $board->authority('comment'))
-									<div class="buttons">
-										<a href="{{url('/board/comment/'.$comment->id)}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}">수정</a>
-										<a href="#" onclick="if(confirm('정말로 삭제하시겠습니까?'))$('#board{{$comment->id}}delete').submit();return false">삭제</a>
-										<form id="board{{$comment->id}}delete" class="form" method="post" action="{{url('/board/comment/delete/'.$comment->id)}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}">
-											{!!csrf_field()!!}
-										</form>
-									</div>
-								@endif
-							</div>
-							@if($comment->secret&&!$comment->isMine())
-								<div class="no_item" style="padding:30px 0">
-									비밀 댓글입니다.
-								</div>
-							@else
-								<div class="content" style="background:#eee">
-									<div class="real_content">
-										{!!$comment->content()!!}
-									</div>
-								
-									@if($comment->files())
-										<div class="download">
-										@foreach($comment->files() as $file)
-											<a href="{{url('file/'.$file->name)}}">💾 {{$file->original}} ({{round($file->size/1024,2)}} KB)</a><br />
-										@endforeach
-										</div>
-										@foreach($comment->files() as $file)
-										@if($file->mime=='application/pdf')
-											<div class="pdf_viewer">
-												<iframe src="https://docs.google.com/gview?url={{url('file/'.$file->name)}}&embedded=true"></iframe>
-											</div>
-										@endif
-										@endforeach
-									@endif
-								</div>
-							@endif
-						</li>
-					@endforeach
-					
-					@foreach($document->comments() as $comment)
-						<li>
-							<a id="comment{{$comment->id}}"></a>
-							<div class="meta">
-								<span class="author">
-									@if($comment->secret)🔒@endif
-									@if($board->anonymous==2)
-										<i>익명</i>
-									@elseif($board->anonymous==1)
-										@if($comment->author()&&array_key_exists(2,$comment->author()->groups()))
-											{{$comment->author()->nickname}}
-										@else
-											<i>익명</i>
-										@endif
-									@else
-										@if($comment->author())
-											{{$comment->author()->nickname}}
-										@else
-											<i>비회원</i>
-										@endif
-									@endif
-								</span>
-								<span class="date">
-									{{$comment->created_at}} 작성
-								</span>
-								
-								@if($comment->isMine() && $document->allow_comment && $board->authority('comment'))
-									<div class="buttons">
-										<a href="{{url('/board/comment/'.$comment->id)}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}">수정</a>
-										<a href="#" onclick="if(confirm('정말로 삭제하시겠습니까?'))$('#board{{$comment->id}}delete').submit();return false">삭제</a>
-										<form id="board{{$comment->id}}delete" class="form" method="post" action="{{url('/board/comment/delete/'.$comment->id)}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}">
-											{!!csrf_field()!!}
-										</form>
-									</div>
-								@endif
-							</div>
-							@if($comment->secret&&!$comment->isMine())
-								<div class="no_item" style="padding:30px 0">
-									비밀 댓글입니다.
-								</div>
-							@else
-								<div class="content">
-									<div class="real_content">
-										{!!$comment->content()!!}
-									</div>
-								
-									@if($comment->files())
-										<div class="download">
-										@foreach($comment->files() as $file)
-											<a href="{{url('file/'.$file->name)}}">💾 {{$file->original}} ({{round($file->size/1024,2)}} KB)</a><br />
-										@endforeach
-										</div>
-										@foreach($comment->files() as $file)
-										@if($file->mime=='application/pdf')
-											<div class="pdf_viewer">
-												<iframe src="https://docs.google.com/gview?url={{url('file/'.$file->name)}}&embedded=true"></iframe>
-											</div>
-										@endif
-										@endforeach
-									@endif
-								</div>
-							@endif
-						</li>
-					@endforeach
-					</ul>
-				</div>
-			@endif
-			
-			@if($document->allow_comment && $board->authority('comment'))
-				<div class="btnArea comment_write">
-					<button type="button" class="button blue" onclick="$('#comment_write').slideDown();"><span>댓글 쓰기</span></button>
-				</div>
+			@if(!$document->secret||$document->isMine())
+				<a id="comment"></a>
 				
-				<div id="comment_write" style="display:none">
-					<form method="post" action="{{url('/'.$board->url.'/'.$document->id.'/comment')}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}">
-						{!! csrf_field() !!}
+				@if($document->allow_comment && $board->authority('comment'))
+					@section('head')
+						@parent
+						<script type="text/javascript" src="{{url('/ckeditor/ckeditor.js')}}"></script>
+						<script type="text/javascript" src="{{url('/script/dropzone.js.bakeware')}}"></script>
+						<link rel="stylesheet" href="{{url('/style/dropzone.css.bakeware')}}" />
+						<script>
+						Dropzone.autoDiscover = false;
+						$(function(){
+							CKEDITOR.replace('content',{});
+							
+							Dropzone.autoDiscover = false;
+						    var myDropzone = new Dropzone("#dropzone",{
+								init: function(){
+									this.on("success", function(file, responseText){
+										file.previewTemplate.appendChild(document.createTextNode(responseText));
+									});
+								},
+						    	url: "/upload/dropzone",
+						    	addRemoveLinks: true,
+						    	removedfile: function(file){
+						    		$('#attatched input[data-name=\''+file.name+'\']').remove();
+						    		var _ref;
+						    		return (_ref = file.previewElement) != null ? _ref.parentNode.removeChild(file.previewElement) : void 0;
+						    	},
+						    });
+							myDropzone.on("success", function(file,data){
+								addFile(data.name,'dropzone',file.name);
+							});
+						});
 						
-						@if(session('error'))
-							<div class="error">{{session('error')}}</div>
-						@endif
-						
-						<input type="text" name="title" value="" class="blind">
-						<div class="content" style="margin:10px">
-							<textarea name="content">{{old('content')}}</textarea>
-						</div>
-						
-						<div id="dropzone" class="dropzone"></div>
-						<div id="attatched"></div>
-						
-						@if(Auth::check())
-							<div class="selects nolabel" style="text-align:right">
-								@if($document->isMine())
-								<label class="select_wrap" onclick="$(this).find('input').each(function(){$(this).prop('checked',!$(this).prop('checked'));});$(this).find('a').toggleClass('active');return false">
-									<input type="checkbox" name="notice" value="1" class="blind">
-									<a href="#" onclick="return false">✔︎</a>
-									<span>공지</span>
-								</label>
+						function addFile(name,type,dataname){
+							$('#attatched').append('<input type="hidden" name="attach_'+type+'[]" value="'+name+'" data-name="'+dataname+'" />')
+						}
+						</script>
+					@stop
+				@endif
+				
+				@if($document->count_comment>0)
+					<div id="comment_list">
+						<h3 class="comment_count">댓글 {{$document->count_comment}}개</h3>
+						<ul class="comment_list">
+						@foreach($document->comments(true) as $comment)
+							<li>
+								<a id="comment{{$comment->id}}"></a>
+								<div class="meta">
+									<span class="author">
+										@if($comment->secret)🔒@endif
+										📣	
+										@if($board->anonymous==2)
+											<i>익명</i>
+										@elseif($board->anonymous==1)
+											@if($comment->author()&&array_key_exists(2,$comment->author()->groups()))
+												{{$comment->author()->nickname}}
+											@else
+												<i>익명</i>
+											@endif
+										@else
+											@if($comment->author())
+												{{$comment->author()->nickname}}
+											@else
+												<i>비회원</i>
+											@endif
+										@endif
+									</span>
+									<span class="date">
+										{{$comment->created_at}} 작성
+									</span>
+									
+									@if($comment->isMine() && $document->allow_comment && $board->authority('comment'))
+										<div class="buttons">
+											<a href="{{url('/board/comment/'.$comment->id)}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}">수정</a>
+											<a href="#" onclick="if(confirm('정말로 삭제하시겠습니까?'))$('#board{{$comment->id}}delete').submit();return false">삭제</a>
+											<form id="board{{$comment->id}}delete" class="form" method="post" action="{{url('/board/comment/delete/'.$comment->id)}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}">
+												{!!csrf_field()!!}
+											</form>
+										</div>
+									@endif
+								</div>
+								@if($comment->secret&&!$comment->isMine())
+									<div class="no_item" style="padding:30px 0">
+										비밀 댓글입니다.
+									</div>
+								@else
+									<div class="content" style="background:#eee">
+										<div class="real_content">
+											{!!$comment->content()!!}
+										</div>
+									
+										@if($comment->files())
+											<div class="download">
+											@foreach($comment->files() as $file)
+												<a href="{{url('file/'.$file->name)}}">💾 {{$file->original}} ({{round($file->size/1024,2)}} KB)</a><br />
+											@endforeach
+											</div>
+											@foreach($comment->files() as $file)
+											@if($file->mime=='application/pdf')
+												<div class="pdf_viewer">
+													<iframe src="https://docs.google.com/gview?url={{url('file/'.$file->name)}}&embedded=true"></iframe>
+												</div>
+											@endif
+											@endforeach
+										@endif
+									</div>
 								@endif
-								
-								<label class="select_wrap" onclick="$(this).find('input').each(function(){$(this).prop('checked',!$(this).prop('checked'));});$(this).find('a').toggleClass('active');return false">
-									<input type="checkbox" name="secret" value="1" class="blind">
-									<a href="#" onclick="return false">✔︎</a>
-									<span>비밀 댓글</span>
-								</label>
-							</div>
-						@endif
+							</li>
+						@endforeach
 						
-						<div class="btnArea" style="margin-top:-10px">
-							<button type="submit" class="button black">등록하기</button>
-						</div>
-					</form>
-				</div>
+						@foreach($document->comments() as $comment)
+							<li>
+								<a id="comment{{$comment->id}}"></a>
+								<div class="meta">
+									<span class="author">
+										@if($comment->secret)🔒@endif
+										@if($board->anonymous==2)
+											<i>익명</i>
+										@elseif($board->anonymous==1)
+											@if($comment->author()&&array_key_exists(2,$comment->author()->groups()))
+												{{$comment->author()->nickname}}
+											@else
+												<i>익명</i>
+											@endif
+										@else
+											@if($comment->author())
+												{{$comment->author()->nickname}}
+											@else
+												<i>비회원</i>
+											@endif
+										@endif
+									</span>
+									<span class="date">
+										{{$comment->created_at}} 작성
+									</span>
+									
+									@if($comment->isMine() && $document->allow_comment && $board->authority('comment'))
+										<div class="buttons">
+											<a href="{{url('/board/comment/'.$comment->id)}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}">수정</a>
+											<a href="#" onclick="if(confirm('정말로 삭제하시겠습니까?'))$('#board{{$comment->id}}delete').submit();return false">삭제</a>
+											<form id="board{{$comment->id}}delete" class="form" method="post" action="{{url('/board/comment/delete/'.$comment->id)}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}">
+												{!!csrf_field()!!}
+											</form>
+										</div>
+									@endif
+								</div>
+								@if($comment->secret&&!$comment->isMine())
+									<div class="no_item" style="padding:30px 0">
+										비밀 댓글입니다.
+									</div>
+								@else
+									<div class="content">
+										<div class="real_content">
+											{!!$comment->content()!!}
+										</div>
+									
+										@if($comment->files())
+											<div class="download">
+											@foreach($comment->files() as $file)
+												<a href="{{url('file/'.$file->name)}}">💾 {{$file->original}} ({{round($file->size/1024,2)}} KB)</a><br />
+											@endforeach
+											</div>
+											@foreach($comment->files() as $file)
+											@if($file->mime=='application/pdf')
+												<div class="pdf_viewer">
+													<iframe src="https://docs.google.com/gview?url={{url('file/'.$file->name)}}&embedded=true"></iframe>
+												</div>
+											@endif
+											@endforeach
+										@endif
+									</div>
+								@endif
+							</li>
+						@endforeach
+						</ul>
+					</div>
+				@endif
+				
+				@if($document->allow_comment && $board->authority('comment'))
+					<div class="btnArea comment_write">
+						<button type="button" class="button blue" onclick="$('#comment_write').slideDown();"><span>댓글 쓰기</span></button>
+					</div>
+					
+					<div id="comment_write" style="display:none">
+						<form method="post" action="{{url('/'.$board->url.'/'.$document->id.'/comment')}}{{isset($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''}}">
+							{!! csrf_field() !!}
+							
+							@if(session('error'))
+								<div class="error">{{session('error')}}</div>
+							@endif
+							
+							<input type="text" name="title" value="" class="blind">
+							<div class="content" style="margin:10px">
+								<textarea name="content">{{old('content')}}</textarea>
+							</div>
+							
+							<div id="dropzone" class="dropzone"></div>
+							<div id="attatched"></div>
+							
+							@if(Auth::check())
+								<div class="selects nolabel" style="text-align:right">
+									@if($document->isMine())
+									<label class="select_wrap" onclick="$(this).find('input').each(function(){$(this).prop('checked',!$(this).prop('checked'));});$(this).find('a').toggleClass('active');return false">
+										<input type="checkbox" name="notice" value="1" class="blind">
+										<a href="#" onclick="return false">✔︎</a>
+										<span>공지</span>
+									</label>
+									@endif
+									
+									<label class="select_wrap" onclick="$(this).find('input').each(function(){$(this).prop('checked',!$(this).prop('checked'));});$(this).find('a').toggleClass('active');return false">
+										<input type="checkbox" name="secret" value="1" class="blind">
+										<a href="#" onclick="return false">✔︎</a>
+										<span>비밀 댓글</span>
+									</label>
+								</div>
+							@endif
+							
+							<div class="btnArea" style="margin-top:-10px">
+								<button type="submit" class="button black">등록하기</button>
+							</div>
+						</form>
+					</div>
+				@endif
+				
 			@endif
 		@show
 		
