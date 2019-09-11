@@ -156,7 +156,7 @@ function uploadFile(
 	$sequence="INSERT INTO `manapie_sequence` (`seq`) VALUES (NULL);";
 	$db->query($sequence);
 	
-	$query="INSERT INTO `manapie_files`(`id`,`article`, `author`, `original`, `name`, `extension`, `mime`, `size`, `type`, `state`) VALUES ('".$db->insert_id."',NULL,'".getUser()."','".$fileName."','".$fileNName."','".$fileExtension."','".$fileMime."',".filesize($tmp_name).",'image','100')";
+	$query="INSERT INTO `manapie_files`(`id`,`article`, `author`, `original`, `name`, `extension`, `mime`, `size`, `type`, `state`) VALUES ('".$db->insert_id."',NULL,'".getUser()."','".$fileName."','".$fileNName."','".$fileExtension."','".$fileMime."',".filesize($tmp_name).",'image','200')";
 
 	$result=$db->query($query);
 		
