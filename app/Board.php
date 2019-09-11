@@ -34,7 +34,11 @@ class Board extends Model
 	    	$documents=$documents->where('category',$_GET['category']);
 	    if(isset($_GET['keyword']))
 	    	$documents=$documents->where('title','like','%'.$_GET['keyword'].'%');
-	    $documents=$documents->orderBy($this->sort_by,$this->sort_order)->paginate(count($this->notices())>($count-5)?5:$count-count($this->notices()));
+	    $documents=$documents->orderBy($this->sort_by,$this->sort_order);
+	    if($count)
+		    $documents=$documents->paginate(count($this->notices())>($count-5)?5:$count-count($this->notices()));
+		else
+			$documents=$documents->get();
 	    return $documents;
     }
     
