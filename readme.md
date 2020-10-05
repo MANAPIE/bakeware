@@ -14,6 +14,9 @@ Laravel 프레임워크로 만들어져 PHP 7.1.3~ 환경에서 작동합니다.
 8. 관리자 계정, 사이트 기본 정보, 추가 가이드 링크 등 세팅
 
 (CAFE 24에서는 ./public/ckeditor/plugins/doksoft_uploader 22L에 config['BasePrefix'] = '/home/hosting_users'; 추가해줘야 함)
+selinux 끄기: 
+sudo yum install policycoreutils-python
+sudo semanage permissive -a httpd_t
 
 
 # Install on GCP
