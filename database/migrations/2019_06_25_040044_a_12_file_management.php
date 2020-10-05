@@ -15,7 +15,6 @@ class A12FileManagement extends Migration
     {
 		Schema::table('files', function (Blueprint $table) {
 			$table->timestamp('removed_at')->nullable();
-	        $table->integer('order_show')->nullable();
 		});
     }
 
@@ -28,7 +27,6 @@ class A12FileManagement extends Migration
     {
 		Schema::table('files', function (Blueprint $table) {
 			$table->dropColumn('removed_at');
-			$table->dropColumn('order_show');
 		});
     }
 }
