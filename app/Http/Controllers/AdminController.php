@@ -46,7 +46,7 @@ class AdminController extends Controller {
     
     static public function menu(){
 	    $menus=[];
-	    $modules=DB::table('modules')->orderBy('order_group')->orderBy('order_show')->get();
+	    $modules=DB::table('modules')->where('active', true)->orderBy('order_group')->orderBy('order_show')->get();
 	    foreach($modules as $module){
 		    $menu=('\\App\\Http\\Controllers\\'.ucfirst($module->module).'Controller')::admin_menu();
 		    if($menu)
@@ -95,7 +95,7 @@ class AdminController extends Controller {
 					AdminController::cardVersion(),
 			    ]],
 		    ];
-		    $modules=DB::table('modules')->orderBy('order_group')->orderBy('order_show')->get();
+		    $modules=DB::table('modules')->where('active', true)->orderBy('order_group')->orderBy('order_show')->get();
 		    foreach($modules as $module){
 			    $card=('\\App\\Http\\Controllers\\'.ucfirst($module->module).'Controller')::admin_card();
 			    if($card)
@@ -165,7 +165,7 @@ class AdminController extends Controller {
 			Controller::logActivity('USR');
 			View::share('current',['manager',null]);
 			
-			return view('admin.manager',['modules'=>DB::table('modules')->orderBy('order_group')->orderBy('order_show')->get(),'groups'=>DB::table('users_group')->where('state','200')->orderBy('id')->get()]);
+			return view('admin.manager',['modules'=>DB::table('modules')->where('active', true)->orderBy('order_group')->orderBy('order_show')->get(),'groups'=>DB::table('users_group')->where('state','200')->orderBy('id')->get()]);
 		}else{
 			abort(401);
 		}
