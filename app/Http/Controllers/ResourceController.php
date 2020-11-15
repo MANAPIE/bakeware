@@ -43,6 +43,7 @@ class ResourceController extends Controller {
 		if(!File::exists($path)) abort(404);
 		$file=File::get($path);
 		$type=File::mimeType($path);
+		if ($type === 'image/svg') $type = 'image/svg+xml';
 		$response=Response::make($file,200);
 		$response->withHeaders(['Content-Type'=>$type,'Cache-Control'=>'public,max-age=86400']);
 		return $response;
