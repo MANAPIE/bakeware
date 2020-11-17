@@ -62,6 +62,7 @@ class Document extends Model
 	    $extravar=DB::table('board_extravars')->where(['id'=>$id,'board'=>$this->board])->first();
 	    if(!$query||!$query->content) return $extravar->type=='checkbox'||$extravar->type=='order'?[]:'';
 	    
+	    if (!$extravar) return '';
 	    $query->content=\App\Encryption::checkEncrypted($query->content)?\App\Encryption::decrypt($query->content):$query->content;
 	    
 	    if($extravar->type=='checkbox'||$extravar->type=='order')
