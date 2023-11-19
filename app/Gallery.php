@@ -22,7 +22,11 @@ class Gallery extends Model
 	    	$cadres=$cadres->where('category',$_GET['category']);
 	    if(isset($_GET['keyword']))
 	    	$cadres=$cadres->where('title','like','%'.$_GET['keyword'].'%');
-	    $cadres=$cadres->orderBy('order_show','desc')->paginate($count);
+	    $cadres=$cadres->orderBy('order_show','desc');
+	    if($count)
+	    	$cadres=$cadres->paginate($count);
+	    else
+	    	$cadres=$cadres->get();
 	    return $cadres;
     }
     

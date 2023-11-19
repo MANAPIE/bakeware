@@ -43,6 +43,7 @@ class ResourceController extends Controller {
 		if(!File::exists($path)) abort(404);
 		$file=File::get($path);
 		$type=File::mimeType($path);
+		if ($type === 'image/svg') $type = 'image/svg+xml';
 		$response=Response::make($file,200);
 		$response->withHeaders(['Content-Type'=>$type,'Cache-Control'=>'public,max-age=86400']);
 		return $response;
@@ -287,12 +288,16 @@ class ResourceController extends Controller {
 		AdminController::checkAuthority();
 		
 		foreach($request->resources as $id){
-			$resource=\App\File::where(['id'=>$id,'state'=>200])->first();
-			$resource->timestamps=false;
-			$resource->state=401;
-			$resource->removed_at=date('Y-m-d H:i:s');
-			$resource->save();
-			Storage::delete($resource->name);
+			$resource=\App\File::where(['id'=>$id])->first();
+			if($resource){
+				if($resource->state==200){
+					$resource->timestamps=false;
+					$resource->state=401;
+					$resource->removed_at=date('Y-m-d H:i:s');
+					$resource->save();
+				}
+				Storage::delete($resource->name);
+			}
 		}
         // 401은 관리자에 의해 삭제된 경우
 		

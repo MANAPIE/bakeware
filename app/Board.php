@@ -15,11 +15,11 @@ class Board extends Model
     }
     
     public function notices($category=null){
-	    if($category)
-	    	$_GET['category']=$category;
+	    if(isset($_GET['category']) && !$category)
+	    	$category=$_GET['category'];
 	    $documents=Document::where(['board'=>$this->id,'state'=>200,'notice'=>true]);
-	    if(isset($_GET['category']))
-	    	$documents=$documents->where('category',$_GET['category']);
+	    if($category)
+	    	$documents=$documents->where('category',$category);
 	    if(isset($_GET['keyword']))
 	    	$documents=$documents->where('title','like','%'.$_GET['keyword'].'%');
 	    $documents=$documents->orderBy($this->sort_by,$this->sort_order)->get();
@@ -27,14 +27,18 @@ class Board extends Model
     }
     
     public function documents($count=30,$category=null){
-	    if($category)
-	    	$_GET['category']=$category;
+	    if(isset($_GET['category']) && !$category)
+	    	$category=$_GET['category'];
 	    $documents=Document::where(['board'=>$this->id,'state'=>200,'notice'=>false]);
-	    if(isset($_GET['category']))
-	    	$documents=$documents->where('category',$_GET['category']);
+	    if($category)
+	    	$documents=$documents->where('category',$category);
 	    if(isset($_GET['keyword']))
 	    	$documents=$documents->where('title','like','%'.$_GET['keyword'].'%');
-	    $documents=$documents->orderBy($this->sort_by,$this->sort_order)->paginate(count($this->notices())>($count-5)?5:$count-count($this->notices()));
+	    $documents=$documents->orderBy($this->sort_by,$this->sort_order);
+	    if($count)
+		    $documents=$documents->paginate(count($this->notices())>($count-5)?min(5, $count):$count-count($this->notices()));
+  		else
+  			$documents=$documents->get();
 	    return $documents;
     }
     

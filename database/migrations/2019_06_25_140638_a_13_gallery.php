@@ -79,10 +79,6 @@ class A13Gallery extends Migration
 	        $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
         });
         
-        Schema::table('files', function (Blueprint $table) {
-	        $table->integer('order_show')->nullable();
-        });
-        
         DB::table('modules')->insert([
 	        'module'=>'gallery',
 	        'name'=>'갤러리',
@@ -106,10 +102,6 @@ class A13Gallery extends Migration
         Schema::dropIfExists('gallery_extravars');
         Schema::dropIfExists('gallery_cadres');
         Schema::dropIfExists('gallery_cadre_extravars');
-        
-        Schema::table('files', function (Blueprint $table) {
-	        $table->dropColumn('order_show');
-        });
         
         DB::table('modules')->where('module','gallery')->delete();
         DB::table('ids')->where('module','gallery')->delete();

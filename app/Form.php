@@ -22,8 +22,12 @@ class Form extends Model
 	    return false;
     }
     
-    public function answers(){
-	    $answers=Answer::where(['form'=>$this->id,'state'=>200])->paginate(30);
+    public function answers($count=30){
+	    $answers=Answer::where(['form'=>$this->id,'state'=>200]);
+	    if($count)
+	    	$answers=$answers->paginate($count);
+	    else
+	    	$answers=$answers->get();
 		return $answers;
     }
     

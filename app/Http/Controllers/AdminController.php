@@ -46,7 +46,7 @@ class AdminController extends Controller {
     
     static public function menu(){
 	    $menus=[];
-	    $modules=DB::table('modules')->orderBy('order_group')->orderBy('order_show')->get();
+	    $modules=DB::table('modules')->where('active', true)->orderBy('order_group')->orderBy('order_show')->get();
 	    foreach($modules as $module){
 		    $menu=('\\App\\Http\\Controllers\\'.ucfirst($module->module).'Controller')::admin_menu();
 		    if($menu)
@@ -56,7 +56,7 @@ class AdminController extends Controller {
     }
     
     public static function sendmail($address,$subject,$content){
-		if($address!=\App\User::find(4)->email&&\App\Setting::find('mail_host')->content&&\App\Setting::find('mail_port')->content&&\App\Setting::find('mail_username')->content&&\App\Setting::find('mail_password')->content){
+		if(\App\Setting::find('mail_host')->content&&\App\Setting::find('mail_port')->content&&\App\Setting::find('mail_username')->content&&\App\Setting::find('mail_password')->content){
 			config(['mail.host'=>\App\Setting::find('mail_host')->content]);
 			config(['mail.port'=>\App\Setting::find('mail_port')->content]);
 			config(['mail.username'=>\App\Setting::find('mail_username')->content]);
@@ -95,7 +95,7 @@ class AdminController extends Controller {
 					AdminController::cardVersion(),
 			    ]],
 		    ];
-		    $modules=DB::table('modules')->orderBy('order_group')->orderBy('order_show')->get();
+		    $modules=DB::table('modules')->where('active', true)->orderBy('order_group')->orderBy('order_show')->get();
 		    foreach($modules as $module){
 			    $card=('\\App\\Http\\Controllers\\'.ucfirst($module->module).'Controller')::admin_card();
 			    if($card)
@@ -165,7 +165,7 @@ class AdminController extends Controller {
 			Controller::logActivity('USR');
 			View::share('current',['manager',null]);
 			
-			return view('admin.manager',['modules'=>DB::table('modules')->orderBy('order_group')->orderBy('order_show')->get(),'groups'=>DB::table('users_group')->where('state','200')->orderBy('id')->get()]);
+			return view('admin.manager',['modules'=>DB::table('modules')->where('active', true)->orderBy('order_group')->orderBy('order_show')->get(),'groups'=>DB::table('users_group')->where('state','200')->orderBy('id')->get()]);
 		}else{
 			abort(401);
 		}
@@ -300,10 +300,10 @@ class AdminController extends Controller {
 	
 	// 카드 - 버전
 	static public function cardVersion(){
-		$content='<a href="'.url('http://bakeware.manapie.me/').'"><div class="card_visitors" style="text-align:right">bakeware '.Controller::getVersion().'</div></a>';
+		$content='<a href="'.url('https://bakeware.manapie.me/').'"><div class="card_visitors" style="text-align:right">bakeware '.Controller::getVersion().'</div></a>';
 		
 		$content.='<div class="card_list"><ul>';
-			$content.='<li><a href="http://cms.manapie.me/guide" target="_blank">공통 가이드</a></li>';
+			$content.='<li><a href="https://bakeware.manapie.me/guide" target="_blank">공통 가이드</a></li>';
 			foreach(DB::table('settings_guide')->orderBy('order_show')->get() as $guide){
 				$content.='<li><a href="'.$guide->url.'" target="_blank">'.$guide->name.'</a></li>';
 			}

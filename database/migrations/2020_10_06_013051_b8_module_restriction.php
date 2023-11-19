@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class A12FileManagement extends Migration
+class B8ModuleRestriction extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class A12FileManagement extends Migration
      */
     public function up()
     {
-		Schema::table('files', function (Blueprint $table) {
-			$table->timestamp('removed_at')->nullable();
-		});
+    	Schema::table('modules', function (Blueprint $table) {
+        $table->boolean('active')->default(1);
+    	});
     }
 
     /**
@@ -25,8 +25,8 @@ class A12FileManagement extends Migration
      */
     public function down()
     {
-		Schema::table('files', function (Blueprint $table) {
-			$table->dropColumn('removed_at');
-		});
+  		Schema::table('modules', function (Blueprint $table) {
+  			$table->dropColumn('active');
+  		});
     }
 }
