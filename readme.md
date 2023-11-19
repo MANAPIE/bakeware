@@ -10,13 +10,15 @@ Laravel 프레임워크로 만들어져 PHP 7.1.3~ 환경에서 작동합니다.
 4. 터미널에서 composer install
 5. 계속해서 php artisan key:generate
 6. 계속해서 php artisan migrate
-7. 도메인으로 접속해서 환영 페이지가 뜨는지 확인
-8. 관리자 계정, 사이트 기본 정보, 추가 가이드 링크 등 세팅
+7. chmod -R 707 ./
+8. chmod -R 755 bootstrap/cache
+9. selinux 끄기: sudo yum install policycoreutils-python-utils
+10. sudo semanage permissive -a httpd_t
+11. 도메인으로 접속해서 환영 페이지가 뜨는지 확인
+12. 관리자 계정, 사이트 기본 정보, 추가 가이드 링크 등 세팅
 
 (CAFE 24에서는 ./public/ckeditor/plugins/doksoft_uploader 22L에 config['BasePrefix'] = '/home/hosting_users'; 추가해줘야 함)
-selinux 끄기: 
-sudo yum install policycoreutils-python
-sudo semanage permissive -a httpd_t
+
 
 
 # Install on GCP
